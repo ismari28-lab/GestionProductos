@@ -9,9 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ESFE.GestionProducrtos.LN\ESFE.GestionProducrtos.LN.csproj" />
-    <ProjectReference Include="..\ESFE.GestionProducto.EN\ESFE.GestionProducto.EN.csproj" />
-    <ProjectReference Include="..\ESFE.GestionProductos\ESFE.GestionProductos.DAL\ESFE.GestionProductos.DAL.csproj" />
+    <ProjectReference Include="..\ESFE.GestionProductos.DAL\ESFE.GestionProductos.DAL.csproj" />
+    <ProjectReference Include="..\ESFE.GestionProductos.EN\ESFE.GestionProductos.EN.csproj" />
+    <ProjectReference Include="..\ESFE.GestionProductos.LN\ESFE.GestionProductos.LN.csproj" />
   </ItemGroup>
 
 </Project>

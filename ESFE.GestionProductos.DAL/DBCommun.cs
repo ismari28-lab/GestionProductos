@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ESFE.GestionProductos.DAL
 {
-    internal class DBCommun
+    public class DBCommun
     {
     }
 }

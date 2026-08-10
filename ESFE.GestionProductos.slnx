@@ -1,6 +1,6 @@
 <Solution>
-  <Project Path="../ESFE.GestionProducrtos.LN/ESFE.GestionProducrtos.LN.csproj" Id="fef9e8e7-a95b-4cec-a49b-e2b168359dfb" />
-  <Project Path="../ESFE.GestionProducto.EN/ESFE.GestionProducto.EN.csproj" Id="14c3f7d8-da66-449f-911b-637ebfc5cce2" />
-  <Project Path="../ESFE.GestionProductos.UI/ESFE.GestionProductos.UI.csproj" Id="bf149f48-65d2-4205-9753-b96bac760705" />
   <Project Path="ESFE.GestionProductos.DAL/ESFE.GestionProductos.DAL.csproj" Id="9d3d0178-b6c2-4876-9d86-c7ae8a5372a2" />
+  <Project Path="ESFE.GestionProductos.EN/ESFE.GestionProductos.EN.csproj" Id="b694afce-54f0-4d60-b4cf-5cb29e2fa6da" />
+  <Project Path="ESFE.GestionProductos.LN/ESFE.GestionProductos.LN.csproj" Id="84ba64db-fee8-438d-a43b-fcd010016e69" />
+  <Project Path="ESFE.GestionProductos.UI/ESFE.GestionProductos.UI.csproj" Id="0e8c92ee-0da8-45d2-a967-02f1bad030c4" />
 </Solution>
