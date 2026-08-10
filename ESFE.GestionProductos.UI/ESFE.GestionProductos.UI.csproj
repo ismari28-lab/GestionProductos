@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ESFE.GestionProducrtos.LN\ESFE.GestionProducrtos.LN.csproj" />
+    <ProjectReference Include="..\ESFE.GestionProducto.EN\ESFE.GestionProducto.EN.csproj" />
+    <ProjectReference Include="..\ESFE.GestionProductos\ESFE.GestionProductos.DAL\ESFE.GestionProductos.DAL.csproj" />
+  </ItemGroup>
+
+</Project>

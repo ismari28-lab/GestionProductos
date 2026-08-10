@@ -8,7 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ESFE.GestionProducto.EN\ESFE.GestionProducto.EN.csproj" />
+    <ProjectReference Include="..\ESFE.GestionProducto.EN\ESFE.GestionProducto.EN.csproj" />
+    <ProjectReference Include="..\ESFE.GestionProductos\ESFE.GestionProductos.DAL\ESFE.GestionProductos.DAL.csproj" />
   </ItemGroup>
 
 </Project>
