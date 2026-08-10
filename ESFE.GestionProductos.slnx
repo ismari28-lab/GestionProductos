@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="../ESFE.GestionProducto.EN/ESFE.GestionProducto.EN.csproj" Id="14c3f7d8-da66-449f-911b-637ebfc5cce2" />
+  <Project Path="ESFE.GestionProductos.DAL/ESFE.GestionProductos.DAL.csproj" Id="9d3d0178-b6c2-4876-9d86-c7ae8a5372a2" />
+</Solution>
