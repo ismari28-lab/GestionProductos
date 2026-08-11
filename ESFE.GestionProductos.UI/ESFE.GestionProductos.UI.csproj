@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ESFE.GestionProductos.DAL\ESFE.GestionProductos.DAL.csproj" />
     <ProjectReference Include="..\ESFE.GestionProductos.EN\ESFE.GestionProductos.EN.csproj" />
     <ProjectReference Include="..\ESFE.GestionProductos.LN\ESFE.GestionProductos.LN.csproj" />
