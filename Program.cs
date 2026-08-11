@@ -1,17 +1,13 @@
-namespace ESFE.GestionProductos
+namespace ESFE.GestionProductos.UI
 {
     internal static class Program
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+            // Asegúrate de que apunte a tu formulario de login
+            Application.Run(new login()); 
         }
     }
 }
