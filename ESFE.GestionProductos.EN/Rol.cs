@@ -9,6 +9,6 @@ namespace ESFE.GestionProductos.EN
         public short IdRolPK { get; set; }
 
         public string? NombreRol { get; set; }
-
+g
     }
 }
