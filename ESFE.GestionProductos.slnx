@@ -1,7 +1,4 @@
 <Solution>
-  <Folder Name="/Elementos de la solución/">
-    <File Path="Program.cs" />
-  </Folder>
   <Project Path="ESFE.GestionProductos.DAL/ESFE.GestionProductos.DAL.csproj" Id="9d3d0178-b6c2-4876-9d86-c7ae8a5372a2" />
   <Project Path="ESFE.GestionProductos.EN/ESFE.GestionProductos.EN.csproj" Id="b694afce-54f0-4d60-b4cf-5cb29e2fa6da" />
   <Project Path="ESFE.GestionProductos.LN/ESFE.GestionProductos.LN.csproj" Id="84ba64db-fee8-438d-a43b-fcd010016e69" />
