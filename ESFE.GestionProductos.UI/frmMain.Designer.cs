@@ -22,24 +22,25 @@
 
         #region Código generado por el Diseñador de Windows Forms
 
-        /// <summary>
-        /// Método necesario para admitir el Diseñador. No se puede modificar
-        /// el contenido de este método con el editor de código.
-        /// </summary>
         private void InitializeComponent()
         {
             menuTabControl = new MaterialSkin.Controls.MaterialTabControl();
+            tabInicio = new TabPage();
+            pnlContenedorInicio = new Panel();          // NUEVO
             tabEmpleados = new TabPage();
             pnlContenedorEmpleados = new Panel();
             tabProductos = new TabPage();
             pnlContenedorProductos = new Panel();
+
             menuTabControl.SuspendLayout();
+            tabInicio.SuspendLayout();
             tabEmpleados.SuspendLayout();
             tabProductos.SuspendLayout();
             SuspendLayout();
             // 
             // menuTabControl
             // 
+            menuTabControl.Controls.Add(tabInicio);
             menuTabControl.Controls.Add(tabEmpleados);
             menuTabControl.Controls.Add(tabProductos);
             menuTabControl.Depth = 0;
@@ -52,6 +53,26 @@
             menuTabControl.Size = new Size(994, 833);
             menuTabControl.TabIndex = 0;
             // 
+            // tabInicio  <-- ahora contiene el panel contenedor
+            // 
+            tabInicio.BackColor = Color.White;
+            tabInicio.Controls.Add(pnlContenedorInicio);
+            tabInicio.Location = new Point(4, 24);
+            tabInicio.Name = "tabInicio";
+            tabInicio.Padding = new Padding(3);
+            tabInicio.Size = new Size(986, 805);
+            tabInicio.TabIndex = 0;
+            tabInicio.Text = "Inicio";
+            tabInicio.UseVisualStyleBackColor = false;
+            // 
+            // pnlContenedorInicio  <-- NUEVO
+            // 
+            pnlContenedorInicio.Dock = DockStyle.Fill;
+            pnlContenedorInicio.Location = new Point(3, 3);
+            pnlContenedorInicio.Name = "pnlContenedorInicio";
+            pnlContenedorInicio.Size = new Size(980, 799);
+            pnlContenedorInicio.TabIndex = 0;
+            // 
             // tabEmpleados
             // 
             tabEmpleados.Controls.Add(pnlContenedorEmpleados);
@@ -59,7 +80,7 @@
             tabEmpleados.Name = "tabEmpleados";
             tabEmpleados.Padding = new Padding(3);
             tabEmpleados.Size = new Size(986, 805);
-            tabEmpleados.TabIndex = 0;
+            tabEmpleados.TabIndex = 1;
             tabEmpleados.Text = "Empleados";
             tabEmpleados.UseVisualStyleBackColor = true;
             // 
@@ -78,7 +99,7 @@
             tabProductos.Name = "tabProductos";
             tabProductos.Padding = new Padding(3);
             tabProductos.Size = new Size(986, 805);
-            tabProductos.TabIndex = 1;
+            tabProductos.TabIndex = 2;
             tabProductos.Text = "Productos";
             tabProductos.UseVisualStyleBackColor = true;
             // 
@@ -95,11 +116,11 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1000, 900);
-            //WindowState = FormWindowState.Maximized; // Añade esta línea para iniciar maximizado
             Controls.Add(menuTabControl);
             Name = "frmMain";
             Text = "Sistema de Gestión";
             menuTabControl.ResumeLayout(false);
+            tabInicio.ResumeLayout(false);
             tabEmpleados.ResumeLayout(false);
             tabProductos.ResumeLayout(false);
             ResumeLayout(false);
@@ -108,6 +129,8 @@
         #endregion
 
         private MaterialSkin.Controls.MaterialTabControl menuTabControl;
+        private TabPage tabInicio;
+        private Panel pnlContenedorInicio;   // NUEVO
         private TabPage tabEmpleados;
         private TabPage tabProductos;
         private Panel pnlContenedorEmpleados;

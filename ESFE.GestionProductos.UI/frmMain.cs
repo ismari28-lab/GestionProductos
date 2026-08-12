@@ -10,6 +10,10 @@ namespace ESFE.GestionProductos.UI
     {
         private readonly MaterialSkinManager materialSkinManager;
 
+        // Banderas para no recrear los UserControls cada vez que se cambia de pestaña
+        private bool inicioCargado = false;
+        private bool empleadosCargado = false;
+
         public frmMain()
         {
             InitializeComponent();
@@ -24,7 +28,7 @@ namespace ESFE.GestionProductos.UI
                 TextShade.WHITE
             );
 
-            // 2. Conectar y ampliar la barra lateral (Drawer) a 280px para dar respiro
+            // 2. Conectar y ampliar la barra lateral (Drawer) a 280px
             DrawerIsOpen = true;
             DrawerShowIconsWhenHidden = true;
             DrawerTabControl = menuTabControl;
@@ -33,17 +37,48 @@ namespace ESFE.GestionProductos.UI
             // 3. Inicio maximizado
             this.WindowState = FormWindowState.Maximized;
 
-            // 4. Cargar la vista de empleados en su panel
-            CargarVistaEmpleados();
+            // 4. Escuchar cambios de pestaña
+            menuTabControl.Selected += MenuTabControl_Selected;
+
+            // 5. Cargar la vista de inicio (dashboard) al arrancar
+            CargarVistaInicio();
+        }
+
+        private void MenuTabControl_Selected(object sender, TabControlEventArgs e)
+        {
+            if (e.TabPage == tabInicio)
+            {
+                CargarVistaInicio();
+            }
+            else if (e.TabPage == tabEmpleados)
+            {
+                CargarVistaEmpleados();
+            }
+            // else if (e.TabPage == tabProductos) { CargarVistaProductos(); }
+        }
+
+        private void CargarVistaInicio()
+        {
+            if (inicioCargado) return;
+
+            pnlContenedorInicio.Controls.Clear();
+            var ucIni = new ucInicio { Dock = DockStyle.Fill };
+            pnlContenedorInicio.Controls.Add(ucIni);
+            ucIni.BringToFront();
+
+            inicioCargado = true;
         }
 
         private void CargarVistaEmpleados()
         {
+            if (empleadosCargado) return;
+
             pnlContenedorEmpleados.Controls.Clear();
-            var ucEmp = new ucEmpleado();
-            ucEmp.Dock = DockStyle.Fill;
+            var ucEmp = new ucEmpleado { Dock = DockStyle.Fill };
             pnlContenedorEmpleados.Controls.Add(ucEmp);
             ucEmp.BringToFront();
+
+            empleadosCargado = true;
         }
     }
 }
