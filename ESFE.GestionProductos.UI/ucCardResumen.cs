@@ -11,10 +11,11 @@ namespace ESFE.GestionProductos.UI
             InitializeComponent();
             this.DoubleBuffered = true;
             this.SetStyle(ControlStyles.ResizeRedraw, true);
+
         }
 
         public void ConfigurarTarjeta(string titulo, string valor, string tendencia, bool esPositivo,
-                              string icono = "$", Color? colorIcono = null)
+                                      string icono, Color colorIcono)
         {
             lblTitulo.Text = titulo;
             lblValor.Text = valor;
@@ -22,15 +23,19 @@ namespace ESFE.GestionProductos.UI
             lblTendencia.ForeColor = esPositivo ? Color.FromArgb(40, 167, 69) : Color.FromArgb(220, 53, 69);
 
             lblIcono.Text = icono;
-            var c = colorIcono ?? Color.FromArgb(40, 167, 69);
-            lblIcono.ForeColor = c;
+            lblIcono.ForeColor = colorIcono;
 
-            // Fondo pastel del mismo tono (mezcla el color con blanco al 85%)
-            pnlIcono.BackColor = Color.FromArgb(
-                (int)(c.R * 0.15 + 255 * 0.85),
-                (int)(c.G * 0.15 + 255 * 0.85),
-                (int)(c.B * 0.15 + 255 * 0.85)
-            );
+            // Fondo pastel del mismo tono del ícono
+            pnlIcono.BackColor = MezclarConBlanco(colorIcono, 0.85);
+        }
+
+        // Mezcla un color con blanco. porcentajeBlanco entre 0 (color puro) y 1 (blanco).
+        private Color MezclarConBlanco(Color c, double porcentajeBlanco)
+        {
+            int r = (int)(c.R * (1 - porcentajeBlanco) + 255 * porcentajeBlanco);
+            int g = (int)(c.G * (1 - porcentajeBlanco) + 255 * porcentajeBlanco);
+            int b = (int)(c.B * (1 - porcentajeBlanco) + 255 * porcentajeBlanco);
+            return Color.FromArgb(r, g, b);
         }
 
         // Borde gris tenue alrededor de la card

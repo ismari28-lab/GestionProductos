@@ -28,7 +28,7 @@
             // lblTitulo
             // 
             this.lblTitulo.AutoSize = true;
-            this.lblTitulo.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblTitulo.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.lblTitulo.ForeColor = System.Drawing.Color.FromArgb(120, 130, 145);
             this.lblTitulo.Location = new System.Drawing.Point(20, 20);
             this.lblTitulo.Name = "lblTitulo";
@@ -46,7 +46,7 @@
             // lblTendencia
             // 
             this.lblTendencia.AutoSize = true;
-            this.lblTendencia.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
+            this.lblTendencia.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.lblTendencia.ForeColor = System.Drawing.Color.FromArgb(40, 167, 69);
             this.lblTendencia.Location = new System.Drawing.Point(20, 110);
             this.lblTendencia.Name = "lblTendencia";
@@ -54,16 +54,17 @@
             // 
             // pnlIcono
             // 
-            this.pnlIcono.BackColor = System.Drawing.Color.FromArgb(232, 245, 233);
+            this.pnlIcono.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlIcono.BackColor = System.Drawing.Color.FromArgb(230, 245, 235);
             this.pnlIcono.Controls.Add(this.lblIcono);
             this.pnlIcono.Location = new System.Drawing.Point(210, 20);
             this.pnlIcono.Name = "pnlIcono";
-            this.pnlIcono.Size = new System.Drawing.Size(36, 36);
+            this.pnlIcono.Size = new System.Drawing.Size(38, 38);
             // 
             // lblIcono
             // 
             this.lblIcono.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblIcono.Font = new System.Drawing.Font("Segoe UI Symbol", 12F, System.Drawing.FontStyle.Bold);
+            this.lblIcono.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.lblIcono.ForeColor = System.Drawing.Color.FromArgb(40, 167, 69);
             this.lblIcono.Name = "lblIcono";
             this.lblIcono.Text = "$";
@@ -92,6 +93,5 @@
         private System.Windows.Forms.Label lblTendencia;
         private System.Windows.Forms.Panel pnlIcono;
         private System.Windows.Forms.Label lblIcono;
-
     }
 }

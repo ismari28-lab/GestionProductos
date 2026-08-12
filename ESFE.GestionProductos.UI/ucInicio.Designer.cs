@@ -66,35 +66,38 @@
             this.panelContenedorTarjetas.Location = new System.Drawing.Point(30, 110);
             this.panelContenedorTarjetas.Name = "panelContenedorTarjetas";
             this.panelContenedorTarjetas.Size = new System.Drawing.Size(1050, 165);   // antes 135
+
             // 
-            // pnlVentas  (contenedor blanco con borde para la tabla)
+            // pnlVentas
             // 
             this.pnlVentas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlVentas.BackColor = System.Drawing.Color.White;
-            this.pnlVentas.Controls.Add(this.dgvVentasRecientes);
-            this.pnlVentas.Controls.Add(this.lblTituloVentas);
-            this.pnlVentas.Controls.Add(this.pnlPaginacion);
-            this.pnlVentas.Location = new System.Drawing.Point(30, 300);   // antes 270
+            // Orden de Add: el primero se dockea al final (Fill llena lo que sobra)
+            this.pnlVentas.Controls.Add(this.dgvVentasRecientes);   // Fill
+            this.pnlVentas.Controls.Add(this.pnlPaginacion);        // Bottom
+            this.pnlVentas.Controls.Add(this.lblTituloVentas);      // Top
+            this.pnlVentas.Location = new System.Drawing.Point(30, 300);
             this.pnlVentas.Name = "pnlVentas";
-            this.pnlVentas.Padding = new System.Windows.Forms.Padding(20);
+            this.pnlVentas.Padding = new System.Windows.Forms.Padding(20, 15, 20, 15);
             this.pnlVentas.Size = new System.Drawing.Size(1050, 300);
             // 
             // lblTituloVentas
             // 
-            this.lblTituloVentas.AutoSize = true;
+            this.lblTituloVentas.AutoSize = false;
+            this.lblTituloVentas.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblTituloVentas.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.lblTituloVentas.ForeColor = System.Drawing.Color.FromArgb(30, 40, 50);
-            this.lblTituloVentas.Location = new System.Drawing.Point(20, 15);
+            this.lblTituloVentas.Height = 35;
+            this.lblTituloVentas.Name = "lblTituloVentas";
             this.lblTituloVentas.Text = "Ventas Recientes";
+            this.lblTituloVentas.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // dgvVentasRecientes
             // 
             this.dgvVentasRecientes.AllowUserToAddRows = false;
             this.dgvVentasRecientes.AllowUserToDeleteRows = false;
             this.dgvVentasRecientes.AllowUserToResizeRows = false;
-            this.dgvVentasRecientes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvVentasRecientes.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvVentasRecientes.BackgroundColor = System.Drawing.Color.White;
             this.dgvVentasRecientes.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -102,16 +105,15 @@
             this.dgvVentasRecientes.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             this.dgvVentasRecientes.ColumnHeadersHeight = 40;
             this.dgvVentasRecientes.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-        this.colName, this.colOrderDate, this.colPhone, this.colLocation, this.colRegistered, this.colActions});
+            this.colName, this.colOrderDate, this.colPhone, this.colLocation, this.colRegistered, this.colActions});
+            this.dgvVentasRecientes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvVentasRecientes.EnableHeadersVisualStyles = false;
             this.dgvVentasRecientes.GridColor = System.Drawing.Color.FromArgb(235, 238, 242);
-            this.dgvVentasRecientes.Location = new System.Drawing.Point(20, 50);
             this.dgvVentasRecientes.Name = "dgvVentasRecientes";
             this.dgvVentasRecientes.ReadOnly = true;
             this.dgvVentasRecientes.RowHeadersVisible = false;
             this.dgvVentasRecientes.RowTemplate.Height = 42;
             this.dgvVentasRecientes.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvVentasRecientes.Size = new System.Drawing.Size(1010, 190);
             // 
             // Columnas
             // 
@@ -124,17 +126,32 @@
             // 
             // pnlPaginacion
             // 
-            this.pnlPaginacion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlPaginacion.Controls.Add(this.lblPag1);
-            this.pnlPaginacion.Controls.Add(this.lblPag2);
-            this.pnlPaginacion.Controls.Add(this.lblPag3);
-            this.pnlPaginacion.Controls.Add(this.lblPag4);
-            this.pnlPaginacion.Controls.Add(this.lblPag5);
-            this.pnlPaginacion.Controls.Add(this.lblPuntos);
+            this.pnlPaginacion.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlPaginacion.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.pnlPaginacion.Height = 45;
+            this.pnlPaginacion.Padding = new System.Windows.Forms.Padding(0, 8, 5, 0);
+            // IMPORTANTE: como FlowDirection es RightToLeft, añadimos en orden INVERSO
             this.pnlPaginacion.Controls.Add(this.lblPag20);
-            this.pnlPaginacion.Location = new System.Drawing.Point(430, 255);
+            this.pnlPaginacion.Controls.Add(this.lblPuntos);
+            this.pnlPaginacion.Controls.Add(this.lblPag5);
+            this.pnlPaginacion.Controls.Add(this.lblPag4);
+            this.pnlPaginacion.Controls.Add(this.lblPag3);
+            this.pnlPaginacion.Controls.Add(this.lblPag2);
+            this.pnlPaginacion.Controls.Add(this.lblPag1);
             this.pnlPaginacion.Name = "pnlPaginacion";
-            this.pnlPaginacion.Size = new System.Drawing.Size(230, 35);
+
+            // Labels de paginación (estilo pill)
+            ConfigurarLabelPagDesigner(this.lblPag1, "1", false);
+            ConfigurarLabelPagDesigner(this.lblPag2, "2", true);
+            ConfigurarLabelPagDesigner(this.lblPag3, "3", false);
+            ConfigurarLabelPagDesigner(this.lblPag4, "4", false);
+            ConfigurarLabelPagDesigner(this.lblPag5, "5", false);
+            this.lblPuntos.AutoSize = true;
+            this.lblPuntos.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.lblPuntos.ForeColor = System.Drawing.Color.FromArgb(120, 130, 145);
+            this.lblPuntos.Padding = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.lblPuntos.Text = "...";
+            ConfigurarLabelPagDesigner(this.lblPag20, "20", false);
             // 
             // Labels de paginación (estilo pill)
             // 

@@ -11,6 +11,22 @@ namespace ESFE.GestionProductos.UI
             EstilizarGrid();
             CargarTarjetasResumen();
             CargarVentasRecientes();
+
+            this.Load += (s, e) =>
+            {
+                // Asegurar que la paginación está dentro del panel de ventas
+                if (pnlPaginacion.Parent != pnlVentas)
+                {
+                    pnlPaginacion.Parent = pnlVentas;
+                }
+
+                pnlPaginacion.Location = new Point(
+                    pnlVentas.Width - pnlPaginacion.Width - 20,
+                    pnlVentas.Height - pnlPaginacion.Height - 15
+                );
+
+                pnlPaginacion.BringToFront();
+            };
         }
 
         private void CargarTarjetasResumen()

@@ -2,15 +2,8 @@
 {
     partial class ucEmpleado
     {
-        /// <summary> 
-        /// Variable del diseñador necesaria.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// Limpiar los recursos que se estén usando.
-        /// </summary>
-        /// <param name="disposing">true si los recursos administrados se deben desechar; false en caso contrario.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,454 +15,287 @@
 
         #region Código generado por el Diseñador de componentes
 
-        /// <summary> 
-        /// Método necesario para admitir el Diseñador. No se puede modificar
-        /// el contenido de este método con el editor de código.
-        /// </summary>
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            materialTabControl1 = new MaterialSkin.Controls.MaterialTabControl();
-            tabPage1 = new TabPage();
-            tabPage2 = new TabPage();
-            materialCard2 = new MaterialSkin.Controls.MaterialCard();
-            btnEliminar = new MaterialSkin.Controls.MaterialButton();
-            btnEditar = new MaterialSkin.Controls.MaterialButton();
-            materialCard3 = new MaterialSkin.Controls.MaterialCard();
-            materialListView1 = new MaterialSkin.Controls.MaterialListView();
-            id = new ColumnHeader();
-            nombre = new ColumnHeader();
-            telefono = new ColumnHeader();
-            cargo = new ColumnHeader();
-            usuario = new ColumnHeader();
-            estado = new ColumnHeader();
-            materialLabel2 = new MaterialSkin.Controls.MaterialLabel();
-            materialCard1 = new MaterialSkin.Controls.MaterialCard();
-            panel1 = new Panel();
-            btnBuscar = new MaterialSkin.Controls.MaterialButton();
-            btnCrear = new MaterialSkin.Controls.MaterialButton();
-            SlctFiltro = new MaterialSkin.Controls.MaterialComboBox();
-            materialMaskedTextBox1 = new MaterialSkin.Controls.MaterialMaskedTextBox();
-            lblBuscador = new MaterialSkin.Controls.MaterialLabel();
-            lblEmpleadoTitulo = new MaterialSkin.Controls.MaterialLabel();
-            cmsOpciones = new ContextMenuStrip(components);
-            itemEditar = new ToolStripMenuItem();
-            itemEliminar = new ToolStripMenuItem();
-            materialTabControl1.SuspendLayout();
-            tabPage2.SuspendLayout();
-            materialCard2.SuspendLayout();
-            materialCard3.SuspendLayout();
-            materialCard1.SuspendLayout();
-            panel1.SuspendLayout();
-            cmsOpciones.SuspendLayout();
-            SuspendLayout();
+            this.lblTituloEmpleados = new System.Windows.Forms.Label();
+            this.lblSubtitulo = new System.Windows.Forms.Label();
+            this.pnlBusqueda = new System.Windows.Forms.Panel();
+            this.txtBuscar = new MaterialSkin.Controls.MaterialTextBox2();
+            this.cboFiltro = new MaterialSkin.Controls.MaterialComboBox();
+            this.btnCrear = new System.Windows.Forms.Button();
+            this.btnBuscar = new System.Windows.Forms.Button();
+            this.pnlLista = new System.Windows.Forms.Panel();
+            this.dgvEmpleados = new System.Windows.Forms.DataGridView();
+            this.colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colNombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTelefono = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCargo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colUsuario = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colEstado = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colActions = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lblTituloLista = new System.Windows.Forms.Label();
+            this.cmsOpciones = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.itemEditar = new System.Windows.Forms.ToolStripMenuItem();
+            this.itemEliminar = new System.Windows.Forms.ToolStripMenuItem();
+            this.pnlPaginacion = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblPag1 = new System.Windows.Forms.Label();
+            this.lblPag2 = new System.Windows.Forms.Label();
+            this.lblPag3 = new System.Windows.Forms.Label();
+            this.lblPuntos = new System.Windows.Forms.Label();
+            this.lblPagFinal = new System.Windows.Forms.Label();
+
+            this.pnlBusqueda.SuspendLayout();
+            this.pnlLista.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvEmpleados)).BeginInit();
+            this.cmsOpciones.SuspendLayout();
+            this.SuspendLayout();
             // 
-            // materialTabControl1
+            // lblTituloEmpleados
             // 
-            materialTabControl1.Controls.Add(tabPage1);
-            materialTabControl1.Controls.Add(tabPage2);
-            materialTabControl1.Depth = 0;
-            materialTabControl1.Dock = DockStyle.Fill;
-            materialTabControl1.Location = new Point(0, 0);
-            materialTabControl1.MouseState = MaterialSkin.MouseState.HOVER;
-            materialTabControl1.Multiline = true;
-            materialTabControl1.Name = "materialTabControl1";
-            materialTabControl1.SelectedIndex = 1;
-            materialTabControl1.Size = new Size(1000, 920);
-            materialTabControl1.TabIndex = 0;
+            this.lblTituloEmpleados.AutoSize = true;
+            this.lblTituloEmpleados.Font = new System.Drawing.Font("Segoe UI", 26F, System.Drawing.FontStyle.Bold);
+            this.lblTituloEmpleados.ForeColor = System.Drawing.Color.FromArgb(30, 40, 50);
+            this.lblTituloEmpleados.Location = new System.Drawing.Point(28, 20);
+            this.lblTituloEmpleados.Name = "lblTituloEmpleados";
+            this.lblTituloEmpleados.Text = "Empleados";
             // 
-            // tabPage1
+            // lblSubtitulo
             // 
-            tabPage1.Location = new Point(4, 34);
-            tabPage1.Name = "tabPage1";
-            tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(992, 882);
-            tabPage1.TabIndex = 0;
-            tabPage1.Text = "tabPage1";
-            tabPage1.UseVisualStyleBackColor = true;
+            this.lblSubtitulo.AutoSize = true;
+            this.lblSubtitulo.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.lblSubtitulo.ForeColor = System.Drawing.Color.FromArgb(120, 130, 145);
+            this.lblSubtitulo.Location = new System.Drawing.Point(30, 75);
+            this.lblSubtitulo.Name = "lblSubtitulo";
+            this.lblSubtitulo.Text = "Gestión del personal registrado";
             // 
-            // tabPage2
+            // pnlBusqueda
             // 
-            tabPage2.Controls.Add(materialCard2);
-            tabPage2.Controls.Add(materialCard1);
-            tabPage2.Location = new Point(4, 34);
-            tabPage2.Name = "tabPage2";
-            tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(992, 882);
-            tabPage2.TabIndex = 1;
-            tabPage2.Text = "tabPage2";
-            tabPage2.UseVisualStyleBackColor = true;
+            this.pnlBusqueda.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlBusqueda.BackColor = System.Drawing.Color.White;
+            this.pnlBusqueda.Controls.Add(this.txtBuscar);
+            this.pnlBusqueda.Controls.Add(this.cboFiltro);
+            this.pnlBusqueda.Controls.Add(this.btnBuscar);
+            this.pnlBusqueda.Location = new System.Drawing.Point(30, 130);
+            this.pnlBusqueda.Name = "pnlBusqueda";
+            this.pnlBusqueda.Size = new System.Drawing.Size(1050, 90);
             // 
-            // materialCard1
+            // txtBuscar
             // 
-            materialCard1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            materialCard1.BackColor = Color.FromArgb(255, 255, 255);
-            materialCard1.Controls.Add(panel1);
-            materialCard1.Controls.Add(lblEmpleadoTitulo);
-            materialCard1.Depth = 0;
-            materialCard1.ForeColor = Color.FromArgb(222, 0, 0, 0);
-            materialCard1.Location = new Point(20, 15);
-            materialCard1.Margin = new Padding(14);
-            materialCard1.MouseState = MaterialSkin.MouseState.HOVER;
-            materialCard1.Name = "materialCard1";
-            materialCard1.Padding = new Padding(14);
-            materialCard1.Size = new Size(952, 350);
-            materialCard1.TabIndex = 0;
+            this.txtBuscar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtBuscar.AnimateReadOnly = false;
+            this.txtBuscar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.txtBuscar.Depth = 0;
+            this.txtBuscar.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.txtBuscar.Hint = "Buscar por nombre o teléfono...";
+            this.txtBuscar.LeadingIcon = null;
+            this.txtBuscar.Location = new System.Drawing.Point(25, 22);
+            this.txtBuscar.MaxLength = 50;
+            this.txtBuscar.MouseState = MaterialSkin.MouseState.OUT;
+            this.txtBuscar.Name = "txtBuscar";
+            this.txtBuscar.Size = new System.Drawing.Size(570, 48);
+            this.txtBuscar.TabIndex = 0;
+            this.txtBuscar.Text = "";
+            this.txtBuscar.TrailingIcon = null;
+            this.txtBuscar.UseTallSize = true;
             // 
-            // lblEmpleadoTitulo
+            // cboFiltro
             // 
-            lblEmpleadoTitulo.AutoSize = true;
-            lblEmpleadoTitulo.Depth = 0;
-            lblEmpleadoTitulo.Font = new Font("Roboto", 34F, FontStyle.Bold, GraphicsUnit.Pixel);
-            lblEmpleadoTitulo.FontType = MaterialSkin.MaterialSkinManager.fontType.H4;
-            lblEmpleadoTitulo.Location = new Point(20, 20);
-            lblEmpleadoTitulo.MouseState = MaterialSkin.MouseState.HOVER;
-            lblEmpleadoTitulo.Name = "lblEmpleadoTitulo";
-            lblEmpleadoTitulo.Size = new Size(152, 41);
-            lblEmpleadoTitulo.TabIndex = 0;
-            lblEmpleadoTitulo.Text = "Empleado";
-            // 
-            // panel1
-            // 
-            panel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            panel1.Controls.Add(btnBuscar);
-            panel1.Controls.Add(btnCrear);
-            panel1.Controls.Add(SlctFiltro);
-            panel1.Controls.Add(materialMaskedTextBox1);
-            panel1.Controls.Add(lblBuscador);
-            panel1.Location = new Point(20, 75);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(912, 255);
-            panel1.TabIndex = 6;
-            // 
-            // lblBuscador (REUBICADO PARA DAR PASO A LA ALINEACIÓN)
-            // 
-            lblBuscador.AutoSize = true;
-            lblBuscador.Depth = 0;
-            lblBuscador.Font = new Font("Roboto Medium", 22F, FontStyle.Bold, GraphicsUnit.Pixel);
-            lblBuscador.FontType = MaterialSkin.MaterialSkinManager.fontType.H6;
-            lblBuscador.Location = new Point(0, 30); // Bajado a Y=30
-            lblBuscador.MouseState = MaterialSkin.MouseState.HOVER;
-            lblBuscador.Name = "lblBuscador";
-            lblBuscador.Size = new Size(160, 24);
-            lblBuscador.TabIndex = 1;
-            lblBuscador.Text = "Buscar Empleado:";
-            // 
-            // materialMaskedTextBox1 (ALINEADO EXACTO A Y=95 CON EL BOTON BUSCAR)
-            // 
-            materialMaskedTextBox1.AllowPromptAsInput = true;
-            materialMaskedTextBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            materialMaskedTextBox1.AnimateReadOnly = false;
-            materialMaskedTextBox1.AsciiOnly = false;
-            materialMaskedTextBox1.BackgroundImageLayout = ImageLayout.None;
-            materialMaskedTextBox1.BeepOnError = false;
-            materialMaskedTextBox1.CutCopyMaskFormat = MaskFormat.IncludeLiterals;
-            materialMaskedTextBox1.Depth = 0;
-            materialMaskedTextBox1.Font = new Font("Microsoft Sans Serif", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
-            materialMaskedTextBox1.HidePromptOnLeave = false;
-            materialMaskedTextBox1.HideSelection = true;
-            materialMaskedTextBox1.Hint = "Nombre o Teléfono";
-            materialMaskedTextBox1.InsertKeyMode = InsertKeyMode.Default;
-            materialMaskedTextBox1.LeadingIcon = null;
-            materialMaskedTextBox1.Location = new Point(0, 95); // Bajado exactamente a Y=95
-            materialMaskedTextBox1.Mask = "";
-            materialMaskedTextBox1.MaxLength = 32767;
-            materialMaskedTextBox1.MouseState = MaterialSkin.MouseState.OUT;
-            materialMaskedTextBox1.Name = "materialMaskedTextBox1";
-            materialMaskedTextBox1.PasswordChar = '\0';
-            materialMaskedTextBox1.PrefixSuffixText = null;
-            materialMaskedTextBox1.PromptChar = '_';
-            materialMaskedTextBox1.ReadOnly = false;
-            materialMaskedTextBox1.RejectInputOnFirstFailure = false;
-            materialMaskedTextBox1.ResetOnPrompt = true;
-            materialMaskedTextBox1.ResetOnSpace = true;
-            materialMaskedTextBox1.RightToLeft = RightToLeft.No;
-            materialMaskedTextBox1.SelectedText = "";
-            materialMaskedTextBox1.SelectionLength = 0;
-            materialMaskedTextBox1.SelectionStart = 0;
-            materialMaskedTextBox1.ShortcutsEnabled = true;
-            materialMaskedTextBox1.Size = new Size(460, 48);
-            materialMaskedTextBox1.SkipLiterals = true;
-            materialMaskedTextBox1.TabIndex = 2;
-            materialMaskedTextBox1.TabStop = false;
-            materialMaskedTextBox1.TextAlign = HorizontalAlignment.Left;
-            materialMaskedTextBox1.TextMaskFormat = MaskFormat.IncludeLiterals;
-            materialMaskedTextBox1.TrailingIcon = null;
-            materialMaskedTextBox1.UseSystemPasswordChar = false;
-            materialMaskedTextBox1.ValidatingType = null;
-            // 
-            // SlctFiltro (ALINEADO EXACTO A Y=95)
-            // 
-            SlctFiltro.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            SlctFiltro.AutoResize = false;
-            SlctFiltro.BackColor = Color.FromArgb(255, 255, 255);
-            SlctFiltro.Depth = 0;
-            SlctFiltro.DrawMode = DrawMode.OwnerDrawVariable;
-            SlctFiltro.DropDownHeight = 174;
-            SlctFiltro.DropDownStyle = ComboBoxStyle.DropDownList;
-            SlctFiltro.DropDownWidth = 121;
-            SlctFiltro.Font = new Font("Microsoft Sans Serif", 14F, FontStyle.Bold, GraphicsUnit.Pixel);
-            SlctFiltro.ForeColor = Color.FromArgb(222, 0, 0, 0);
-            SlctFiltro.FormattingEnabled = true;
-            SlctFiltro.Hint = "Filtros";
-            SlctFiltro.IntegralHeight = false;
-            SlctFiltro.ItemHeight = 43;
-            SlctFiltro.Location = new Point(485, 95); // Bajado a Y=95
-            SlctFiltro.MaxDropDownItems = 4;
-            SlctFiltro.MouseState = MaterialSkin.MouseState.OUT;
-            SlctFiltro.Name = "SlctFiltro";
-            SlctFiltro.Size = new Size(240, 49);
-            SlctFiltro.StartIndex = 0;
-            SlctFiltro.TabIndex = 3;
+            this.cboFiltro.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboFiltro.AutoResize = false;
+            this.cboFiltro.BackColor = System.Drawing.Color.FromArgb(255, 255, 255);
+            this.cboFiltro.Depth = 0;
+            this.cboFiltro.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cboFiltro.DropDownHeight = 174;
+            this.cboFiltro.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboFiltro.DropDownWidth = 200;
+            this.cboFiltro.Font = new System.Drawing.Font("Roboto", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.cboFiltro.ForeColor = System.Drawing.Color.FromArgb(222, 0, 0, 0);
+            this.cboFiltro.FormattingEnabled = true;
+            this.cboFiltro.Hint = "Filtro";
+            this.cboFiltro.IntegralHeight = false;
+            this.cboFiltro.ItemHeight = 43;
+            this.cboFiltro.Items.AddRange(new object[] { "Todos", "Activos", "Inactivos" });
+            this.cboFiltro.Location = new System.Drawing.Point(610, 22);
+            this.cboFiltro.MaxDropDownItems = 4;
+            this.cboFiltro.MouseState = MaterialSkin.MouseState.OUT;
+            this.cboFiltro.Name = "cboFiltro";
+            this.cboFiltro.Size = new System.Drawing.Size(200, 49);
+            this.cboFiltro.StartIndex = 0;
+            this.cboFiltro.TabIndex = 1;
             // 
             // btnCrear
             // 
-            btnCrear.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnCrear.AutoSize = false;
-            btnCrear.Cursor = Cursors.Hand;
-            btnCrear.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
-            btnCrear.Depth = 0;
-            btnCrear.HighEmphasis = true;
-            btnCrear.Icon = null;
-            btnCrear.Location = new Point(750, 15);
-            btnCrear.Margin = new Padding(4, 6, 4, 6);
-            btnCrear.MouseState = MaterialSkin.MouseState.HOVER;
-            btnCrear.Name = "btnCrear";
-            btnCrear.NoAccentTextColor = Color.Empty;
-            btnCrear.Size = new Size(150, 56);
-            btnCrear.TabIndex = 4;
-            btnCrear.Text = "CREAR +";
-            btnCrear.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
-            btnCrear.UseAccentColor = false;
-            btnCrear.UseVisualStyleBackColor = true;
+            this.btnCrear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCrear.BackColor = System.Drawing.Color.FromArgb(90, 70, 180);
+            this.btnCrear.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnCrear.FlatAppearance.BorderSize = 0;
+            this.btnCrear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCrear.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.btnCrear.ForeColor = System.Drawing.Color.White;
+            this.btnCrear.Location = new System.Drawing.Point(900, 70);   // alineado con "Gestión del personal registrado"
+            this.btnCrear.Name = "btnCrear";
+            this.btnCrear.Size = new System.Drawing.Size(165, 42);
+            this.btnCrear.Text = "+  Crear Empleado";
+            this.btnCrear.UseVisualStyleBackColor = false;
             // 
-            // btnBuscar (PUNTO DE REFERENCIA EN Y=95)
+            // btnBuscar
             // 
-            btnBuscar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnBuscar.AutoSize = false;
-            btnBuscar.Cursor = Cursors.Hand;
-            btnBuscar.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
-            btnBuscar.Depth = 0;
-            btnBuscar.HighEmphasis = true;
-            btnBuscar.Icon = null;
-            btnBuscar.Location = new Point(750, 95); // Posición Y=95
-            btnBuscar.Margin = new Padding(4, 6, 4, 6);
-            btnBuscar.MouseState = MaterialSkin.MouseState.HOVER;
-            btnBuscar.Name = "btnBuscar";
-            btnBuscar.NoAccentTextColor = Color.Empty;
-            btnBuscar.Size = new Size(150, 56);
-            btnBuscar.TabIndex = 5;
-            btnBuscar.Text = "BUSCAR";
-            btnBuscar.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
-            btnBuscar.UseAccentColor = false;
-            btnBuscar.UseVisualStyleBackColor = true;
+            this.btnBuscar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnBuscar.BackColor = System.Drawing.Color.FromArgb(52, 120, 246);
+            this.btnBuscar.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnBuscar.FlatAppearance.BorderSize = 0;
+            this.btnBuscar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnBuscar.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.btnBuscar.ForeColor = System.Drawing.Color.White;
+            this.btnBuscar.Location = new System.Drawing.Point(870, 27);
+            this.btnBuscar.Name = "btnBuscar";
+            this.btnBuscar.Size = new System.Drawing.Size(150, 42);
+            this.btnBuscar.Text = "Buscar";
+            this.btnBuscar.UseVisualStyleBackColor = false;
             // 
-            // materialCard2
+            // pnlLista
             // 
-            materialCard2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            materialCard2.BackColor = Color.FromArgb(255, 255, 255);
-            materialCard2.Controls.Add(btnEliminar);
-            materialCard2.Controls.Add(btnEditar);
-            materialCard2.Controls.Add(materialCard3);
-            materialCard2.Controls.Add(materialLabel2);
-            materialCard2.Depth = 0;
-            materialCard2.ForeColor = Color.FromArgb(222, 0, 0, 0);
-            materialCard2.Location = new Point(20, 415);
-            materialCard2.Margin = new Padding(14);
-            materialCard2.MouseState = MaterialSkin.MouseState.HOVER;
-            materialCard2.Name = "materialCard2";
-            materialCard2.Padding = new Padding(14);
-            materialCard2.Size = new Size(952, 450);
-            materialCard2.TabIndex = 1;
+            this.pnlLista.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlLista.BackColor = System.Drawing.Color.White;
+            this.pnlLista.Controls.Add(this.dgvEmpleados);
+            this.pnlLista.Controls.Add(this.pnlPaginacion);
+            this.pnlLista.Controls.Add(this.lblTituloLista);
+            this.pnlLista.Location = new System.Drawing.Point(30, 245);
+            this.pnlLista.Name = "pnlLista";
+            this.pnlLista.Padding = new System.Windows.Forms.Padding(20, 15, 20, 15);
+            this.pnlLista.Size = new System.Drawing.Size(1050, 480);
             // 
-            // materialLabel2
+            // lblTituloLista
             // 
-            materialLabel2.AutoSize = true;
-            materialLabel2.Depth = 0;
-            materialLabel2.Font = new Font("Roboto", 28F, FontStyle.Bold, GraphicsUnit.Pixel);
-            materialLabel2.FontType = MaterialSkin.MaterialSkinManager.fontType.H5;
-            materialLabel2.Location = new Point(20, 25);
-            materialLabel2.MouseState = MaterialSkin.MouseState.HOVER;
-            materialLabel2.Name = "materialLabel2";
-            materialLabel2.Size = new Size(295, 34);
-            materialLabel2.TabIndex = 0;
-            materialLabel2.Text = "Empleados Registrados:";
+            this.lblTituloLista.AutoSize = false;
+            this.lblTituloLista.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblTituloLista.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.lblTituloLista.ForeColor = System.Drawing.Color.FromArgb(30, 40, 50);
+            this.lblTituloLista.Height = 35;
+            this.lblTituloLista.Name = "lblTituloLista";
+            this.lblTituloLista.Text = "Empleados Registrados";
+            this.lblTituloLista.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // btnEditar
+            // dgvEmpleados
             // 
-            btnEditar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnEditar.AutoSize = false;
-            btnEditar.Cursor = Cursors.Hand;
-            btnEditar.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
-            btnEditar.Depth = 0;
-            btnEditar.HighEmphasis = true;
-            btnEditar.Icon = null;
-            btnEditar.Location = new Point(620, 20);
-            btnEditar.Margin = new Padding(4, 6, 20, 6);
-            btnEditar.MouseState = MaterialSkin.MouseState.HOVER;
-            btnEditar.Name = "btnEditar";
-            btnEditar.NoAccentTextColor = Color.Empty;
-            btnEditar.Size = new Size(130, 56);
-            btnEditar.TabIndex = 2;
-            btnEditar.Text = "EDITAR";
-            btnEditar.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
-            btnEditar.UseAccentColor = false;
-            btnEditar.UseVisualStyleBackColor = true;
+            this.dgvEmpleados.AllowUserToAddRows = false;
+            this.dgvEmpleados.AllowUserToDeleteRows = false;
+            this.dgvEmpleados.AllowUserToResizeRows = false;
+            this.dgvEmpleados.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvEmpleados.BackgroundColor = System.Drawing.Color.White;
+            this.dgvEmpleados.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvEmpleados.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            this.dgvEmpleados.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            this.dgvEmpleados.ColumnHeadersHeight = 40;
+            this.dgvEmpleados.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+                this.colId, this.colNombre, this.colTelefono, this.colCargo, this.colUsuario, this.colEstado, this.colActions});
+            this.dgvEmpleados.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvEmpleados.EnableHeadersVisualStyles = false;
+            this.dgvEmpleados.GridColor = System.Drawing.Color.FromArgb(235, 238, 242);
+            this.dgvEmpleados.Name = "dgvEmpleados";
+            this.dgvEmpleados.ReadOnly = true;
+            this.dgvEmpleados.RowHeadersVisible = false;
+            this.dgvEmpleados.RowTemplate.Height = 42;
+            this.dgvEmpleados.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+
             // 
-            // btnEliminar
+            // pnlPaginacion
             // 
-            btnEliminar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnEliminar.AutoSize = false;
-            btnEliminar.Cursor = Cursors.Hand;
-            btnEliminar.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
-            btnEliminar.Depth = 0;
-            btnEliminar.HighEmphasis = false;
-            btnEliminar.Icon = null;
-            btnEliminar.Location = new Point(770, 20);
-            btnEliminar.Margin = new Padding(4, 6, 4, 6);
-            btnEliminar.MouseState = MaterialSkin.MouseState.HOVER;
-            btnEliminar.Name = "btnEliminar";
-            btnEliminar.NoAccentTextColor = Color.Empty;
-            btnEliminar.Size = new Size(140, 56);
-            btnEliminar.TabIndex = 3;
-            btnEliminar.Text = "ELIMINAR";
-            btnEliminar.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Outlined;
-            btnEliminar.UseAccentColor = false;
-            btnEliminar.UseVisualStyleBackColor = true;
+            this.pnlPaginacion.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlPaginacion.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.pnlPaginacion.Height = 45;
+            this.pnlPaginacion.Padding = new System.Windows.Forms.Padding(0, 8, 5, 0);
+            this.pnlPaginacion.Controls.Add(this.lblPagFinal);
+            this.pnlPaginacion.Controls.Add(this.lblPuntos);
+            this.pnlPaginacion.Controls.Add(this.lblPag3);
+            this.pnlPaginacion.Controls.Add(this.lblPag2);
+            this.pnlPaginacion.Controls.Add(this.lblPag1);
+            this.pnlPaginacion.Name = "pnlPaginacion";
+
             // 
-            // materialCard3 (RESTRUCTURADO PARA OCUPAR TODO EL ESPACIO DE LA TABLA)
+            // Columnas
             // 
-            materialCard3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            materialCard3.BackColor = Color.FromArgb(255, 255, 255);
-            materialCard3.Controls.Add(materialListView1);
-            materialCard3.Depth = 0;
-            materialCard3.ForeColor = Color.FromArgb(222, 0, 0, 0);
-            materialCard3.Location = new Point(20, 95);
-            materialCard3.Margin = new Padding(14);
-            materialCard3.MouseState = MaterialSkin.MouseState.HOVER;
-            materialCard3.Name = "materialCard3";
-            materialCard3.Padding = new Padding(4); // Disminuido para que la lista use todo el borde
-            materialCard3.Size = new Size(912, 335);
-            materialCard3.TabIndex = 1;
-            // 
-            // materialListView1 (DOCK FILL PARA EXPANDIRSE AL 100% DE CARD3)
-            // 
-            materialListView1.AutoSizeTable = false;
-            materialListView1.BackColor = Color.FromArgb(255, 255, 255);
-            materialListView1.BorderStyle = BorderStyle.None;
-            materialListView1.Columns.AddRange(new ColumnHeader[] { id, nombre, telefono, cargo, usuario, estado });
-            materialListView1.Depth = 0;
-            materialListView1.Dock = DockStyle.Fill; // Ocupa el 100% del Card
-            materialListView1.Font = new Font("Roboto", 20F, FontStyle.Regular, GraphicsUnit.Point);
-            materialListView1.FullRowSelect = true;
-            materialListView1.Location = new Point(4, 4);
-            materialListView1.MinimumSize = new Size(200, 100);
-            materialListView1.MouseLocation = new Point(-1, -1);
-            materialListView1.MouseState = MaterialSkin.MouseState.OUT;
-            materialListView1.MultiSelect = false;
-            materialListView1.Name = "materialListView1";
-            materialListView1.OwnerDraw = true;
-            materialListView1.Size = new Size(904, 327);
-            materialListView1.TabIndex = 1;
-            materialListView1.UseCompatibleStateImageBehavior = false;
-            materialListView1.View = View.Details;
-            // 
-            // id
-            // 
-            id.Text = "ID";
-            id.Width = 100;
-            // 
-            // nombre
-            // 
-            nombre.Text = "Nombre";
-            nombre.Width = 320;
-            // 
-            // telefono
-            // 
-            telefono.Text = "Teléfono";
-            telefono.Width = 190;
-            // 
-            // cargo
-            // 
-            cargo.Text = "Cargo";
-            cargo.Width = 200;
-            // 
-            // usuario
-            // 
-            usuario.Text = "Usuario";
-            usuario.Width = 200;
-            // 
-            // estado
-            // 
-            estado.Text = "Estado";
-            estado.Width = 150;
+            this.colId.HeaderText = "ID"; this.colId.Name = "colId"; this.colId.ReadOnly = true; this.colId.FillWeight = 40;
+            this.colNombre.HeaderText = "Nombre"; this.colNombre.Name = "colNombre"; this.colNombre.ReadOnly = true; this.colNombre.FillWeight = 130;
+            this.colTelefono.HeaderText = "Teléfono"; this.colTelefono.Name = "colTelefono"; this.colTelefono.ReadOnly = true; this.colTelefono.FillWeight = 80;
+            this.colCargo.HeaderText = "Cargo"; this.colCargo.Name = "colCargo"; this.colCargo.ReadOnly = true; this.colCargo.FillWeight = 90;
+            this.colUsuario.HeaderText = "Usuario"; this.colUsuario.Name = "colUsuario"; this.colUsuario.ReadOnly = true; this.colUsuario.FillWeight = 90;
+            this.colEstado.HeaderText = "Estado"; this.colEstado.Name = "colEstado"; this.colEstado.ReadOnly = true; this.colEstado.FillWeight = 70;
+            this.colActions.HeaderText = "Actions"; this.colActions.Name = "colActions"; this.colActions.ReadOnly = true; this.colActions.FillWeight = 100;
             // 
             // cmsOpciones
             // 
-            cmsOpciones.ImageScalingSize = new Size(24, 24);
-            cmsOpciones.Items.AddRange(new ToolStripItem[] { itemEditar, itemEliminar });
-            cmsOpciones.Name = "cmsOpciones";
-            cmsOpciones.Size = new Size(147, 68);
+            this.cmsOpciones.ImageScalingSize = new System.Drawing.Size(24, 24);
+            this.cmsOpciones.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.itemEditar, this.itemEliminar });
+            this.cmsOpciones.Name = "cmsOpciones";
+            this.cmsOpciones.Size = new System.Drawing.Size(147, 68);
             // 
             // itemEditar
             // 
-            itemEditar.Name = "itemEditar";
-            itemEditar.Size = new Size(146, 30);
-            itemEditar.Text = "✏️ Editar";
+            this.itemEditar.Name = "itemEditar";
+            this.itemEditar.Size = new System.Drawing.Size(146, 30);
+            this.itemEditar.Text = "Editar";
             // 
             // itemEliminar
             // 
-            itemEliminar.Name = "itemEliminar";
-            itemEliminar.Size = new Size(146, 30);
-            itemEliminar.Text = "🗑️ Eliminar";
+            this.itemEliminar.Name = "itemEliminar";
+            this.itemEliminar.Size = new System.Drawing.Size(146, 30);
+            this.itemEliminar.Text = "Eliminar";
             // 
             // ucEmpleado
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
-            AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(materialTabControl1);
-            Name = "ucEmpleado";
-            Size = new Size(1000, 920);
-            materialTabControl1.ResumeLayout(false);
-            tabPage2.ResumeLayout(false);
-            materialCard2.ResumeLayout(false);
-            materialCard2.PerformLayout();
-            materialCard3.ResumeLayout(false);
-            materialCard1.ResumeLayout(false);
-            materialCard1.PerformLayout();
-            panel1.ResumeLayout(false);
-            panel1.PerformLayout();
-            cmsOpciones.ResumeLayout(false);
-            ResumeLayout(false);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(245, 247, 250);
+            this.Controls.Add(this.pnlLista);
+            this.Controls.Add(this.pnlBusqueda);
+            this.Controls.Add(this.btnCrear);
+            this.Controls.Add(this.lblSubtitulo);
+            this.Controls.Add(this.lblTituloEmpleados);
+            this.Name = "ucEmpleado";
+            this.Size = new System.Drawing.Size(1100, 760);
+            this.pnlBusqueda.ResumeLayout(false);
+            this.pnlBusqueda.PerformLayout();
+            this.pnlLista.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvEmpleados)).EndInit();
+            this.cmsOpciones.ResumeLayout(false);
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
 
         #endregion
 
-        private MaterialSkin.Controls.MaterialTabControl materialTabControl1;
-        private TabPage tabPage1;
-        private TabPage tabPage2;
-        private MaterialSkin.Controls.MaterialCard materialCard1;
-        private MaterialSkin.Controls.MaterialLabel lblEmpleadoTitulo;
-        private MaterialSkin.Controls.MaterialCard materialCard2;
-        private MaterialSkin.Controls.MaterialListView materialListView1;
-        private MaterialSkin.Controls.MaterialLabel materialLabel2;
-        private ColumnHeader id;
-        private ColumnHeader nombre;
-        private ColumnHeader telefono;
-        private ColumnHeader cargo;
-        private ColumnHeader usuario;
-        private ColumnHeader estado;
-        private MaterialSkin.Controls.MaterialCard materialCard3;
-        private MaterialSkin.Controls.MaterialLabel lblBuscador;
-        private MaterialSkin.Controls.MaterialComboBox SlctFiltro;
-        private MaterialSkin.Controls.MaterialButton btnCrear;
-        private Panel panel1;
-        private MaterialSkin.Controls.MaterialButton btnBuscar;
-        private MaterialSkin.Controls.MaterialMaskedTextBox materialMaskedTextBox1;
-        private MaterialSkin.Controls.MaterialButton btnEliminar;
-        private MaterialSkin.Controls.MaterialButton btnEditar;
-        private ContextMenuStrip cmsOpciones;
-        private ToolStripMenuItem itemEditar;
-        private ToolStripMenuItem itemEliminar;
+        private System.Windows.Forms.Label lblTituloEmpleados;
+        private System.Windows.Forms.Label lblSubtitulo;
+        private System.Windows.Forms.Panel pnlBusqueda;
+        private MaterialSkin.Controls.MaterialTextBox2 txtBuscar;
+        private MaterialSkin.Controls.MaterialComboBox cboFiltro;
+        private System.Windows.Forms.Button btnCrear;
+        private System.Windows.Forms.Button btnBuscar;
+        private System.Windows.Forms.Panel pnlLista;
+        private System.Windows.Forms.Label lblTituloLista;
+        private System.Windows.Forms.DataGridView dgvEmpleados;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colNombre;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colTelefono;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCargo;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colUsuario;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colEstado;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colActions;
+        private System.Windows.Forms.ContextMenuStrip cmsOpciones;
+        private System.Windows.Forms.ToolStripMenuItem itemEditar;
+        private System.Windows.Forms.ToolStripMenuItem itemEliminar;
+
+        private System.Windows.Forms.FlowLayoutPanel pnlPaginacion;
+        private System.Windows.Forms.Label lblPag1;
+        private System.Windows.Forms.Label lblPag2;
+        private System.Windows.Forms.Label lblPag3;
+        private System.Windows.Forms.Label lblPuntos;
+        private System.Windows.Forms.Label lblPagFinal;
+
     }
 }
