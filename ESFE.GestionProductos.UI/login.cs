@@ -22,5 +22,10 @@ namespace ESFE.GestionProductos.UI
                 TextShade.WHITE
             );
         }
+
+        private void login_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
