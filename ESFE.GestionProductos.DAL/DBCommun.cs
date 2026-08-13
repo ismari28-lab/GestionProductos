@@ -1,24 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Text;
-using Microsoft.Data.SqlClient; 
+using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 
-namespace ESFE.SysDesarrollo.DL
+
+
+namespace ESFE.SysDesarrollo.DAL
 {
     public class DBComun
     {
-        // Agregamos 'TrustServerCertificate=True' para evitar errores de certificado en LocalDB
-        public const string stringCnn = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=BDDesarrollo;Integrated Security=True;TrustServerCertificate=True;";
+        public const string _stringCnn = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=GestionProductoBD;Integrated Security=True";
 
         /// <summary>
-        /// Crea y retorna una conexión abierta a la base de datos SQL Server.
+        /// Metodo para obtener base de datos.
         /// </summary>
+        /// <returns>Devuelve la  conexion</returns>
         public static IDbConnection ObtenerConexion()
         {
-            SqlConnection cnn = new SqlConnection(stringCnn);
-            cnn.Open();
-            return cnn;
+            return new SqlConnection(_stringCnn);
+        }
+
+        public static IDataReader ObtenerCommando(IDbConnection pConexion, string pSql)
+        {
+            SqlCommand _command = new SqlCommand(pSql, pConexion as SqlConnection);
+            return _command.ExecuteReader(CommandBehavior.CloseConnection);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace ESFE.GestionProductos.UI
         {
             ApplicationConfiguration.Initialize();
             // Asegúrate de que apunte a tu formulario de login
-            Application.Run(new frmMain()); 
+            Application.Run(new login()); 
         }
     }
 }
