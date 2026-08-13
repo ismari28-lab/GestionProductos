@@ -23,9 +23,16 @@ namespace ESFE.GestionProductos.UI
             );
         }
 
-        private void login_Load(object sender, EventArgs e)
+        private void login_Resize(object? sender, EventArgs e)
         {
+            cardLogin.Left = (ClientSize.Width - cardLogin.Width) / 2;
+            cardLogin.Top = (ClientSize.Height - cardLogin.Height) / 2;
+        }
 
+        private void login_Load(object? sender, EventArgs e)
+        {
+            cardLogin.Left = (ClientSize.Width - cardLogin.Width) / 2;
+            cardLogin.Top = (ClientSize.Height - cardLogin.Height) / 2;
         }
     }
 }
