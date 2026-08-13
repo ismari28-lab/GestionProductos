@@ -4,25 +4,15 @@ using System.Windows.Forms;
 using MaterialSkin;
 using MaterialSkin.Controls;
 
+#nullable enable
+
 namespace ESFE.GestionProductos.UI
 {
-    public partial class FrmUsuario : MaterialForm
+    public partial class ucUsuario : UserControl
     {
-        private readonly MaterialSkinManager materialSkinManager;
-
-        public FrmUsuario()
+        public ucUsuario()
         {
             InitializeComponent();
-
-            materialSkinManager = MaterialSkinManager.Instance;
-            materialSkinManager.AddFormToManage(this);
-            materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
-            materialSkinManager.ColorScheme = new ColorScheme(
-                Primary.BlueGrey800, Primary.BlueGrey900,
-                Primary.BlueGrey500, Accent.LightBlue200,
-                TextShade.WHITE
-            );
-
             CargarFiltros();
         }
 
