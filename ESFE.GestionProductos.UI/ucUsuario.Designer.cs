@@ -1,16 +1,8 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
-using MaterialSkin;
-using MaterialSkin.Controls;
-
-#nullable enable
-
-namespace ESFE.GestionProductos.UI
+﻿namespace ESFE.GestionProductos.UI
 {
     partial class ucUsuario
     {
-        private System.ComponentModel.IContainer? components = null;
+        private System.ComponentModel.IContainer components = null;
 
         protected override void Dispose(bool disposing)
         {
@@ -18,261 +10,284 @@ namespace ESFE.GestionProductos.UI
             {
                 components.Dispose();
             }
-
             base.Dispose(disposing);
         }
 
-        #region Código generado por el Diseñador de Windows Forms
+        #region Código generado por el Diseñador de componentes
 
         private void InitializeComponent()
         {
-            this.materialTabSelector1 = new MaterialSkin.Controls.MaterialTabSelector();
-            this.materialTabControl1 = new MaterialSkin.Controls.MaterialTabControl();
-
-            this.tabPageLista = new System.Windows.Forms.TabPage();
-
-            this.lblTitulo = new MaterialSkin.Controls.MaterialLabel();
-            this.lblBusqueda = new MaterialSkin.Controls.MaterialLabel();
+            components = new System.ComponentModel.Container();
+            this.lblTituloUsuarios = new System.Windows.Forms.Label();
+            this.lblSubtitulo = new System.Windows.Forms.Label();
+            this.btnCrear = new System.Windows.Forms.Button();
+            this.pnlBusqueda = new System.Windows.Forms.Panel();
             this.txtBuscar = new MaterialSkin.Controls.MaterialTextBox2();
-            this.cmbFiltro = new MaterialSkin.Controls.MaterialComboBox();
-            this.btnBuscar = new MaterialSkin.Controls.MaterialButton();
-            this.btnCrear = new MaterialSkin.Controls.MaterialButton();
-            this.lblRegistrados = new MaterialSkin.Controls.MaterialLabel();
-
-            this.dgvUsuarios = new MaterialSkin.Controls.MaterialListView();
-
-            this.colId = new System.Windows.Forms.ColumnHeader();
-            this.colNombre = new System.Windows.Forms.ColumnHeader();
-            this.colCorreo = new System.Windows.Forms.ColumnHeader();
-            this.colRol = new System.Windows.Forms.ColumnHeader();
-            this.colEstado = new System.Windows.Forms.ColumnHeader();
-
-            this.tabPageDetalle = new System.Windows.Forms.TabPage();
-
-            this.txtNombre = new MaterialSkin.Controls.MaterialTextBox2();
-            this.txtCorreo = new MaterialSkin.Controls.MaterialTextBox2();
-            this.btnGuardar = new MaterialSkin.Controls.MaterialButton();
-
-            // SUSPEND LAYOUT
-            this.materialTabControl1.SuspendLayout();
-            this.tabPageLista.SuspendLayout();
-            this.tabPageDetalle.SuspendLayout();
+            this.cboFiltro = new MaterialSkin.Controls.MaterialComboBox();
+            this.btnBuscar = new System.Windows.Forms.Button();
+            this.pnlLista = new System.Windows.Forms.Panel();
+            this.dgvUsuarios = new System.Windows.Forms.DataGridView();
+            this.colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colNombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCorreo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colRol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colEstado = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colActions = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lblTituloLista = new System.Windows.Forms.Label();
+            this.pnlPaginacion = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblPag1 = new System.Windows.Forms.Label();
+            this.lblPag2 = new System.Windows.Forms.Label();
+            this.lblPag3 = new System.Windows.Forms.Label();
+            this.lblPuntos = new System.Windows.Forms.Label();
+            this.lblPagFinal = new System.Windows.Forms.Label();
+            this.cmsOpciones = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.itemEditar = new System.Windows.Forms.ToolStripMenuItem();
+            this.itemEliminar = new System.Windows.Forms.ToolStripMenuItem();
+            this.pnlBusqueda.SuspendLayout();
+            this.pnlLista.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvUsuarios)).BeginInit();
+            this.cmsOpciones.SuspendLayout();
             this.SuspendLayout();
-
-            // TAB SELECTOR
-            this.materialTabSelector1.BaseTabControl = this.materialTabControl1;
-            this.materialTabSelector1.Depth = 0;
-            this.materialTabSelector1.Font = new System.Drawing.Font("Roboto", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            this.materialTabSelector1.Location = new System.Drawing.Point(0, 64);
-            this.materialTabSelector1.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialTabSelector1.Name = "materialTabSelector1";
-            this.materialTabSelector1.Size = new System.Drawing.Size(800, 48);
-
-            // TAB CONTROL
-            this.materialTabControl1.Controls.Add(this.tabPageLista);
-            this.materialTabControl1.Controls.Add(this.tabPageDetalle);
-            this.materialTabControl1.Depth = 0;
-            this.materialTabControl1.Location = new System.Drawing.Point(10, 118);
-            this.materialTabControl1.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialTabControl1.Name = "materialTabControl1";
-            this.materialTabControl1.SelectedIndex = 0;
-            this.materialTabControl1.Size = new System.Drawing.Size(780, 500);
-
-            // TAB PAGE LISTA
-            this.tabPageLista.Controls.Add(this.lblTitulo);
-            this.tabPageLista.Controls.Add(this.lblBusqueda);
-            this.tabPageLista.Controls.Add(this.txtBuscar);
-            this.tabPageLista.Controls.Add(this.cmbFiltro);
-            this.tabPageLista.Controls.Add(this.btnBuscar);
-            this.tabPageLista.Controls.Add(this.btnCrear);
-            this.tabPageLista.Controls.Add(this.lblRegistrados);
-            this.tabPageLista.Controls.Add(this.dgvUsuarios);
-            this.tabPageLista.Location = new System.Drawing.Point(4, 22);
-            this.tabPageLista.Name = "tabPageLista";
-            this.tabPageLista.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageLista.Size = new System.Drawing.Size(772, 474);
-            this.tabPageLista.Text = "Consulta de Usuarios";
-
-            // LABEL TITULO
-            this.lblTitulo.AutoSize = true;
-            this.lblTitulo.Depth = 0;
-            this.lblTitulo.FontType = MaterialSkin.MaterialSkinManager.fontType.H5;
-            this.lblTitulo.Location = new System.Drawing.Point(15, 10);
-            this.lblTitulo.Name = "lblTitulo";
-            this.lblTitulo.Size = new System.Drawing.Size(95, 29);
-            this.lblTitulo.Text = "Usuarios";
-
-            // LABEL BUSQUEDA
-            this.lblBusqueda.AutoSize = true;
-            this.lblBusqueda.Depth = 0;
-            this.lblBusqueda.FontType = MaterialSkin.MaterialSkinManager.fontType.Subtitle1;
-            this.lblBusqueda.Location = new System.Drawing.Point(20, 50);
-            this.lblBusqueda.Name = "lblBusqueda";
-            this.lblBusqueda.Size = new System.Drawing.Size(130, 19);
-            this.lblBusqueda.Text = "Búsqueda Usuario";
-
-            // TEXTBOX BUSCAR
-            this.txtBuscar.AnimateReadOnly = false;
-            this.txtBuscar.Depth = 0;
-            this.txtBuscar.Hint = "Nombre de usuario...";
-            this.txtBuscar.Location = new System.Drawing.Point(20, 75);
-            this.txtBuscar.MaxLength = 32767;
-            this.txtBuscar.Name = "txtBuscar";
-            this.txtBuscar.PasswordChar = '\0';
-            this.txtBuscar.Size = new System.Drawing.Size(260, 48);
-
-            // COMBOBOX FILTRO
-            this.cmbFiltro.AutoResize = false;
-            this.cmbFiltro.Depth = 0;
-            this.cmbFiltro.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbFiltro.Hint = "FILTRO";
-            this.cmbFiltro.Location = new System.Drawing.Point(300, 74);
-            this.cmbFiltro.Name = "cmbFiltro";
-            this.cmbFiltro.Size = new System.Drawing.Size(200, 49);
-
-            // BOTON BUSCAR
-            this.btnBuscar.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnBuscar.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
-            this.btnBuscar.Depth = 0;
-            this.btnBuscar.HighEmphasis = true;
-            this.btnBuscar.Location = new System.Drawing.Point(650, 55);
-            this.btnBuscar.Name = "btnBuscar";
-            this.btnBuscar.Size = new System.Drawing.Size(88, 36);
-            this.btnBuscar.Text = "Buscar";
-            this.btnBuscar.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
-            this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
-
-            // BOTON CREAR
-            this.btnCrear.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnCrear.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
-            this.btnCrear.Depth = 0;
-            this.btnCrear.HighEmphasis = true;
-            this.btnCrear.Location = new System.Drawing.Point(650, 100);
+            // 
+            // lblTituloUsuarios
+            // 
+            this.lblTituloUsuarios.AutoSize = true;
+            this.lblTituloUsuarios.Font = new System.Drawing.Font("Segoe UI", 26F, System.Drawing.FontStyle.Bold);
+            this.lblTituloUsuarios.ForeColor = System.Drawing.Color.FromArgb(30, 40, 50);
+            this.lblTituloUsuarios.Location = new System.Drawing.Point(28, 20);
+            this.lblTituloUsuarios.Name = "lblTituloUsuarios";
+            this.lblTituloUsuarios.Text = "Usuarios";
+            // 
+            // lblSubtitulo
+            // 
+            this.lblSubtitulo.AutoSize = true;
+            this.lblSubtitulo.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.lblSubtitulo.ForeColor = System.Drawing.Color.FromArgb(120, 130, 145);
+            this.lblSubtitulo.Location = new System.Drawing.Point(30, 75);
+            this.lblSubtitulo.Name = "lblSubtitulo";
+            this.lblSubtitulo.Text = "Gestión de cuentas del sistema";
+            // 
+            // btnCrear
+            // 
+            this.btnCrear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCrear.BackColor = System.Drawing.Color.FromArgb(90, 70, 180);
+            this.btnCrear.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnCrear.FlatAppearance.BorderSize = 0;
+            this.btnCrear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCrear.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.btnCrear.ForeColor = System.Drawing.Color.White;
+            this.btnCrear.Location = new System.Drawing.Point(855, 70);
             this.btnCrear.Name = "btnCrear";
-            this.btnCrear.Size = new System.Drawing.Size(88, 36);
-            this.btnCrear.Text = "+";
-            this.btnCrear.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
-            this.btnCrear.Click += new System.EventHandler(this.btnCrear_Click);
-
-            // LABEL REGISTRADOS
-            this.lblRegistrados.AutoSize = true;
-            this.lblRegistrados.Depth = 0;
-            this.lblRegistrados.FontType = MaterialSkin.MaterialSkinManager.fontType.Subtitle1;
-            this.lblRegistrados.Location = new System.Drawing.Point(20, 145);
-            this.lblRegistrados.Name = "lblRegistrados";
-            this.lblRegistrados.Size = new System.Drawing.Size(155, 19);
-            this.lblRegistrados.Text = "Usuarios Registrados:";
-
-            // LISTA DE USUARIOS
-            this.dgvUsuarios.AutoSizeTable = false;
+            this.btnCrear.Size = new System.Drawing.Size(165, 42);
+            this.btnCrear.Text = "+  Crear Usuario";
+            this.btnCrear.UseVisualStyleBackColor = false;
+            // 
+            // pnlBusqueda
+            // 
+            this.pnlBusqueda.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlBusqueda.BackColor = System.Drawing.Color.White;
+            this.pnlBusqueda.Controls.Add(this.txtBuscar);
+            this.pnlBusqueda.Controls.Add(this.cboFiltro);
+            this.pnlBusqueda.Controls.Add(this.btnBuscar);
+            this.pnlBusqueda.Location = new System.Drawing.Point(30, 130);
+            this.pnlBusqueda.Name = "pnlBusqueda";
+            this.pnlBusqueda.Size = new System.Drawing.Size(1050, 100);
+            // 
+            // txtBuscar
+            // 
+            this.txtBuscar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtBuscar.AnimateReadOnly = false;
+            this.txtBuscar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.txtBuscar.Depth = 0;
+            this.txtBuscar.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.txtBuscar.Hint = "Buscar por nombre o correo...";
+            this.txtBuscar.LeadingIcon = null;
+            this.txtBuscar.Location = new System.Drawing.Point(25, 73);
+            this.txtBuscar.MaxLength = 50;
+            this.txtBuscar.MouseState = MaterialSkin.MouseState.OUT;
+            this.txtBuscar.Name = "txtBuscar";
+            this.txtBuscar.Size = new System.Drawing.Size(570, 48);
+            this.txtBuscar.TabIndex = 0;
+            this.txtBuscar.Text = "";
+            this.txtBuscar.TrailingIcon = null;
+            this.txtBuscar.UseTallSize = true;
+            // 
+            // cboFiltro
+            // 
+            this.cboFiltro.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboFiltro.AutoResize = false;
+            this.cboFiltro.BackColor = System.Drawing.Color.FromArgb(255, 255, 255);
+            this.cboFiltro.Depth = 0;
+            this.cboFiltro.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.cboFiltro.DropDownHeight = 174;
+            this.cboFiltro.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboFiltro.DropDownWidth = 200;
+            this.cboFiltro.Font = new System.Drawing.Font("Roboto", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            this.cboFiltro.ForeColor = System.Drawing.Color.FromArgb(222, 0, 0, 0);
+            this.cboFiltro.FormattingEnabled = true;
+            this.cboFiltro.Hint = "Filtro";
+            this.cboFiltro.IntegralHeight = false;
+            this.cboFiltro.ItemHeight = 43;
+            this.cboFiltro.Items.AddRange(new object[] { "Todos", "Activos", "Inactivos" });
+            this.cboFiltro.Location = new System.Drawing.Point(610, 73);
+            this.cboFiltro.MaxDropDownItems = 4;
+            this.cboFiltro.MouseState = MaterialSkin.MouseState.OUT;
+            this.cboFiltro.Name = "cboFiltro";
+            this.cboFiltro.Size = new System.Drawing.Size(200, 49);
+            this.cboFiltro.StartIndex = 0;
+            this.cboFiltro.TabIndex = 1;
+            // 
+            // btnBuscar
+            // 
+            this.btnBuscar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnBuscar.BackColor = System.Drawing.Color.FromArgb(52, 120, 246);
+            this.btnBuscar.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnBuscar.FlatAppearance.BorderSize = 0;
+            this.btnBuscar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnBuscar.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+            this.btnBuscar.ForeColor = System.Drawing.Color.White;
+            this.btnBuscar.Location = new System.Drawing.Point(870, 78);
+            this.btnBuscar.Name = "btnBuscar";
+            this.btnBuscar.Size = new System.Drawing.Size(150, 42);
+            this.btnBuscar.Text = "Buscar";
+            this.btnBuscar.UseVisualStyleBackColor = false;
+            // 
+            // pnlLista
+            // 
+            this.pnlLista.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlLista.BackColor = System.Drawing.Color.White;
+            this.pnlLista.Controls.Add(this.dgvUsuarios);
+            this.pnlLista.Controls.Add(this.pnlPaginacion);
+            this.pnlLista.Controls.Add(this.lblTituloLista);
+            this.pnlLista.Location = new System.Drawing.Point(30, 245);
+            this.pnlLista.Name = "pnlLista";
+            this.pnlLista.Padding = new System.Windows.Forms.Padding(20, 15, 20, 15);
+            this.pnlLista.Size = new System.Drawing.Size(1050, 480);
+            // 
+            // lblTituloLista
+            // 
+            this.lblTituloLista.AutoSize = false;
+            this.lblTituloLista.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblTituloLista.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.lblTituloLista.ForeColor = System.Drawing.Color.FromArgb(30, 40, 50);
+            this.lblTituloLista.Height = 35;
+            this.lblTituloLista.Name = "lblTituloLista";
+            this.lblTituloLista.Text = "Usuarios Registrados";
+            this.lblTituloLista.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // dgvUsuarios
+            // 
+            this.dgvUsuarios.AllowUserToAddRows = false;
+            this.dgvUsuarios.AllowUserToDeleteRows = false;
+            this.dgvUsuarios.AllowUserToResizeRows = false;
+            this.dgvUsuarios.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvUsuarios.BackgroundColor = System.Drawing.Color.White;
             this.dgvUsuarios.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dgvUsuarios.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-                this.colId,
-                this.colNombre,
-                this.colCorreo,
-                this.colRol,
-                this.colEstado
-            });
-            this.dgvUsuarios.Depth = 0;
-            this.dgvUsuarios.FullRowSelect = true;
-            this.dgvUsuarios.Location = new System.Drawing.Point(20, 175);
+            this.dgvUsuarios.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            this.dgvUsuarios.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
+            this.dgvUsuarios.ColumnHeadersHeight = 40;
+            this.dgvUsuarios.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+                this.colId, this.colNombre, this.colCorreo, this.colRol, this.colEstado, this.colActions});
+            this.dgvUsuarios.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvUsuarios.EnableHeadersVisualStyles = false;
+            this.dgvUsuarios.GridColor = System.Drawing.Color.FromArgb(235, 238, 242);
             this.dgvUsuarios.Name = "dgvUsuarios";
-            this.dgvUsuarios.OwnerDraw = true;
-            this.dgvUsuarios.Size = new System.Drawing.Size(720, 270);
-            this.dgvUsuarios.UseCompatibleStateImageBehavior = false;
-            this.dgvUsuarios.View = System.Windows.Forms.View.Details;
-
-            // COLUMNAS
-            this.colId.Text = "ID";
-            this.colId.Width = 70;
-            this.colNombre.Text = "Nombre";
-            this.colNombre.Width = 180;
-            this.colCorreo.Text = "Correo";
-            this.colCorreo.Width = 200;
-            this.colRol.Text = "Rol";
-            this.colRol.Width = 140;
-            this.colEstado.Text = "Estado";
-            this.colEstado.Width = 110;
-
-            // TAB PAGE DETALLE
-            this.tabPageDetalle.Controls.Add(this.btnGuardar);
-            this.tabPageDetalle.Controls.Add(this.txtCorreo);
-            this.tabPageDetalle.Controls.Add(this.txtNombre);
-            this.tabPageDetalle.Location = new System.Drawing.Point(4, 22);
-            this.tabPageDetalle.Name = "tabPageDetalle";
-            this.tabPageDetalle.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageDetalle.Size = new System.Drawing.Size(772, 474);
-            this.tabPageDetalle.Text = "Registro / Edición";
-
-            // TEXTBOX NOMBRE
-            this.txtNombre.AnimateReadOnly = false;
-            this.txtNombre.Depth = 0;
-            this.txtNombre.Hint = "Nombre del Usuario";
-            this.txtNombre.Location = new System.Drawing.Point(30, 40);
-            this.txtNombre.MaxLength = 32767;
-            this.txtNombre.Name = "txtNombre";
-            this.txtNombre.PasswordChar = '\0';
-            this.txtNombre.Size = new System.Drawing.Size(400, 48);
-
-            // TEXTBOX CORREO
-            this.txtCorreo.AnimateReadOnly = false;
-            this.txtCorreo.Depth = 0;
-            this.txtCorreo.Hint = "Correo Electrónico";
-            this.txtCorreo.Location = new System.Drawing.Point(30, 110);
-            this.txtCorreo.MaxLength = 32767;
-            this.txtCorreo.Name = "txtCorreo";
-            this.txtCorreo.PasswordChar = '\0';
-            this.txtCorreo.Size = new System.Drawing.Size(400, 48);
-
-            // BOTON GUARDAR
-            this.btnGuardar.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnGuardar.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
-            this.btnGuardar.Depth = 0;
-            this.btnGuardar.HighEmphasis = true;
-            this.btnGuardar.Location = new System.Drawing.Point(30, 180);
-            this.btnGuardar.Name = "btnGuardar";
-            this.btnGuardar.Size = new System.Drawing.Size(88, 36);
-            this.btnGuardar.Text = "Guardar";
-            this.btnGuardar.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
-            this.btnGuardar.Click += new System.EventHandler(this.btnGuardar_Click);
-
-            // USER CONTROL
-            this.Size = new System.Drawing.Size(800, 630);
-            this.Controls.Add(this.materialTabControl1);
-            this.Controls.Add(this.materialTabSelector1);
+            this.dgvUsuarios.ReadOnly = true;
+            this.dgvUsuarios.RowHeadersVisible = false;
+            this.dgvUsuarios.RowTemplate.Height = 42;
+            this.dgvUsuarios.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            // 
+            // Columnas
+            // 
+            this.colId.HeaderText = "ID"; this.colId.Name = "colId"; this.colId.ReadOnly = true; this.colId.FillWeight = 40;
+            this.colNombre.HeaderText = "Nombre"; this.colNombre.Name = "colNombre"; this.colNombre.ReadOnly = true; this.colNombre.FillWeight = 130;
+            this.colCorreo.HeaderText = "Correo"; this.colCorreo.Name = "colCorreo"; this.colCorreo.ReadOnly = true; this.colCorreo.FillWeight = 160;
+            this.colRol.HeaderText = "Rol"; this.colRol.Name = "colRol"; this.colRol.ReadOnly = true; this.colRol.FillWeight = 90;
+            this.colEstado.HeaderText = "Estado"; this.colEstado.Name = "colEstado"; this.colEstado.ReadOnly = true; this.colEstado.FillWeight = 70;
+            this.colActions.HeaderText = "Actions"; this.colActions.Name = "colActions"; this.colActions.ReadOnly = true; this.colActions.FillWeight = 100;
+            // 
+            // pnlPaginacion
+            // 
+            this.pnlPaginacion.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlPaginacion.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.pnlPaginacion.Height = 45;
+            this.pnlPaginacion.Padding = new System.Windows.Forms.Padding(0, 8, 5, 0);
+            this.pnlPaginacion.Controls.Add(this.lblPagFinal);
+            this.pnlPaginacion.Controls.Add(this.lblPuntos);
+            this.pnlPaginacion.Controls.Add(this.lblPag3);
+            this.pnlPaginacion.Controls.Add(this.lblPag2);
+            this.pnlPaginacion.Controls.Add(this.lblPag1);
+            this.pnlPaginacion.Name = "pnlPaginacion";
+            // 
+            // cmsOpciones
+            // 
+            this.cmsOpciones.ImageScalingSize = new System.Drawing.Size(24, 24);
+            this.cmsOpciones.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.itemEditar, this.itemEliminar });
+            this.cmsOpciones.Name = "cmsOpciones";
+            this.cmsOpciones.Size = new System.Drawing.Size(147, 68);
+            // 
+            // itemEditar
+            // 
+            this.itemEditar.Name = "itemEditar";
+            this.itemEditar.Size = new System.Drawing.Size(146, 30);
+            this.itemEditar.Text = "Editar";
+            // 
+            // itemEliminar
+            // 
+            this.itemEliminar.Name = "itemEliminar";
+            this.itemEliminar.Size = new System.Drawing.Size(146, 30);
+            this.itemEliminar.Text = "Eliminar";
+            // 
+            // ucUsuario
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(245, 247, 250);
+            this.Controls.Add(this.pnlLista);
+            this.Controls.Add(this.pnlBusqueda);
+            this.Controls.Add(this.btnCrear);
+            this.Controls.Add(this.lblSubtitulo);
+            this.Controls.Add(this.lblTituloUsuarios);
             this.Name = "ucUsuario";
-
-            // RESUME LAYOUT
-            this.materialTabControl1.ResumeLayout(false);
-            this.tabPageLista.ResumeLayout(false);
-            this.tabPageLista.PerformLayout();
-            this.tabPageDetalle.ResumeLayout(false);
-            this.tabPageDetalle.PerformLayout();
+            this.Size = new System.Drawing.Size(1100, 760);
+            this.pnlBusqueda.ResumeLayout(false);
+            this.pnlBusqueda.PerformLayout();
+            this.pnlLista.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvUsuarios)).EndInit();
+            this.cmsOpciones.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
         }
 
         #endregion
 
-        // CONTROLES
-        private MaterialSkin.Controls.MaterialTabSelector? materialTabSelector1;
-        private MaterialSkin.Controls.MaterialTabControl? materialTabControl1;
-        private System.Windows.Forms.TabPage? tabPageLista;
-        private System.Windows.Forms.TabPage? tabPageDetalle;
-        private MaterialSkin.Controls.MaterialLabel? lblTitulo;
-        private MaterialSkin.Controls.MaterialLabel? lblBusqueda;
-        private MaterialSkin.Controls.MaterialTextBox2? txtBuscar;
-        private MaterialSkin.Controls.MaterialComboBox? cmbFiltro;
-        private MaterialSkin.Controls.MaterialButton? btnBuscar;
-        private MaterialSkin.Controls.MaterialButton? btnCrear;
-        private MaterialSkin.Controls.MaterialLabel? lblRegistrados;
-        private MaterialSkin.Controls.MaterialListView? dgvUsuarios;
-        private System.Windows.Forms.ColumnHeader? colId;
-        private System.Windows.Forms.ColumnHeader? colNombre;
-        private System.Windows.Forms.ColumnHeader? colCorreo;
-        private System.Windows.Forms.ColumnHeader? colRol;
-        private System.Windows.Forms.ColumnHeader? colEstado;
-        private MaterialSkin.Controls.MaterialTextBox2? txtNombre;
-        private MaterialSkin.Controls.MaterialTextBox2? txtCorreo;
-        private MaterialSkin.Controls.MaterialButton? btnGuardar;
+        private System.Windows.Forms.Label lblTituloUsuarios;
+        private System.Windows.Forms.Label lblSubtitulo;
+        private System.Windows.Forms.Button btnCrear;
+        private System.Windows.Forms.Panel pnlBusqueda;
+        private MaterialSkin.Controls.MaterialTextBox2 txtBuscar;
+        private MaterialSkin.Controls.MaterialComboBox cboFiltro;
+        private System.Windows.Forms.Button btnBuscar;
+        private System.Windows.Forms.Panel pnlLista;
+        private System.Windows.Forms.Label lblTituloLista;
+        private System.Windows.Forms.DataGridView dgvUsuarios;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colNombre;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCorreo;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colRol;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colEstado;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colActions;
+        private System.Windows.Forms.FlowLayoutPanel pnlPaginacion;
+        private System.Windows.Forms.Label lblPag1;
+        private System.Windows.Forms.Label lblPag2;
+        private System.Windows.Forms.Label lblPag3;
+        private System.Windows.Forms.Label lblPuntos;
+        private System.Windows.Forms.Label lblPagFinal;
+        private System.Windows.Forms.ContextMenuStrip cmsOpciones;
+        private System.Windows.Forms.ToolStripMenuItem itemEditar;
+        private System.Windows.Forms.ToolStripMenuItem itemEliminar;
     }
 }
