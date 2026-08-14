@@ -29,8 +29,7 @@ namespace ESFE.GestionProductos.UI
 
         private void CargarDatosProducto(int id)
         {
-            // Lógica para cargar el producto si es edición:
-            // var prod = _productoService.GetById(id);
+            // TODO: Cargar el objeto desde la base de datos y llenar los campos
             // txtNombre.Text = prod.Nombre;
             // txtPrecio.Text = prod.Precio.ToString("F2");
             // txtStock.Text = prod.Stock.ToString();
@@ -64,12 +63,12 @@ namespace ESFE.GestionProductos.UI
 
             if (!int.TryParse(txtStockMinimo.Text, out int stockMinimo))
             {
-                MessageBox.Show("Ingrese un valor válido para el stock mínimo.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Ingrese un valor de límite válido para la alerta.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtStockMinimo.Focus();
                 return;
             }
 
-            // TODO: Guardar o actualizar en base de datos
+            // TODO: Lógica de guardado (insert / update)
 
             DialogResult = DialogResult.OK;
             Close();
