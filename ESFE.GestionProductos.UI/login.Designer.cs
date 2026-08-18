@@ -33,10 +33,8 @@
             txtContraseña = new MaterialSkin.Controls.MaterialTextBox2();
             txtUsuario = new MaterialSkin.Controls.MaterialTextBox2();
             lblTitulo = new MaterialSkin.Controls.MaterialLabel();
-
             cardLogin.SuspendLayout();
             SuspendLayout();
-
             // 
             // cardLogin
             // 
@@ -54,52 +52,26 @@
             cardLogin.Padding = new Padding(20, 23, 20, 23);
             cardLogin.Size = new Size(520, 480);
             cardLogin.TabIndex = 0;
-
             // 
-            // lblTitulo
+            // btnIniciarSesion
             // 
-            lblTitulo.AutoSize = true;
-            lblTitulo.Depth = 0;
-            lblTitulo.Font = new Font("Roboto", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
-            lblTitulo.Location = new Point(175, 55);
-            lblTitulo.Margin = new Padding(4, 0, 4, 0);
-            lblTitulo.MouseState = MaterialSkin.MouseState.HOVER;
-            lblTitulo.Name = "lblTitulo";
-            lblTitulo.Size = new Size(128, 19);
-            lblTitulo.TabIndex = 0;
-            lblTitulo.Text = "INICIAR SESIÓN";
-
-            // 
-            // txtUsuario
-            // 
-            txtUsuario.AnimateReadOnly = false;
-            txtUsuario.BackgroundImageLayout = ImageLayout.None;
-            txtUsuario.CharacterCasing = CharacterCasing.Normal;
-            txtUsuario.Depth = 0;
-            txtUsuario.Font = new Font("Microsoft Sans Serif", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
-            txtUsuario.HideSelection = true;
-            txtUsuario.Hint = "Usuario";
-            txtUsuario.LeadingIcon = null;
-            txtUsuario.Location = new Point(82, 125);
-            txtUsuario.Margin = new Padding(4, 5, 4, 5);
-            txtUsuario.MaxLength = 32767;
-            txtUsuario.MouseState = MaterialSkin.MouseState.OUT;
-            txtUsuario.Name = "txtUsuario";
-            txtUsuario.PasswordChar = '\0';
-            txtUsuario.PrefixSuffixText = null;
-            txtUsuario.ReadOnly = false;
-            txtUsuario.RightToLeft = RightToLeft.No;
-            txtUsuario.SelectedText = "";
-            txtUsuario.SelectionLength = 0;
-            txtUsuario.SelectionStart = 0;
-            txtUsuario.ShortcutsEnabled = true;
-            txtUsuario.Size = new Size(357, 48);
-            txtUsuario.TabIndex = 1;
-            txtUsuario.TabStop = false;
-            txtUsuario.TextAlign = HorizontalAlignment.Left;
-            txtUsuario.TrailingIcon = null;
-            txtUsuario.UseSystemPasswordChar = false;
-
+            btnIniciarSesion.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            btnIniciarSesion.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            btnIniciarSesion.Depth = 0;
+            btnIniciarSesion.HighEmphasis = true;
+            btnIniciarSesion.Icon = null;
+            btnIniciarSesion.Location = new Point(196, 335);
+            btnIniciarSesion.Margin = new Padding(6, 10, 6, 10);
+            btnIniciarSesion.MouseState = MaterialSkin.MouseState.HOVER;
+            btnIniciarSesion.Name = "btnIniciarSesion";
+            btnIniciarSesion.NoAccentTextColor = Color.Empty;
+            btnIniciarSesion.Size = new Size(128, 36);
+            btnIniciarSesion.TabIndex = 3;
+            btnIniciarSesion.Text = "INICIAR SESIÓN";
+            btnIniciarSesion.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            btnIniciarSesion.UseAccentColor = false;
+            btnIniciarSesion.UseVisualStyleBackColor = true;
+            btnIniciarSesion.Click += btnIniciarSesion_Click;
             // 
             // txtContraseña
             // 
@@ -130,45 +102,63 @@
             txtContraseña.TextAlign = HorizontalAlignment.Left;
             txtContraseña.TrailingIcon = null;
             txtContraseña.UseSystemPasswordChar = false;
-
             // 
-            // btnIniciarSesion
+            // txtUsuario
             // 
-            btnIniciarSesion.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            btnIniciarSesion.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
-            btnIniciarSesion.Depth = 0;
-            btnIniciarSesion.HighEmphasis = true;
-            btnIniciarSesion.Icon = null;
-            btnIniciarSesion.Location = new Point(196, 335);
-            btnIniciarSesion.Margin = new Padding(6, 10, 6, 10);
-            btnIniciarSesion.MouseState = MaterialSkin.MouseState.HOVER;
-            btnIniciarSesion.Name = "btnIniciarSesion";
-            btnIniciarSesion.NoAccentTextColor = Color.Empty;
-            btnIniciarSesion.Size = new Size(128, 36);
-            btnIniciarSesion.TabIndex = 3;
-            btnIniciarSesion.Text = "INICIAR SESIÓN";
-            btnIniciarSesion.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
-            btnIniciarSesion.UseAccentColor = false;
-            btnIniciarSesion.UseVisualStyleBackColor = true;
-
+            txtUsuario.AnimateReadOnly = false;
+            txtUsuario.BackgroundImageLayout = ImageLayout.None;
+            txtUsuario.CharacterCasing = CharacterCasing.Normal;
+            txtUsuario.Depth = 0;
+            txtUsuario.Font = new Font("Microsoft Sans Serif", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
+            txtUsuario.HideSelection = true;
+            txtUsuario.Hint = "Usuario";
+            txtUsuario.LeadingIcon = null;
+            txtUsuario.Location = new Point(82, 125);
+            txtUsuario.Margin = new Padding(4, 5, 4, 5);
+            txtUsuario.MaxLength = 32767;
+            txtUsuario.MouseState = MaterialSkin.MouseState.OUT;
+            txtUsuario.Name = "txtUsuario";
+            txtUsuario.PasswordChar = '\0';
+            txtUsuario.PrefixSuffixText = null;
+            txtUsuario.ReadOnly = false;
+            txtUsuario.RightToLeft = RightToLeft.No;
+            txtUsuario.SelectedText = "";
+            txtUsuario.SelectionLength = 0;
+            txtUsuario.SelectionStart = 0;
+            txtUsuario.ShortcutsEnabled = true;
+            txtUsuario.Size = new Size(357, 48);
+            txtUsuario.TabIndex = 1;
+            txtUsuario.TabStop = false;
+            txtUsuario.TextAlign = HorizontalAlignment.Left;
+            txtUsuario.TrailingIcon = null;
+            txtUsuario.UseSystemPasswordChar = false;
+            // 
+            // lblTitulo
+            // 
+            lblTitulo.AutoSize = true;
+            lblTitulo.Depth = 0;
+            lblTitulo.Font = new Font("Roboto", 14F, FontStyle.Regular, GraphicsUnit.Pixel);
+            lblTitulo.Location = new Point(175, 55);
+            lblTitulo.Margin = new Padding(4, 0, 4, 0);
+            lblTitulo.MouseState = MaterialSkin.MouseState.HOVER;
+            lblTitulo.Name = "lblTitulo";
+            lblTitulo.Size = new Size(113, 19);
+            lblTitulo.TabIndex = 0;
+            lblTitulo.Text = "INICIAR SESIÓN";
             // 
             // login
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1143, 750);
-
             Controls.Add(cardLogin);
-
             Margin = new Padding(4, 5, 4, 5);
             Name = "login";
             Padding = new Padding(4, 107, 4, 5);
             StartPosition = FormStartPosition.CenterScreen;
             Text = "login";
-
             Load += login_Load;
             Resize += login_Resize;
-
             cardLogin.ResumeLayout(false);
             cardLogin.PerformLayout();
             ResumeLayout(false);

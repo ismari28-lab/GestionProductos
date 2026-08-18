@@ -6,18 +6,17 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 
-
-
 namespace ESFE.SysDesarrollo.DAL
 {
     public class DBComun
     {
-        public const string _stringCnn = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=GestionProductoBD;Integrated Security=True";
+        // Actualizado a tu instancia de SQLEXPRESS y con TrustServerCertificate habilitado
+        public const string _stringCnn = @"Data Source=DESKTOP-TF2SLSI\SQLEXPRESS;Initial Catalog=GestionProductoBD;Integrated Security=True;TrustServerCertificate=True";
 
         /// <summary>
         /// Metodo para obtener base de datos.
         /// </summary>
-        /// <returns>Devuelve la  conexion</returns>
+        /// <returns>Devuelve la conexion</returns>
         public static IDbConnection ObtenerConexion()
         {
             return new SqlConnection(_stringCnn);

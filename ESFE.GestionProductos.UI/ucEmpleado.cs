@@ -1,375 +1,192 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
+using ESFE.GestionProductos.DAL;
 using ESFE.GestionProductos.EN;
-using System.Linq;
 
 namespace ESFE.GestionProductos.UI
 {
     public partial class ucEmpleado : UserControl
     {
-        private List<Empleado> listaEmpleadosMemoria = new List<Empleado>();
-        // Paginación
-        private const int TAMANIO_PAGINA = 8;
-        private int paginaActual = 1;
-        private int totalPaginas = 1;
+        private readonly EmpleadoDAL _empleadoDAL = new EmpleadoDAL();
+
         public ucEmpleado()
         {
             InitializeComponent();
+            ConfigurarColumnas();
+            VincularEventos();
+        }
 
-            EstilizarGrid();
-            ConfigurarPaginacion();
+        private void ConfigurarColumnas()
+        {
+            // 1. Evitar la creación automática de columnas duplicadas
+            dgvEmpleados.AutoGenerateColumns = false;
 
+            // 2. Mapear las columnas definidas en tu Designer con las columnas de la BD/SP
+            colId.DataPropertyName = "ID Empleado";
+            colNombre.DataPropertyName = "Nombre Completo";
+            colTelefono.DataPropertyName = "Teléfono";
+            colCargo.DataPropertyName = "Código de Cargo";
+            colUsuario.DataPropertyName = "Usuario de Sistema";
+            colEstado.DataPropertyName = "Estado";
 
+            // 3. Asignar el ContextMenuStrip al DataGridView para clic derecho
+            dgvEmpleados.ContextMenuStrip = cmsOpciones;
+        }
+
+        private void VincularEventos()
+        {
+            this.Load += (s, e) => CargarTabla();
+
+            // Evento del botón Crear (usando el nombre 'btnCrear' del Designer)
             btnCrear.Click += BtnCrear_Click;
-            btnBuscar.Click += (s, e) => LlenarGrid();
 
+            // Eventos de búsqueda
+            btnBuscar.Click += (s, e) => BuscarEmpleados();
+            txtBuscar.TextChanged += (s, e) => BuscarEmpleados();
+
+            // Eventos de los menú items del ContextMenuStrip
+            itemEditar.Click += ItemEditar_Click;
+            itemEliminar.Click += ItemEliminar_Click;
+
+            // Mostrar el menú contextual al hacer clic en la columna Actions o formato de texto
             dgvEmpleados.CellClick += DgvEmpleados_CellClick;
-            dgvEmpleados.CellDoubleClick += (s, e) => { if (e.RowIndex >= 0) EditarSeleccionado(); };
-            dgvEmpleados.MouseDown += DgvEmpleados_MouseDown;
-
-            itemEditar.Click += (s, e) => EditarSeleccionado();
-            itemEliminar.Click += (s, e) => EliminarSeleccionado();
-
-            cboFiltro.SelectedIndex = 0;
-
-            CargarDatosPrueba();
-            LlenarGrid();
+            dgvEmpleados.CellFormatting += DgvEmpleados_CellFormatting;
         }
 
-        
-        
-
-        private void EstilizarGrid()
+        private void DgvEmpleados_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            dgvEmpleados.DefaultCellStyle.Font = new Font("Segoe UI", 9F);
-            dgvEmpleados.DefaultCellStyle.ForeColor = Color.FromArgb(60, 70, 85);
-            dgvEmpleados.DefaultCellStyle.BackColor = Color.White;
-            dgvEmpleados.DefaultCellStyle.Padding = new Padding(8, 0, 8, 0);
-            dgvEmpleados.DefaultCellStyle.SelectionBackColor = Color.FromArgb(245, 247, 250);
-            dgvEmpleados.DefaultCellStyle.SelectionForeColor = Color.FromArgb(60, 70, 85);
-
-            dgvEmpleados.ColumnHeadersDefaultCellStyle.BackColor = Color.White;
-            dgvEmpleados.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(120, 130, 145);
-            dgvEmpleados.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
-            dgvEmpleados.ColumnHeadersDefaultCellStyle.Padding = new Padding(8, 0, 8, 0);
-            dgvEmpleados.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dgvEmpleados.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.White;
-            dgvEmpleados.ColumnHeadersDefaultCellStyle.SelectionForeColor = Color.FromArgb(120, 130, 145);
-
-            foreach (DataGridViewColumn col in dgvEmpleados.Columns)
-                col.SortMode = DataGridViewColumnSortMode.NotSortable;
-
-            colActions.DefaultCellStyle.ForeColor = Color.FromArgb(90, 70, 180);
-            colActions.DefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            colActions.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            colActions.DefaultCellStyle.SelectionForeColor = Color.FromArgb(90, 70, 180);
-            colActions.DefaultCellStyle.SelectionBackColor = Color.FromArgb(245, 247, 250);
-
-            int filaHoverActual = -1;
-
-            dgvEmpleados.CellMouseEnter += (s, e) =>
+            // Colocar texto visible en la columna "Actions"
+            if (e.RowIndex >= 0 && dgvEmpleados.Columns[e.ColumnIndex].Name == "colActions")
             {
-                if (e.RowIndex < 0) return;
-
-                if (e.ColumnIndex == colActions.Index)
-                {
-                    dgvEmpleados.Cursor = Cursors.Hand;
-                    dgvEmpleados.Rows[e.RowIndex].Cells[colActions.Index].Style.BackColor =
-                        Color.FromArgb(240, 240, 250);
-                }
-
-                if (filaHoverActual != e.RowIndex)
-                {
-                    filaHoverActual = e.RowIndex;
-                    dgvEmpleados.Rows[e.RowIndex].DefaultCellStyle.BackColor =
-                        Color.FromArgb(250, 251, 253);
-                }
-            };
-
-            dgvEmpleados.CellMouseLeave += (s, e) =>
-            {
-                dgvEmpleados.Cursor = Cursors.Default;
-                if (e.RowIndex >= 0)
-                {
-                    dgvEmpleados.Rows[e.RowIndex].Cells[colActions.Index].Style.BackColor =
-                        Color.White;
-                }
-            };
-
-            dgvEmpleados.RowLeave += (s, e) =>
-            {
-                if (e.RowIndex >= 0)
-                    dgvEmpleados.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.White;
-                filaHoverActual = -1;
-            };
-        }
-
-        private void CargarDatosPrueba()
-        {
-            listaEmpleadosMemoria = new List<Empleado>
-            {
-                new Empleado { IdEmpleadoPK = 1, Nombre = "Juan Pérez",    Telefono = "7777-8888", Cargo = 1, IdUsuarioFK = 1,    Estado = true  },
-                new Empleado { IdEmpleadoPK = 2, Nombre = "María López",   Telefono = "2222-3333", Cargo = 2, IdUsuarioFK = null, Estado = true  },
-                new Empleado { IdEmpleadoPK = 3, Nombre = "Carlos Gómez",  Telefono = "7123-4567", Cargo = 3, IdUsuarioFK = 2,    Estado = false }
-            };
-        }
-
-        private void LlenarGrid()
-        {
-            dgvEmpleados.Rows.Clear();
-
-            string filtro = txtBuscar.Text?.Trim().ToLower() ?? "";
-            string estado = cboFiltro.SelectedItem?.ToString() ?? "Todos";
-
-            // Filtrar la lista completa primero
-            var filtrados = new List<Empleado>();
-            foreach (var emp in listaEmpleadosMemoria)
-            {
-                if (!string.IsNullOrEmpty(filtro))
-                {
-                    bool coincide = (emp.Nombre ?? "").ToLower().Contains(filtro)
-                                 || (emp.Telefono ?? "").ToLower().Contains(filtro);
-                    if (!coincide) continue;
-                }
-                if (estado == "Activos" && emp.Estado != true) continue;
-                if (estado == "Inactivos" && emp.Estado == true) continue;
-
-                filtrados.Add(emp);
+                e.Value = "⋮ Opciones";
             }
-
-            // Calcular total de páginas
-            totalPaginas = (int)Math.Ceiling((double)filtrados.Count / TAMANIO_PAGINA);
-            if (totalPaginas == 0) totalPaginas = 1;
-            if (paginaActual > totalPaginas) paginaActual = totalPaginas;
-
-            // Obtener solo los registros de la página actual
-            var paginados = filtrados
-                .Skip((paginaActual - 1) * TAMANIO_PAGINA)
-                .Take(TAMANIO_PAGINA);
-
-            foreach (var emp in paginados)
-            {
-                int rowIndex = dgvEmpleados.Rows.Add(
-                    emp.IdEmpleadoPK,
-                    emp.Nombre ?? "",
-                    emp.Telefono ?? "",
-                    ObtenerNombreCargo(emp.Cargo),
-                    emp.IdUsuarioFK.HasValue ? $"User #{emp.IdUsuarioFK}" : "Sin Asignar",
-                    emp.Estado == true ? "Activo" : "Inactivo",
-                    "Editar   Eliminar"
-                );
-
-                dgvEmpleados.Rows[rowIndex].Tag = emp;
-
-                var celdaEstado = dgvEmpleados.Rows[rowIndex].Cells["colEstado"];
-                celdaEstado.Style.ForeColor = emp.Estado == true
-                    ? Color.FromArgb(40, 167, 69)
-                    : Color.FromArgb(220, 53, 69);
-                celdaEstado.Style.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-                celdaEstado.Style.SelectionForeColor = celdaEstado.Style.ForeColor;
-            }
-
-            dgvEmpleados.ClearSelection();
-            ActualizarBotonesPaginacion();
-        }
-
-        private string ObtenerNombreCargo(short? cargo)
-        {
-            return cargo switch
-            {
-                1 => "Administrador",
-                2 => "Vendedor",
-                3 => "Bodeguero",
-                4 => "Gerente",
-                _ => "Sin Cargo"
-            };
         }
 
         private void DgvEmpleados_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
-            if (e.ColumnIndex != colActions.Index) return;
 
-            var celda = dgvEmpleados.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
-            var pos = dgvEmpleados.PointToClient(Cursor.Position);
-            int xRelativo = pos.X - celda.Left;
-
-            if (xRelativo > celda.Width * 0.6)
-                EliminarSeleccionado();
-            else
-                EditarSeleccionado();
+            // Abrir el menú Editar/Eliminar al dar clic sobre la columna colActions
+            if (dgvEmpleados.Columns[e.ColumnIndex].Name == "colActions")
+            {
+                dgvEmpleados.Rows[e.RowIndex].Selected = true;
+                Rectangle cellRect = dgvEmpleados.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
+                Point location = dgvEmpleados.PointToScreen(new Point(cellRect.Left, cellRect.Bottom));
+                cmsOpciones.Show(location);
+            }
         }
 
-        private Empleado ObtenerEmpleadoSeleccionado()
+        public void CargarTabla()
         {
-            if (dgvEmpleados.SelectedRows.Count == 0 && dgvEmpleados.CurrentRow == null)
-                return null;
-            var fila = dgvEmpleados.CurrentRow ?? dgvEmpleados.SelectedRows[0];
-            return fila?.Tag as Empleado;
+            try
+            {
+                DataTable dt = _empleadoDAL.Listar();
+                dgvEmpleados.DataSource = dt;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar empleados: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void BtnCrear_Click(object sender, EventArgs e)
         {
-            using (var modal = new frmEmpleadoModal())
+            using (frmEmpleadoModal frm = new frmEmpleadoModal("Crear Empleado"))
             {
-                if (modal.ShowDialog() == DialogResult.OK)
+                if (frm.ShowDialog() == DialogResult.OK)
                 {
-                    Empleado nuevo = modal.EmpleadoActual;
-                    nuevo.IdEmpleadoPK = (short)(listaEmpleadosMemoria.Count + 1);
-
-                    listaEmpleadosMemoria.Add(nuevo);
-                    LlenarGrid();
+                    _empleadoDAL.Insertar(frm.EmpleadoActual);
+                    CargarTabla();
                 }
             }
         }
 
-        private void EditarSeleccionado()
+        private short? ObtenerIdSeleccionado()
         {
-            var empleado = ObtenerEmpleadoSeleccionado();
-            if (empleado == null)
+            if (dgvEmpleados.CurrentRow != null && dgvEmpleados.CurrentRow.Cells["colId"].Value != DBNull.Value)
             {
-                MessageBox.Show("Selecciona un empleado de la lista para editar.", "Atención",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                return Convert.ToInt16(dgvEmpleados.CurrentRow.Cells["colId"].Value);
             }
-
-            using (var modal = new frmEmpleadoModal(empleado))
-            {
-                if (modal.ShowDialog() == DialogResult.OK)
-                    LlenarGrid();
-            }
+            return null;
         }
 
-        private void EliminarSeleccionado()
+        private void ItemEditar_Click(object sender, EventArgs e)
         {
-            var empleado = ObtenerEmpleadoSeleccionado();
-            if (empleado == null)
+            short? idEmpleado = ObtenerIdSeleccionado();
+            if (idEmpleado.HasValue)
             {
-                MessageBox.Show("Selecciona un empleado de la lista para eliminar.", "Atención",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            var conf = MessageBox.Show(
-                $"¿Estás seguro de que deseas eliminar al empleado '{empleado.Nombre}'?",
-                "Confirmar Eliminación",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (conf == DialogResult.Yes)
-            {
-                listaEmpleadosMemoria.Remove(empleado);
-                LlenarGrid();
-            }
-        }
-
-        private void DgvEmpleados_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button != MouseButtons.Right) return;
-
-            var hit = dgvEmpleados.HitTest(e.X, e.Y);
-            if (hit.RowIndex >= 0)
-            {
-                dgvEmpleados.ClearSelection();
-                dgvEmpleados.Rows[hit.RowIndex].Selected = true;
-                dgvEmpleados.CurrentCell = dgvEmpleados.Rows[hit.RowIndex].Cells[0];
-                cmsOpciones.Show(dgvEmpleados, e.Location);
-            }
-        }
-
-
-        private void ConfigurarPaginacion()
-        {
-            foreach (var lbl in new[] { lblPag1, lblPag2, lblPag3, lblPagFinal })
-            {
-                lbl.AutoSize = true;
-                lbl.Font = new Font("Segoe UI", 9F);
-                lbl.Padding = new Padding(8, 6, 8, 6);
-                lbl.Margin = new Padding(3);
-                lbl.Cursor = Cursors.Hand;
-                lbl.ForeColor = Color.FromArgb(80, 90, 100);
-                lbl.Click += LblPagina_Click;
-            }
-            lblPuntos.AutoSize = true;
-            lblPuntos.Font = new Font("Segoe UI", 10F);
-            lblPuntos.ForeColor = Color.FromArgb(120, 130, 145);
-            lblPuntos.Padding = new Padding(6, 6, 6, 6);
-            lblPuntos.Text = "...";
-        }
-
-        private void LblPagina_Click(object sender, EventArgs e)
-        {
-            if (sender is Label lbl && int.TryParse(lbl.Text, out int pag))
-            {
-                paginaActual = pag;
-                LlenarGrid();
-            }
-        }
-
-        private void ActualizarBotonesPaginacion()
-        {
-            // Ocultar todos
-            lblPag1.Visible = lblPag2.Visible = lblPag3.Visible = false;
-            lblPuntos.Visible = lblPagFinal.Visible = false;
-
-            if (totalPaginas <= 0) return;
-
-            // Caso simple: ≤4 páginas, mostrar 1..N
-            if (totalPaginas <= 4)
-            {
-                var labels = new[] { lblPag1, lblPag2, lblPag3, lblPagFinal };
-                for (int i = 0; i < totalPaginas; i++)
+                var lista = _empleadoDAL.Buscar(null, idEmpleado.Value);
+                if (lista.Count > 0)
                 {
-                    labels[i].Text = (i + 1).ToString();
-                    labels[i].Visible = true;
-                    EstilizarLabelPagina(labels[i], (i + 1) == paginaActual);
+                    Empleado empleadoAEditar = lista[0];
+                    using (frmEmpleadoModal frm = new frmEmpleadoModal("Editar Empleado", empleadoAEditar))
+                    {
+                        if (frm.ShowDialog() == DialogResult.OK)
+                        {
+                            _empleadoDAL.Actualizar(frm.EmpleadoActual);
+                            CargarTabla();
+                        }
+                    }
                 }
-                return;
             }
-
-            // Caso: mostrar 1 2 3 ... N
-            lblPag1.Text = "1"; lblPag1.Visible = true; EstilizarLabelPagina(lblPag1, paginaActual == 1);
-
-            if (paginaActual <= 3)
-            {
-                lblPag2.Text = "2"; lblPag2.Visible = true; EstilizarLabelPagina(lblPag2, paginaActual == 2);
-                lblPag3.Text = "3"; lblPag3.Visible = true; EstilizarLabelPagina(lblPag3, paginaActual == 3);
-            }
-            else if (paginaActual >= totalPaginas - 2)
-            {
-                lblPag2.Text = (totalPaginas - 2).ToString(); lblPag2.Visible = true; EstilizarLabelPagina(lblPag2, paginaActual == totalPaginas - 2);
-                lblPag3.Text = (totalPaginas - 1).ToString(); lblPag3.Visible = true; EstilizarLabelPagina(lblPag3, paginaActual == totalPaginas - 1);
-            }
-            else
-            {
-                lblPag2.Text = (paginaActual - 1).ToString(); lblPag2.Visible = true; EstilizarLabelPagina(lblPag2, false);
-                lblPag3.Text = paginaActual.ToString(); lblPag3.Visible = true; EstilizarLabelPagina(lblPag3, true);
-            }
-
-            lblPuntos.Visible = true;
-            lblPagFinal.Text = totalPaginas.ToString();
-            lblPagFinal.Visible = true;
-            EstilizarLabelPagina(lblPagFinal, paginaActual == totalPaginas);
         }
 
-        private void EstilizarLabelPagina(Label lbl, bool activo)
+        private void ItemEliminar_Click(object sender, EventArgs e)
         {
-            if (activo)
+            short? idEmpleado = ObtenerIdSeleccionado();
+            if (idEmpleado.HasValue)
             {
-                lbl.BackColor = Color.FromArgb(90, 70, 180);
-                lbl.ForeColor = Color.White;
-                lbl.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            }
-            else
-            {
-                lbl.BackColor = Color.Transparent;
-                lbl.ForeColor = Color.FromArgb(80, 90, 100);
-                lbl.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
+                DialogResult confirmacion = MessageBox.Show(
+                    "¿Está seguro de desactivar este empleado?",
+                    "Confirmación",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (confirmacion == DialogResult.Yes)
+                {
+                    _empleadoDAL.EliminarLogico(idEmpleado.Value);
+                    CargarTabla();
+                }
             }
         }
 
+        private void BuscarEmpleados()
+        {
+            string criterio = txtBuscar.Text.Trim();
 
+            if (string.IsNullOrEmpty(criterio))
+            {
+                CargarTabla();
+            }
+            else
+            {
+                var resultados = _empleadoDAL.Buscar(criterio, null);
 
+                // Creamos un DataTable con las mismas columnas que configuramos en ConfigurarColumnas()
+                DataTable dt = new DataTable();
+                dt.Columns.Add("ID Empleado", typeof(short));
+                dt.Columns.Add("Nombre Completo", typeof(string));
+                dt.Columns.Add("Teléfono", typeof(string));
+                dt.Columns.Add("Código de Cargo", typeof(object));
+                dt.Columns.Add("Usuario de Sistema", typeof(object));
+                dt.Columns.Add("Estado", typeof(object));
+
+                foreach (var emp in resultados)
+                {
+                    dt.Rows.Add(
+                        emp.IdEmpleadoPK,
+                        emp.Nombre,
+                        emp.Telefono,
+                        (object)emp.Cargo ?? DBNull.Value,
+                        (object)emp.IdUsuarioFK ?? DBNull.Value,
+                        emp.Estado.HasValue ? (emp.Estado.Value ? "Activo" : "Inactivo") : "Inactivo"
+                    );
+                }
+
+                dgvEmpleados.DataSource = dt;
+            }
+        }
     }
 }

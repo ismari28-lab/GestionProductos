@@ -9,10 +9,10 @@ namespace ESFE.GestionProductos.DAL
     public class UsuarioDAL
     {
         /// <summary>
-        /// Valida las credenciales del usuario contra la BD usando SP_LoginUsuario.
+        /// Valida las credenciales del usuario contra la BD usando SP_LoginUsuario de forma automática.
         /// </summary>
         /// <returns>El usuario si las credenciales son válidas, null en caso contrario.</returns>
-        public static Usuario? ValidarLogin(string pNombre, string pPassword, short pIdRol)
+        public static Usuario? ValidarLogin(string pNombre, string pPassword)
         {
             Usuario? _usuario = null;
 
@@ -24,9 +24,9 @@ namespace ESFE.GestionProductos.DAL
                 {
                     _command.CommandType = CommandType.StoredProcedure;
 
+                    // Solo enviamos Nombre y Password; el rol se obtiene directo de la BD
                     _command.Parameters.Add(new SqlParameter("@Nombre", SqlDbType.VarChar, 100) { Value = pNombre });
                     _command.Parameters.Add(new SqlParameter("@Password", SqlDbType.VarChar, 256) { Value = pPassword });
-                    _command.Parameters.Add(new SqlParameter("@Id_RolFK", SqlDbType.SmallInt) { Value = pIdRol });
 
                     using (IDataReader _reader = _command.ExecuteReader(CommandBehavior.CloseConnection))
                     {
