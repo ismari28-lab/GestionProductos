@@ -2,14 +2,15 @@
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using ESFE.GestionProductos.DAL;
 using ESFE.GestionProductos.EN;
+using ESFE.GestionProductos.LN; // Importamos la LN
 
 namespace ESFE.GestionProductos.UI
 {
     public partial class ucEmpleado : UserControl
     {
-        private readonly EmpleadoDAL _empleadoDAL = new EmpleadoDAL();
+        // Instanciamos la LN en lugar de la DAL
+        private readonly EmpleadoLN _empleadoLN = new EmpleadoLN();
 
         public ucEmpleado()
         {
@@ -20,10 +21,8 @@ namespace ESFE.GestionProductos.UI
 
         private void ConfigurarColumnas()
         {
-            // 1. Evitar la creación automática de columnas duplicadas
             dgvEmpleados.AutoGenerateColumns = false;
 
-            // 2. Mapear las columnas definidas en tu Designer con las columnas de la BD/SP
             colId.DataPropertyName = "ID Empleado";
             colNombre.DataPropertyName = "Nombre Completo";
             colTelefono.DataPropertyName = "Teléfono";
@@ -31,7 +30,6 @@ namespace ESFE.GestionProductos.UI
             colUsuario.DataPropertyName = "Usuario de Sistema";
             colEstado.DataPropertyName = "Estado";
 
-            // 3. Asignar el ContextMenuStrip al DataGridView para clic derecho
             dgvEmpleados.ContextMenuStrip = cmsOpciones;
         }
 
@@ -39,25 +37,19 @@ namespace ESFE.GestionProductos.UI
         {
             this.Load += (s, e) => CargarTabla();
 
-            // Evento del botón Crear (usando el nombre 'btnCrear' del Designer)
             btnCrear.Click += BtnCrear_Click;
-
-            // Eventos de búsqueda
             btnBuscar.Click += (s, e) => BuscarEmpleados();
             txtBuscar.TextChanged += (s, e) => BuscarEmpleados();
 
-            // Eventos de los menú items del ContextMenuStrip
             itemEditar.Click += ItemEditar_Click;
             itemEliminar.Click += ItemEliminar_Click;
 
-            // Mostrar el menú contextual al hacer clic en la columna Actions o formato de texto
             dgvEmpleados.CellClick += DgvEmpleados_CellClick;
             dgvEmpleados.CellFormatting += DgvEmpleados_CellFormatting;
         }
 
         private void DgvEmpleados_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            // Colocar texto visible en la columna "Actions"
             if (e.RowIndex >= 0 && dgvEmpleados.Columns[e.ColumnIndex].Name == "colActions")
             {
                 e.Value = "⋮ Opciones";
@@ -68,7 +60,6 @@ namespace ESFE.GestionProductos.UI
         {
             if (e.RowIndex < 0) return;
 
-            // Abrir el menú Editar/Eliminar al dar clic sobre la columna colActions
             if (dgvEmpleados.Columns[e.ColumnIndex].Name == "colActions")
             {
                 dgvEmpleados.Rows[e.RowIndex].Selected = true;
@@ -82,7 +73,8 @@ namespace ESFE.GestionProductos.UI
         {
             try
             {
-                DataTable dt = _empleadoDAL.Listar();
+                // Usamos LN
+                DataTable dt = _empleadoLN.Listar();
                 dgvEmpleados.DataSource = dt;
             }
             catch (Exception ex)
@@ -97,8 +89,16 @@ namespace ESFE.GestionProductos.UI
             {
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
-                    _empleadoDAL.Insertar(frm.EmpleadoActual);
-                    CargarTabla();
+                    try
+                    {
+                        // Usamos el método unificado Guardar de la LN
+                        _empleadoLN.Guardar(frm.EmpleadoActual);
+                        CargarTabla();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
             }
         }
@@ -117,7 +117,8 @@ namespace ESFE.GestionProductos.UI
             short? idEmpleado = ObtenerIdSeleccionado();
             if (idEmpleado.HasValue)
             {
-                var lista = _empleadoDAL.Buscar(null, idEmpleado.Value);
+                // Usamos LN
+                var lista = _empleadoLN.Buscar(null, idEmpleado.Value);
                 if (lista.Count > 0)
                 {
                     Empleado empleadoAEditar = lista[0];
@@ -125,8 +126,16 @@ namespace ESFE.GestionProductos.UI
                     {
                         if (frm.ShowDialog() == DialogResult.OK)
                         {
-                            _empleadoDAL.Actualizar(frm.EmpleadoActual);
-                            CargarTabla();
+                            try
+                            {
+                                // El método Guardar detecta que IdEmpleadoPK > 0 y llama a Actualizar
+                                _empleadoLN.Guardar(frm.EmpleadoActual);
+                                CargarTabla();
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
                         }
                     }
                 }
@@ -146,8 +155,16 @@ namespace ESFE.GestionProductos.UI
 
                 if (confirmacion == DialogResult.Yes)
                 {
-                    _empleadoDAL.EliminarLogico(idEmpleado.Value);
-                    CargarTabla();
+                    try
+                    {
+                        // Usamos LN
+                        _empleadoLN.EliminarLogico(idEmpleado.Value);
+                        CargarTabla();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
         }
@@ -162,9 +179,9 @@ namespace ESFE.GestionProductos.UI
             }
             else
             {
-                var resultados = _empleadoDAL.Buscar(criterio, null);
+                // Usamos LN
+                var resultados = _empleadoLN.Buscar(criterio, null);
 
-                // Creamos un DataTable con las mismas columnas que configuramos en ConfigurarColumnas()
                 DataTable dt = new DataTable();
                 dt.Columns.Add("ID Empleado", typeof(short));
                 dt.Columns.Add("Nombre Completo", typeof(string));
