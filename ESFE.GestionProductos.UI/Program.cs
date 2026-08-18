@@ -39,6 +39,8 @@ namespace ESFE.GestionProductos.UI
 
             var ucCatalogo = new UcCatalogoProductos { Dock = DockStyle.Fill };
             Controls.Add(ucCatalogo);
+            
+            Application.Run(new login()); 
         }
     }
 }
