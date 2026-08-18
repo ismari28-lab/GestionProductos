@@ -13,6 +13,7 @@ namespace ESFE.GestionProductos.UI
         // Banderas para no recrear los UserControls cada vez que se cambia de pestaña
         private bool inicioCargado = false;
         private bool empleadosCargado = false;
+        private bool productosCargado = false; // Flag para el catálogo de productos
 
         public frmMain()
         {
@@ -54,7 +55,10 @@ namespace ESFE.GestionProductos.UI
             {
                 CargarVistaEmpleados();
             }
-            // else if (e.TabPage == tabProductos) { CargarVistaProductos(); }
+            else if (e.TabPage == tabProductos)
+            {
+                CargarVistaProductos();
+            }
         }
 
         private void CargarVistaInicio()
@@ -79,6 +83,18 @@ namespace ESFE.GestionProductos.UI
             ucEmp.BringToFront();
 
             empleadosCargado = true;
+        }
+
+        private void CargarVistaProductos()
+        {
+            if (productosCargado) return;
+
+            pnlContenedorProductos.Controls.Clear();
+            var ucProd = new UcCatalogoProductos { Dock = DockStyle.Fill };
+            pnlContenedorProductos.Controls.Add(ucProd);
+            ucProd.BringToFront();
+
+            productosCargado = true;
         }
     }
 }

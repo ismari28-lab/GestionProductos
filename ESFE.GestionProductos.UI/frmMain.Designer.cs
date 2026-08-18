@@ -26,12 +26,11 @@
         {
             menuTabControl = new MaterialSkin.Controls.MaterialTabControl();
             tabInicio = new TabPage();
-            pnlContenedorInicio = new Panel();          // NUEVO
+            pnlContenedorInicio = new Panel();
             tabEmpleados = new TabPage();
             pnlContenedorEmpleados = new Panel();
             tabProductos = new TabPage();
             pnlContenedorProductos = new Panel();
-
             menuTabControl.SuspendLayout();
             tabInicio.SuspendLayout();
             tabEmpleados.SuspendLayout();
@@ -50,27 +49,26 @@
             menuTabControl.Multiline = true;
             menuTabControl.Name = "menuTabControl";
             menuTabControl.SelectedIndex = 0;
-            menuTabControl.Size = new Size(994, 833);
+            menuTabControl.Size = new Size(994, 721);
             menuTabControl.TabIndex = 0;
             // 
-            // tabInicio  <-- ahora contiene el panel contenedor
+            // tabInicio
             // 
             tabInicio.BackColor = Color.White;
             tabInicio.Controls.Add(pnlContenedorInicio);
             tabInicio.Location = new Point(4, 24);
             tabInicio.Name = "tabInicio";
             tabInicio.Padding = new Padding(3);
-            tabInicio.Size = new Size(986, 805);
+            tabInicio.Size = new Size(986, 693);
             tabInicio.TabIndex = 0;
             tabInicio.Text = "Inicio";
-            tabInicio.UseVisualStyleBackColor = false;
             // 
-            // pnlContenedorInicio  <-- NUEVO
+            // pnlContenedorInicio
             // 
             pnlContenedorInicio.Dock = DockStyle.Fill;
             pnlContenedorInicio.Location = new Point(3, 3);
             pnlContenedorInicio.Name = "pnlContenedorInicio";
-            pnlContenedorInicio.Size = new Size(980, 799);
+            pnlContenedorInicio.Size = new Size(980, 687);
             pnlContenedorInicio.TabIndex = 0;
             // 
             // tabEmpleados
@@ -98,7 +96,7 @@
             tabProductos.Location = new Point(4, 24);
             tabProductos.Name = "tabProductos";
             tabProductos.Padding = new Padding(3);
-            tabProductos.Size = new Size(986, 805);
+            tabProductos.Size = new Size(986, 693);
             tabProductos.TabIndex = 2;
             tabProductos.Text = "Productos";
             tabProductos.UseVisualStyleBackColor = true;
@@ -108,14 +106,14 @@
             pnlContenedorProductos.Dock = DockStyle.Fill;
             pnlContenedorProductos.Location = new Point(3, 3);
             pnlContenedorProductos.Name = "pnlContenedorProductos";
-            pnlContenedorProductos.Size = new Size(980, 799);
+            pnlContenedorProductos.Size = new Size(980, 687);
             pnlContenedorProductos.TabIndex = 0;
             // 
             // frmMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1000, 900);
+            ClientSize = new Size(1000, 788);
             Controls.Add(menuTabControl);
             Name = "frmMain";
             Text = "Sistema de Gestión";
