@@ -1,9 +1,15 @@
+<<<<<<< HEAD
+﻿using System.Data;
+using Microsoft.Data.SqlClient;
+using ESFE.SysDesarrollo.DAL;
+=======
 ﻿using ESFE.GestionProductos.EN;
 using ESFE.SysDesarrollo.DAL;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
+>>>>>>> 82e6f63e471d02c7255e92da592bd35cc90785c6
 
 namespace ESFE.GestionProductos.DAL
 {
@@ -19,7 +25,11 @@ namespace ESFE.GestionProductos.DAL
                 conexion.Open();
 
                 using (SqlCommand comando = new SqlCommand(
+<<<<<<< HEAD
+                    "SP_ListarUsuarios",
+=======
                     "SP_ListarUsuario",
+>>>>>>> 82e6f63e471d02c7255e92da592bd35cc90785c6
                     conexion as SqlConnection))
                 {
                     comando.CommandType = CommandType.StoredProcedure;
