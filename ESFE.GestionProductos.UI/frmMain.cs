@@ -90,7 +90,7 @@ namespace ESFE.GestionProductos.UI
             if (productosCargado) return;
 
             pnlContenedorProductos.Controls.Clear();
-            var ucProd = new UcCatalogoProductos { Dock = DockStyle.Fill };
+            var ucProd = new ucProducto { Dock = DockStyle.Fill };
             pnlContenedorProductos.Controls.Add(ucProd);
             ucProd.BringToFront();
 
