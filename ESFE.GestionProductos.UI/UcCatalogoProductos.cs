@@ -22,12 +22,10 @@ namespace ESFE.GestionProductos.UI
         {
             dgvProductos.AutoGenerateColumns = false;
 
-            colId.DataPropertyName = "ID Producto";
-            colNombre.DataPropertyName = "Nombre Completo";
-            colCodigo.DataPropertyName = "Código";
-            colPrecio.DataPropertyName = "Precio";
-            colStock.DataPropertyName = "Stock";
-            colCategoria.DataPropertyName = "Categoría";
+            colId.DataPropertyName = "IdProductoPK";
+            colNombre.DataPropertyName = "Nombre";
+            colPrecio.DataPropertyName = "PrecioVenta";
+            colCategoria.DataPropertyName = "IdCategoriaFK";
             colEstado.DataPropertyName = "Estado";
 
             dgvProductos.ContextMenuStrip = cmsOpciones;
@@ -48,23 +46,37 @@ namespace ESFE.GestionProductos.UI
             dgvProductos.CellFormatting += DgvProductos_CellFormatting;
         }
 
-        private void DgvProductos_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        private void DgvProductos_CellFormatting(
+            object sender,
+            DataGridViewCellFormattingEventArgs e)
         {
-            if (e.RowIndex >= 0 && dgvProductos.Columns[e.ColumnIndex].Name == "colActions")
+            if (e.RowIndex >= 0 &&
+                dgvProductos.Columns[e.ColumnIndex].Name == "colActions")
             {
                 e.Value = "⋮ Opciones";
             }
         }
 
-        private void DgvProductos_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void DgvProductos_CellClick(
+            object sender,
+            DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0) return;
+            if (e.RowIndex < 0)
+                return;
 
             if (dgvProductos.Columns[e.ColumnIndex].Name == "colActions")
             {
                 dgvProductos.Rows[e.RowIndex].Selected = true;
-                Rectangle cellRect = dgvProductos.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
-                Point location = dgvProductos.PointToScreen(new Point(cellRect.Left, cellRect.Bottom));
+
+                Rectangle cellRect =
+                    dgvProductos.GetCellDisplayRectangle(
+                        e.ColumnIndex,
+                        e.RowIndex,
+                        true);
+
+                Point location = dgvProductos.PointToScreen(
+                    new Point(cellRect.Left, cellRect.Bottom));
+
                 cmsOpciones.Show(location);
             }
         }
@@ -78,13 +90,17 @@ namespace ESFE.GestionProductos.UI
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar productos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "Error al cargar productos: " + ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
         private void BtnCrear_Click(object sender, EventArgs e)
         {
-            using (frmProductoModal frm = new frmProductoModal("Crear Producto"))
+            using (ucProductoFrm frm = new ucProductoFrm())
             {
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
@@ -95,7 +111,11 @@ namespace ESFE.GestionProductos.UI
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show(
+                            ex.Message,
+                            "Advertencia",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
                     }
                 }
             }
@@ -103,35 +123,43 @@ namespace ESFE.GestionProductos.UI
 
         private int? ObtenerIdSeleccionado()
         {
-            if (dgvProductos.CurrentRow != null && dgvProductos.CurrentRow.Cells["colId"].Value != DBNull.Value)
+            if (dgvProductos.CurrentRow != null)
             {
-                return Convert.ToInt32(dgvProductos.CurrentRow.Cells["colId"].Value);
+                object valor =
+                    dgvProductos.CurrentRow.Cells["colId"].Value;
+
+                if (valor != null && valor != DBNull.Value)
+                {
+                    return Convert.ToInt32(valor);
+                }
             }
+
             return null;
         }
 
         private void ItemEditar_Click(object sender, EventArgs e)
         {
             int? idProducto = ObtenerIdSeleccionado();
+
             if (idProducto.HasValue)
             {
-                var lista = _productoLN.Buscar(null, idProducto.Value);
-                if (lista.Count > 0)
+                using (ucProductoFrm frm =
+                       new ucProductoFrm(idProducto.Value))
                 {
-                    Producto productoAEditar = lista[0];
-                    using (frmProductoModal frm = new frmProductoModal("Editar Producto", productoAEditar))
+                    if (frm.ShowDialog() == DialogResult.OK)
                     {
-                        if (frm.ShowDialog() == DialogResult.OK)
+                        try
                         {
-                            try
-                            {
-                                _productoLN.Guardar(frm.ProductoActual);
-                                CargarTabla();
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(ex.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            }
+                            _productoLN.Guardar(frm.ProductoActual);
+                            CargarTabla();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(
+                                ex.Message,
+                                "Advertencia",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
                         }
                     }
                 }
@@ -141,24 +169,32 @@ namespace ESFE.GestionProductos.UI
         private void ItemEliminar_Click(object sender, EventArgs e)
         {
             int? idProducto = ObtenerIdSeleccionado();
+
             if (idProducto.HasValue)
             {
-                DialogResult confirmacion = MessageBox.Show(
-                    "¿Está seguro de desactivar este producto?",
-                    "Confirmación",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question);
+                DialogResult confirmacion =
+                    MessageBox.Show(
+                        "¿Está seguro de desactivar este producto?",
+                        "Confirmación",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
 
                 if (confirmacion == DialogResult.Yes)
                 {
                     try
                     {
-                        _productoLN.EliminarLogico(idProducto.Value);
+                        _productoLN.EliminarLogico(
+                            (short)idProducto.Value);
+
                         CargarTabla();
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(
+                            ex.Message,
+                            "Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
                     }
                 }
             }
@@ -171,35 +207,32 @@ namespace ESFE.GestionProductos.UI
             if (string.IsNullOrEmpty(criterio))
             {
                 CargarTabla();
+                return;
             }
-            else
+
+            var resultados =
+                _productoLN.Buscar(criterio, null);
+
+            DataTable dt = new DataTable();
+
+            dt.Columns.Add("IdProductoPK", typeof(short));
+            dt.Columns.Add("Nombre", typeof(string));
+            dt.Columns.Add("PrecioVenta", typeof(decimal));
+            dt.Columns.Add("IdCategoriaFK", typeof(short));
+            dt.Columns.Add("Estado", typeof(bool));
+
+            foreach (var prod in resultados)
             {
-                var resultados = _productoLN.Buscar(criterio, null);
-
-                DataTable dt = new DataTable();
-                dt.Columns.Add("ID Producto", typeof(int));
-                dt.Columns.Add("Nombre Completo", typeof(string));
-                dt.Columns.Add("Código", typeof(string));
-                dt.Columns.Add("Precio", typeof(decimal));
-                dt.Columns.Add("Stock", typeof(int));
-                dt.Columns.Add("Categoría", typeof(object));
-                dt.Columns.Add("Estado", typeof(object));
-
-                foreach (var prod in resultados)
-                {
-                    dt.Rows.Add(
-                        prod.IdProductoPK,
-                        prod.Nombre,
-                        prod.Codigo,
-                        prod.Precio,
-                        prod.Stock,
-                        (object)prod.IdCategoriaFK ?? DBNull.Value,
-                        prod.Estado.HasValue ? (prod.Estado.Value ? "Activo" : "Inactivo") : "Inactivo"
-                    );
-                }
-
-                dgvProductos.DataSource = dt;
+                dt.Rows.Add(
+                    prod.IdProductoPK,
+                    prod.Nombre,
+                    prod.PrecioVenta ?? 0,
+                    prod.IdCategoriaFK ?? (object)DBNull.Value,
+                    prod.Estado ?? false
+                );
             }
+
+            dgvProductos.DataSource = dt;
         }
     }
 }

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using Microsoft.Data.SqlClient;
-using ESFE.SysDesarrollo.DAL; // Asegúrate de importar el namespace de tu DBComun
-using System.Text;
+using ESFE.SysDesarrollo.DAL;
 
 namespace ESFE.GestionProductos.DAL
 {
@@ -12,19 +9,24 @@ namespace ESFE.GestionProductos.DAL
         public DataTable ListarUsuarios()
         {
             DataTable dt = new DataTable();
+
             using (IDbConnection conexion = DBComun.ObtenerConexion())
             {
                 conexion.Open();
-                using (IDbCommand comando = conexion.CreateCommand())
+
+                using (SqlCommand comando = new SqlCommand(
+                    "SP_ListarUsuarios",
+                    conexion as SqlConnection))
                 {
-                    comando.CommandText = "SP_ListarUsuarios";
                     comando.CommandType = CommandType.StoredProcedure;
-                    using (IDataAdapter adaptador = new System.Data.SqlClient.SqlDataAdapter(comando as System.Data.SqlClient.SqlCommand))
+
+                    using (SqlDataAdapter adaptador = new SqlDataAdapter(comando))
                     {
                         adaptador.Fill(dt);
                     }
                 }
             }
+
             return dt;
         }
     }
