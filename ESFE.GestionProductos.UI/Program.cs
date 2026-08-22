@@ -1,8 +1,11 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+<<<<<<< HEAD
 using MaterialSkin;
 using MaterialSkin.Controls;
+=======
+>>>>>>> b6dc65c524b4788597c285e5892de4f2a5c13eff
 
 namespace ESFE.GestionProductos.UI
 {
@@ -13,6 +16,7 @@ namespace ESFE.GestionProductos.UI
         {
             ApplicationConfiguration.Initialize();
 
+<<<<<<< HEAD
             // 1. Crear el formulario principal que contendrá el UserControl
             MaterialForm formContenedor = new MaterialForm
             {
@@ -43,6 +47,9 @@ namespace ESFE.GestionProductos.UI
 
             // 4. Ejecutar la aplicación
             Application.Run(formContenedor);
+=======
+            Application.Run(new login());
+>>>>>>> b6dc65c524b4788597c285e5892de4f2a5c13eff
         }
     }
 }
