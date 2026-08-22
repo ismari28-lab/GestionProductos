@@ -1,8 +1,8 @@
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 using MaterialSkin;
 using MaterialSkin.Controls;
-using ESFE.GestionProductos.UI;
 
 namespace ESFE.GestionProductos.UI
 {
@@ -12,35 +12,37 @@ namespace ESFE.GestionProductos.UI
         static void Main()
         {
             ApplicationConfiguration.Initialize();
-            Application.Run(new FrmCatalogoProductos());
-        }
-    }
 
-    /// <summary>
-    /// Formulario mínimo solo para probar el UserControl UcCatalogoProductos.
-    /// Sustitúyelo por tu formulario principal real cuando lo integres.
-    /// </summary>
-    public class FrmCatalogoProductos : MaterialForm
-    {
-        private readonly MaterialSkinManager _skinManager;
+            // 1. Crear el formulario principal que contendrá el UserControl
+            MaterialForm formContenedor = new MaterialForm
+            {
+                Text = "Sistema de Gestión de Productos - Recuperar Contraseña",
+                Size = new Size(700, 500),
+                StartPosition = FormStartPosition.CenterScreen,
+                MaximizeBox = false,
+                Sizable = false
+            };
 
-        public FrmCatalogoProductos()
-        {
-            Text = "Catálogo de Productos";
-            Width = 700;
-            Height = 700;
+            // 2. Configurar el tema visual de MaterialSkin
+            var materialSkinManager = MaterialSkinManager.Instance;
+            materialSkinManager.AddFormToManage(formContenedor);
+            materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
+            materialSkinManager.ColorScheme = new ColorScheme(
+                Primary.BlueGrey800, Primary.BlueGrey900,
+                Primary.BlueGrey500, Accent.LightBlue200,
+                TextShade.WHITE
+            );
 
-            _skinManager = MaterialSkinManager.Instance;
-            _skinManager.AddFormToManage(this);
-            _skinManager.Theme = MaterialSkinManager.Themes.LIGHT;
-            _skinManager.ColorScheme = new ColorScheme(
-                Primary.Blue700, Primary.Blue800, Primary.Blue500,
-                Accent.LightBlue200, TextShade.WHITE);
+            // 3. Instanciar tu UserControl y agregarlo al formulario
+            uCRecuperarContraseña ucRecuperar = new uCRecuperarContraseña
+            {
+                Location = new Point(10, 70) // Posiciona el control debajo de la barra de título de MaterialSkin
+            };
 
-            var ucCatalogo = new UcCatalogoProductos { Dock = DockStyle.Fill };
-            Controls.Add(ucCatalogo);
-            
-            Application.Run(new login()); 
+            formContenedor.Controls.Add(ucRecuperar);
+
+            // 4. Ejecutar la aplicación
+            Application.Run(formContenedor);
         }
     }
 }

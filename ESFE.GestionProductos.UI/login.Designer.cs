@@ -2,15 +2,8 @@
 {
     partial class login
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,14 +15,11 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             cardLogin = new MaterialSkin.Controls.MaterialCard();
             btnIniciarSesion = new MaterialSkin.Controls.MaterialButton();
+            btnRecuperarContraseña = new MaterialSkin.Controls.MaterialButton();
             txtContraseña = new MaterialSkin.Controls.MaterialTextBox2();
             txtUsuario = new MaterialSkin.Controls.MaterialTextBox2();
             lblTitulo = new MaterialSkin.Controls.MaterialLabel();
@@ -39,6 +29,7 @@
             // cardLogin
             // 
             cardLogin.BackColor = Color.FromArgb(255, 255, 255);
+            cardLogin.Controls.Add(btnRecuperarContraseña);
             cardLogin.Controls.Add(btnIniciarSesion);
             cardLogin.Controls.Add(txtContraseña);
             cardLogin.Controls.Add(txtUsuario);
@@ -72,6 +63,26 @@
             btnIniciarSesion.UseAccentColor = false;
             btnIniciarSesion.UseVisualStyleBackColor = true;
             btnIniciarSesion.Click += btnIniciarSesion_Click;
+            // 
+            // btnRecuperarContraseña
+            // 
+            btnRecuperarContraseña.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            btnRecuperarContraseña.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            btnRecuperarContraseña.Depth = 0;
+            btnRecuperarContraseña.HighEmphasis = false;
+            btnRecuperarContraseña.Icon = null;
+            btnRecuperarContraseña.Location = new Point(150, 385);
+            btnRecuperarContraseña.Margin = new Padding(6, 10, 6, 10);
+            btnRecuperarContraseña.MouseState = MaterialSkin.MouseState.HOVER;
+            btnRecuperarContraseña.Name = "btnRecuperarContraseña";
+            btnRecuperarContraseña.NoAccentTextColor = Color.Empty;
+            btnRecuperarContraseña.Size = new Size(220, 30);
+            btnRecuperarContraseña.TabIndex = 4;
+            btnRecuperarContraseña.Text = "¿Olvidó su contraseña?";
+            btnRecuperarContraseña.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Text;
+            btnRecuperarContraseña.UseAccentColor = false;
+            btnRecuperarContraseña.UseVisualStyleBackColor = true;
+            btnRecuperarContraseña.Click += btnRecuperarContraseña_Click;
             // 
             // txtContraseña
             // 
@@ -171,5 +182,6 @@
         private MaterialSkin.Controls.MaterialTextBox2 txtUsuario;
         private MaterialSkin.Controls.MaterialTextBox2 txtContraseña;
         private MaterialSkin.Controls.MaterialButton btnIniciarSesion;
+        private MaterialSkin.Controls.MaterialButton btnRecuperarContraseña;
     }
 }

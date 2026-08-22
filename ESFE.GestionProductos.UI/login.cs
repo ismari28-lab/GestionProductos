@@ -7,23 +7,21 @@ using ESFE.GestionProductos.EN;
 
 namespace ESFE.GestionProductos.UI
 {
-    // El nombre debe ser 'login' en minúsculas para coincidir con login.Designer.cs
     public partial class login : MaterialForm
     {
-        public login() // El constructor debe ser igual: login()
-        {
-            InitializeComponent(); // ¡Ahora sí lo reconoce perfectamente!
+        public login()
+{
+    InitializeComponent();
 
-            // Configuración del tema de MaterialSkin
-            var materialSkinManager = MaterialSkinManager.Instance;
-            materialSkinManager.AddFormToManage(this);
-            materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
-            materialSkinManager.ColorScheme = new ColorScheme(
-                Primary.Blue600, Primary.Blue700,
-                Primary.Blue200, Accent.Orange700,
-                TextShade.WHITE
-            );
-        }
+    var materialSkinManager = MaterialSkinManager.Instance;
+    materialSkinManager.AddFormToManage(this);
+    materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
+    materialSkinManager.ColorScheme = new ColorScheme(
+        Primary.Blue600, Primary.Blue400,
+        Primary.Blue100, Accent.LightBlue200,
+        TextShade.WHITE
+    );
+}
 
         private void login_Resize(object? sender, EventArgs e)
         {
@@ -39,8 +37,6 @@ namespace ESFE.GestionProductos.UI
 
         private void btnIniciarSesion_Click(object sender, EventArgs e)
         {
-
-
             try
             {
                 string nombre = txtUsuario.Text.Trim();
@@ -52,20 +48,15 @@ namespace ESFE.GestionProductos.UI
                     return;
                 }
 
-                // Llamada limpia sin el rol
                 Usuario? usuarioAutenticado = UsuarioDAL.ValidarLogin(nombre, password);
 
                 if (usuarioAutenticado != null)
                 {
                     MessageBox.Show($"¡Bienvenido, {usuarioAutenticado.Nombre}!", "Acceso Concedido", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    // Aquí puedes usar usuarioAutenticado.Id_RolFK para saber qué permisos o qué menú mostrar.
-
                     this.Hide();
                     frmMain pantallaPrincipal = new frmMain();
                     pantallaPrincipal.Show();
-                    // FormPrincipal principal = new FormPrincipal(usuarioAutenticado);
-                    // principal.Show();
                 }
                 else
                 {
@@ -78,7 +69,31 @@ namespace ESFE.GestionProductos.UI
             {
                 MessageBox.Show($"Ocurrió un error al intentar iniciar sesión: {ex.Message}", "Error Crítico", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
 
+        private void btnRecuperarContraseña_Click(object sender, EventArgs e)
+        {
+            var frmRecuperar = new MaterialForm
+            {
+                Text = "Recuperar contraseña",
+                StartPosition = FormStartPosition.CenterParent,
+                FormBorderStyle = FormBorderStyle.FixedDialog,
+                MaximizeBox = false,
+                MinimizeBox = false
+            };
+
+            var materialSkinManager = MaterialSkinManager.Instance;
+            materialSkinManager.AddFormToManage(frmRecuperar);
+
+            var uc = new uCRecuperarContraseña
+            {
+                Dock = DockStyle.Fill
+            };
+
+            frmRecuperar.ClientSize = uc.Size;
+            frmRecuperar.Controls.Add(uc);
+
+            frmRecuperar.ShowDialog(this);
         }
     }
 }
