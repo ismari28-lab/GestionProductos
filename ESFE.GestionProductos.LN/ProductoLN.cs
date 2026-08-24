@@ -17,10 +17,13 @@ namespace ESFE.GestionProductos.LN
         }
 
         // Buscar Productos
-        public List<Producto> Buscar(string nombre = null, short? idProducto = null)
-        {
-            return productoDAL.Buscar(nombre, idProducto);
-        }
+        public List<Producto> Buscar(
+        string nombre = null,
+        short? idProducto = null,
+        string codigo = null)
+            {
+                return productoDAL.Buscar(nombre, idProducto, codigo);
+            }
 
         // Guardar Producto
         public int Guardar(Producto producto)

@@ -40,5 +40,7 @@ namespace ESFE.GestionProductos.EN
 
         [ForeignKey("IdCategoriaFK")]
         public virtual Categoria? Categoria { get; set; }
+
+        public string Codigo { get; set; }
     }
 }

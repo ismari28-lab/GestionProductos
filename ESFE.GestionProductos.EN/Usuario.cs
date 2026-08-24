@@ -19,5 +19,15 @@ namespace ESFE.GestionProductos.EN
         public short? Id_RolFK { get; set; }
 
         public bool? Estado { get; set; }
+
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        public string NombreRol { get; set; }
+
+        // Computed: lo que se muestra en el combo
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        public string NombreConRol =>
+            string.IsNullOrEmpty(NombreRol)
+                ? Nombre
+                : $"{Nombre} ({NombreRol})";
     }
 }

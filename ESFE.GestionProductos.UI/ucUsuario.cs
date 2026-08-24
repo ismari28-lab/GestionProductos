@@ -4,17 +4,23 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using ESFE.GestionProductos.EN;
+using ESFE.GestionProductos.LN;
 
 namespace ESFE.GestionProductos.UI
 {
     public partial class ucUsuario : UserControl
     {
+        private readonly UserLN _userLN = new UserLN();
         private List<Usuario> listaUsuariosMemoria = new List<Usuario>();
 
         // Paginación
         private const int TAMANIO_PAGINA = 8;
         private int paginaActual = 1;
         private int totalPaginas = 1;
+
+        // Texto de la celda de acciones (usado también para el hit-test de clicks)
+        private const string TextoEditar = "Editar   ";
+        private const string TextoAcciones = TextoEditar + "Eliminar";
 
         public ucUsuario()
         {
@@ -35,8 +41,12 @@ namespace ESFE.GestionProductos.UI
 
             cboFiltro.SelectedIndex = 0;
 
-            CargarDatosPrueba();
+            CargarUsuarios();
             LlenarGrid();
+
+            // Búsqueda automática al escribir o cambiar el filtro
+            txtBuscar.TextChanged += (s, e) => { paginaActual = 1; LlenarGrid(); };
+            cboFiltro.SelectedIndexChanged += (s, e) => { paginaActual = 1; LlenarGrid(); };
         }
 
         private void EstilizarGrid()
@@ -101,26 +111,18 @@ namespace ESFE.GestionProductos.UI
             };
         }
 
-        private void CargarDatosPrueba()
+        private void CargarUsuarios()
         {
-            listaUsuariosMemoria = new List<Usuario>
+            try
             {
-                new Usuario { IdUsuarioPK = 1, Nombre = "admin",  Password = "xxx", Id_RolFK = 1, Estado = true  },
-                new Usuario { IdUsuarioPK = 2, Nombre = "jperez", Password = "xxx", Id_RolFK = 2, Estado = true  },
-                new Usuario { IdUsuarioPK = 3, Nombre = "mlopez", Password = "xxx", Id_RolFK = 3, Estado = false },
-            };
-        }
-
-        private string ObtenerNombreRol(short? rol)
-        {
-            return rol switch
+                listaUsuariosMemoria = _userLN.Buscar(null, null);
+            }
+            catch (Exception ex)
             {
-                1 => "Administrador",
-                2 => "Vendedor",
-                3 => "Bodeguero",
-                4 => "Gerente",
-                _ => "Sin Rol"
-            };
+                MessageBox.Show("Error al cargar usuarios: " + ex.Message, "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                listaUsuariosMemoria = new List<Usuario>();
+            }
         }
 
         private void LlenarGrid()
@@ -157,9 +159,9 @@ namespace ESFE.GestionProductos.UI
                 int rowIndex = dgvUsuarios.Rows.Add(
                     user.IdUsuarioPK,
                     user.Nombre ?? "",
-                    ObtenerNombreRol(user.Id_RolFK),
+                    string.IsNullOrEmpty(user.NombreRol) ? "Sin Rol" : user.NombreRol,
                     user.Estado == true ? "Activo" : "Inactivo",
-                    "Editar   Eliminar"
+                    TextoAcciones
                 );
 
                 dgvUsuarios.Rows[rowIndex].Tag = user;
@@ -183,9 +185,18 @@ namespace ESFE.GestionProductos.UI
 
             var celda = dgvUsuarios.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
             var pos = dgvUsuarios.PointToClient(Cursor.Position);
-            int xRelativo = pos.X - celda.Left;
 
-            if (xRelativo > celda.Width * 0.6)
+            // El texto está alineado a la derecha, así que calculamos el límite
+            // entre "Editar" y "Eliminar" a partir del ancho real del texto renderizado,
+            // en vez de un porcentaje fijo del ancho de la celda (que varía según las columnas).
+            var estilo = dgvUsuarios.Rows[e.RowIndex].Cells[e.ColumnIndex].InheritedStyle;
+            Size tamanoTotal = TextRenderer.MeasureText(TextoAcciones, estilo.Font);
+            Size tamanoEditar = TextRenderer.MeasureText(TextoEditar, estilo.Font);
+
+            int inicioTexto = celda.Right - estilo.Padding.Right - tamanoTotal.Width;
+            int limiteEditar = inicioTexto + tamanoEditar.Width;
+
+            if (pos.X > limiteEditar)
                 EliminarSeleccionado();
             else
                 EditarSeleccionado();
@@ -201,21 +212,22 @@ namespace ESFE.GestionProductos.UI
 
         private void BtnCrear_Click(object sender, EventArgs e)
         {
-            // TODO: reemplazar por tu frmUsuarioModal cuando lo tengas
-            MessageBox.Show("Aquí se abriría el modal para crear un nuevo usuario.",
-                "Crear Usuario", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-            // Ejemplo cuando tengas el modal:
-            // using (var modal = new frmUsuarioModal())
-            // {
-            //     if (modal.ShowDialog() == DialogResult.OK)
-            //     {
-            //         Usuario nuevo = modal.UsuarioActual;
-            //         nuevo.IdUsuarioPK = listaUsuariosMemoria.Count + 1;
-            //         listaUsuariosMemoria.Add(nuevo);
-            //         LlenarGrid();
-            //     }
-            // }
+            using (var modal = new frmUsuarioModal("Crear Usuario"))
+            {
+                if (modal.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        _userLN.Guardar(modal.UsuarioActual);
+                        CargarUsuarios();
+                        LlenarGrid();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
         }
 
         private void EditarSeleccionado()
@@ -228,8 +240,22 @@ namespace ESFE.GestionProductos.UI
                 return;
             }
 
-            MessageBox.Show($"Aquí se abriría el modal para editar a: {user.Nombre}",
-                "Editar Usuario", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            using (var modal = new frmUsuarioModal("Editar Usuario", user))
+            {
+                if (modal.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        _userLN.Guardar(modal.UsuarioActual);
+                        CargarUsuarios();
+                        LlenarGrid();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
         }
 
         private void EliminarSeleccionado()
@@ -249,8 +275,16 @@ namespace ESFE.GestionProductos.UI
 
             if (conf == DialogResult.Yes)
             {
-                listaUsuariosMemoria.Remove(user);
-                LlenarGrid();
+                try
+                {
+                    _userLN.EliminarLogico((short)user.IdUsuarioPK);
+                    CargarUsuarios();
+                    LlenarGrid();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 

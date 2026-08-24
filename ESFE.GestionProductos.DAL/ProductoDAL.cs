@@ -26,10 +26,13 @@ namespace ESFE.GestionProductos.DAL
                 }
             }
             return dt;
-        } // Se removió la llave de cierre que cortaba la clase aquí
+        }
 
         // Buscar Productos
-        public List<Producto> Buscar(string nombre = null, short? idProducto = null)
+        public List<Producto> Buscar(
+    string nombre = null,
+    short? idProducto = null,
+    string codigo = null)
         {
             List<Producto> lista = new List<Producto>();
             using (IDbConnection conexion = DBComun.ObtenerConexion())
@@ -39,6 +42,7 @@ namespace ESFE.GestionProductos.DAL
                 {
                     comando.CommandType = CommandType.StoredProcedure;
                     comando.Parameters.AddWithValue("@Nombre", (object)nombre ?? DBNull.Value);
+                    comando.Parameters.AddWithValue("@Codigo", (object)codigo ?? DBNull.Value);
                     comando.Parameters.AddWithValue("@IdProductoPK", (object)idProducto ?? DBNull.Value);
 
                     using (SqlDataReader lector = comando.ExecuteReader() as SqlDataReader)
@@ -46,6 +50,7 @@ namespace ESFE.GestionProductos.DAL
                         while (lector.Read())
                         {
                             int ordId = lector.GetOrdinal("IdProductoPK");
+                            int ordCodigo = lector.GetOrdinal("Codigo");
                             int ordNombre = lector.GetOrdinal("Nombre");
                             int ordDescripcion = lector.GetOrdinal("Descripcion");
                             int ordPrecioCompra = lector.GetOrdinal("PrecioCompra");
@@ -56,9 +61,10 @@ namespace ESFE.GestionProductos.DAL
                             int ordIdCategoriaFK = lector.GetOrdinal("IdCategoriaFK");
                             int ordEstado = lector.GetOrdinal("Estado");
 
-                            Producto producto = new Producto
+                            lista.Add(new Producto
                             {
                                 IdProductoPK = Convert.ToInt16(lector[ordId]),
+                                Codigo = lector.IsDBNull(ordCodigo) ? string.Empty : lector.GetString(ordCodigo),
                                 Nombre = lector.IsDBNull(ordNombre) ? string.Empty : lector.GetString(ordNombre),
                                 Descripcion = lector.IsDBNull(ordDescripcion) ? string.Empty : lector.GetString(ordDescripcion),
                                 PrecioCompra = lector.IsDBNull(ordPrecioCompra) ? (decimal?)null : Convert.ToDecimal(lector[ordPrecioCompra]),
@@ -68,9 +74,7 @@ namespace ESFE.GestionProductos.DAL
                                 IdProveedorFK = lector.IsDBNull(ordIdProveedorFK) ? (short?)null : Convert.ToInt16(lector[ordIdProveedorFK]),
                                 IdCategoriaFK = lector.IsDBNull(ordIdCategoriaFK) ? (short?)null : Convert.ToInt16(lector[ordIdCategoriaFK]),
                                 Estado = lector.IsDBNull(ordEstado) ? (bool?)null : Convert.ToBoolean(lector[ordEstado])
-                            };
-
-                            lista.Add(producto);
+                            });
                         }
                     }
                 }
@@ -78,18 +82,18 @@ namespace ESFE.GestionProductos.DAL
             return lista;
         }
 
-        // Insertar Productos
+        // Insertar Producto
         public int Insertar(Producto producto)
         {
             using (IDbConnection conexion = DBComun.ObtenerConexion())
             {
                 conexion.Open();
-                // Corregido: Se cambió "SP_InsertarEmpleado" por "SP_InsertarProducto"
                 using (SqlCommand comando = new SqlCommand("SP_InsertarProducto", conexion as SqlConnection))
                 {
                     comando.CommandType = CommandType.StoredProcedure;
-                    comando.Parameters.AddWithValue("@Nombre", producto.Nombre);
-                    comando.Parameters.AddWithValue("@Descripcion", producto.Descripcion);
+                    comando.Parameters.AddWithValue("@Codigo", (object)producto.Codigo ?? DBNull.Value);
+                    comando.Parameters.AddWithValue("@Nombre", (object)producto.Nombre ?? DBNull.Value);
+                    comando.Parameters.AddWithValue("@Descripcion", (object)producto.Descripcion ?? DBNull.Value);
                     comando.Parameters.AddWithValue("@PrecioCompra", (object)producto.PrecioCompra ?? DBNull.Value);
                     comando.Parameters.AddWithValue("@PrecioVenta", (object)producto.PrecioVenta ?? DBNull.Value);
                     comando.Parameters.AddWithValue("@PorcentajeIVA", (object)producto.PorcentajeIVA ?? DBNull.Value);
@@ -103,7 +107,7 @@ namespace ESFE.GestionProductos.DAL
             }
         }
 
-        // Actualización
+        // Actualizar
         public int Actualizar(Producto producto)
         {
             using (IDbConnection conexion = DBComun.ObtenerConexion())
@@ -112,10 +116,10 @@ namespace ESFE.GestionProductos.DAL
                 using (SqlCommand comando = new SqlCommand("sp_ActualizarProducto", conexion as SqlConnection))
                 {
                     comando.CommandType = CommandType.StoredProcedure;
-                    // Agregado: Parámetro para identificador único del producto a actualizar
                     comando.Parameters.AddWithValue("@IdProductoPK", producto.IdProductoPK);
-                    comando.Parameters.AddWithValue("@Nombre", producto.Nombre);
-                    comando.Parameters.AddWithValue("@Descripcion", producto.Descripcion);
+                    comando.Parameters.AddWithValue("@Codigo", (object)producto.Codigo ?? DBNull.Value);
+                    comando.Parameters.AddWithValue("@Nombre", (object)producto.Nombre ?? DBNull.Value);
+                    comando.Parameters.AddWithValue("@Descripcion", (object)producto.Descripcion ?? DBNull.Value);
                     comando.Parameters.AddWithValue("@PrecioCompra", (object)producto.PrecioCompra ?? DBNull.Value);
                     comando.Parameters.AddWithValue("@PrecioVenta", (object)producto.PrecioVenta ?? DBNull.Value);
                     comando.Parameters.AddWithValue("@PorcentajeIVA", (object)producto.PorcentajeIVA ?? DBNull.Value);
@@ -139,10 +143,9 @@ namespace ESFE.GestionProductos.DAL
                 {
                     comando.CommandType = CommandType.StoredProcedure;
                     comando.Parameters.AddWithValue("@IdProducto", idProducto);
-
                     return comando.ExecuteNonQuery();
                 }
             }
         }
-    } // Cierre correcto de la clase ProductoDAL
-} // Cierre correcto del namespace
+    }
+}

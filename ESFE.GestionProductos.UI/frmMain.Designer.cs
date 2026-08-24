@@ -31,17 +31,21 @@
             pnlContenedorEmpleados = new Panel();
             tabProductos = new TabPage();
             pnlContenedorProductos = new Panel();
+            tabUsuarios = new TabPage();
+            pnlContenedorUsuarios = new Panel();
             menuTabControl.SuspendLayout();
             tabInicio.SuspendLayout();
             tabEmpleados.SuspendLayout();
             tabProductos.SuspendLayout();
+            tabUsuarios.SuspendLayout();
             SuspendLayout();
-            // 
+            //
             // menuTabControl
-            // 
+            //
             menuTabControl.Controls.Add(tabInicio);
             menuTabControl.Controls.Add(tabEmpleados);
             menuTabControl.Controls.Add(tabProductos);
+            menuTabControl.Controls.Add(tabUsuarios);
             menuTabControl.Depth = 0;
             menuTabControl.Dock = DockStyle.Fill;
             menuTabControl.Location = new Point(3, 64);
@@ -108,7 +112,26 @@
             pnlContenedorProductos.Name = "pnlContenedorProductos";
             pnlContenedorProductos.Size = new Size(980, 687);
             pnlContenedorProductos.TabIndex = 0;
-            // 
+            //
+            // tabUsuarios
+            //
+            tabUsuarios.Controls.Add(pnlContenedorUsuarios);
+            tabUsuarios.Location = new Point(4, 24);
+            tabUsuarios.Name = "tabUsuarios";
+            tabUsuarios.Padding = new Padding(3);
+            tabUsuarios.Size = new Size(986, 693);
+            tabUsuarios.TabIndex = 3;
+            tabUsuarios.Text = "Usuarios";
+            tabUsuarios.UseVisualStyleBackColor = true;
+            //
+            // pnlContenedorUsuarios
+            //
+            pnlContenedorUsuarios.Dock = DockStyle.Fill;
+            pnlContenedorUsuarios.Location = new Point(3, 3);
+            pnlContenedorUsuarios.Name = "pnlContenedorUsuarios";
+            pnlContenedorUsuarios.Size = new Size(980, 687);
+            pnlContenedorUsuarios.TabIndex = 0;
+            //
             // frmMain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -121,6 +144,7 @@
             tabInicio.ResumeLayout(false);
             tabEmpleados.ResumeLayout(false);
             tabProductos.ResumeLayout(false);
+            tabUsuarios.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -133,5 +157,7 @@
         private TabPage tabProductos;
         private Panel pnlContenedorEmpleados;
         private Panel pnlContenedorProductos;
+        private TabPage tabUsuarios;
+        private Panel pnlContenedorUsuarios;
     }
 }

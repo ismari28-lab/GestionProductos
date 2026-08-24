@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using MaterialSkin.Controls;
 using ESFE.GestionProductos.EN;
+using ESFE.GestionProductos.LN;
 
 namespace ESFE.GestionProductos.UI
 {
@@ -37,7 +38,30 @@ namespace ESFE.GestionProductos.UI
             btnCancelar.Click += (s, e) => this.DialogResult = DialogResult.Cancel;
             btnGuardar.Click += BtnGuardar_Click;
 
-            this.Load += (s, e) => CargarDatosEnControles();
+            this.Load += (s, e) =>
+            {
+                CargarCombos();
+                CargarDatosEnControles();
+            };
+        }
+
+        private void CargarCombos()
+        {
+            try
+            {
+                var roles = new RolLN().Listar();
+
+                cmbRol.DataSource = null;
+                cmbRol.DisplayMember = "NombreRol";
+                cmbRol.ValueMember = "IdRolPK";
+                cmbRol.DataSource = roles;
+                cmbRol.SelectedIndex = -1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudieron cargar los roles: " + ex.Message,
+                    "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void AplicarEstilos()

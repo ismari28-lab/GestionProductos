@@ -25,16 +25,21 @@
             btnGuardar = new MaterialSkin.Controls.MaterialButton();
             btnCancelar = new MaterialSkin.Controls.MaterialButton();
             chkEstado = new MaterialSkin.Controls.MaterialCheckbox();
-            txtStockMinimo = new MaterialSkin.Controls.MaterialMaskedTextBox();
-            txtStock = new MaterialSkin.Controls.MaterialMaskedTextBox();
+            chkAplicaIVA = new MaterialSkin.Controls.MaterialCheckbox();
+            cmbProveedor = new MaterialSkin.Controls.MaterialComboBox();
             cmbCategoria = new MaterialSkin.Controls.MaterialComboBox();
-            txtPrecio = new MaterialSkin.Controls.MaterialMaskedTextBox();
+            txtCodigo = new MaterialSkin.Controls.MaterialMaskedTextBox();
             txtNombre = new MaterialSkin.Controls.MaterialMaskedTextBox();
+            txtDescripcion = new MaterialSkin.Controls.MaterialMaskedTextBox();
+            txtPrecioCompra = new MaterialSkin.Controls.MaterialMaskedTextBox();
+            txtPrecioVenta = new MaterialSkin.Controls.MaterialMaskedTextBox();
+            txtPorcentajeIVA = new MaterialSkin.Controls.MaterialMaskedTextBox();
             lblSeccionDatos = new MaterialSkin.Controls.MaterialLabel();
             pnlHeader.SuspendLayout();
             pnlContenedorCentral.SuspendLayout();
             cardFormulario.SuspendLayout();
             SuspendLayout();
+
             // 
             // pnlHeader
             // 
@@ -42,10 +47,11 @@
             pnlHeader.Controls.Add(btnCerrar);
             pnlHeader.Dock = DockStyle.Top;
             pnlHeader.Location = new Point(0, 0);
-            pnlHeader.Margin = new Padding(2, 2, 2, 2);
+            pnlHeader.Margin = new Padding(2);
             pnlHeader.Name = "pnlHeader";
             pnlHeader.Size = new Size(900, 36);
             pnlHeader.TabIndex = 0;
+
             // 
             // btnCerrar
             // 
@@ -65,6 +71,7 @@
             btnCerrar.Text = "X";
             btnCerrar.UseVisualStyleBackColor = true;
             btnCerrar.Click += btnCerrar_Click;
+
             // 
             // pnlContenedorCentral
             // 
@@ -74,12 +81,13 @@
             pnlContenedorCentral.Controls.Add(cardFormulario);
             pnlContenedorCentral.Dock = DockStyle.Fill;
             pnlContenedorCentral.Location = new Point(0, 36);
-            pnlContenedorCentral.Margin = new Padding(2, 2, 2, 2);
+            pnlContenedorCentral.Margin = new Padding(2);
             pnlContenedorCentral.Name = "pnlContenedorCentral";
             pnlContenedorCentral.Padding = new Padding(0, 0, 0, 18);
-            pnlContenedorCentral.Size = new Size(900, 444);
+            pnlContenedorCentral.Size = new Size(900, 604);
             pnlContenedorCentral.TabIndex = 1;
             pnlContenedorCentral.Resize += pnlContenedorCentral_Resize;
+
             // 
             // lblSubtitulo
             // 
@@ -91,6 +99,7 @@
             lblSubtitulo.Size = new Size(852, 18);
             lblSubtitulo.TabIndex = 0;
             lblSubtitulo.Text = "Ingrese los detalles para registrar un nuevo producto en el catálogo";
+
             // 
             // cardFormulario
             // 
@@ -98,11 +107,15 @@
             cardFormulario.Controls.Add(btnGuardar);
             cardFormulario.Controls.Add(btnCancelar);
             cardFormulario.Controls.Add(chkEstado);
-            cardFormulario.Controls.Add(txtStockMinimo);
-            cardFormulario.Controls.Add(txtStock);
+            cardFormulario.Controls.Add(chkAplicaIVA);
+            cardFormulario.Controls.Add(cmbProveedor);
             cardFormulario.Controls.Add(cmbCategoria);
-            cardFormulario.Controls.Add(txtPrecio);
+            cardFormulario.Controls.Add(txtCodigo);
             cardFormulario.Controls.Add(txtNombre);
+            cardFormulario.Controls.Add(txtDescripcion);
+            cardFormulario.Controls.Add(txtPrecioCompra);
+            cardFormulario.Controls.Add(txtPrecioVenta);
+            cardFormulario.Controls.Add(txtPorcentajeIVA);
             cardFormulario.Controls.Add(lblSeccionDatos);
             cardFormulario.Depth = 0;
             cardFormulario.ForeColor = Color.FromArgb(222, 0, 0, 0);
@@ -111,267 +124,9 @@
             cardFormulario.MouseState = MaterialSkin.MouseState.HOVER;
             cardFormulario.Name = "cardFormulario";
             cardFormulario.Padding = new Padding(21, 18, 21, 18);
-            cardFormulario.Size = new Size(852, 360);
+            cardFormulario.Size = new Size(852, 520);
             cardFormulario.TabIndex = 0;
-            // 
-            // btnGuardar
-            // 
-            btnGuardar.AutoSize = false;
-            btnGuardar.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            btnGuardar.Cursor = Cursors.Hand;
-            btnGuardar.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
-            btnGuardar.Depth = 0;
-            btnGuardar.HighEmphasis = true;
-            btnGuardar.Icon = null;
-            btnGuardar.Location = new Point(712, 310);
-            btnGuardar.Margin = new Padding(3, 4, 3, 4);
-            btnGuardar.MouseState = MaterialSkin.MouseState.HOVER;
-            btnGuardar.Name = "btnGuardar";
-            btnGuardar.NoAccentTextColor = Color.Empty;
-            btnGuardar.Size = new Size(119, 29);
-            btnGuardar.TabIndex = 8;
-            btnGuardar.Text = "GUARDAR";
-            btnGuardar.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
-            btnGuardar.UseAccentColor = false;
-            btnGuardar.UseVisualStyleBackColor = true;
-            btnGuardar.Click += btnGuardar_Click;
-            // 
-            // btnCancelar
-            // 
-            btnCancelar.AutoSize = false;
-            btnCancelar.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            btnCancelar.Cursor = Cursors.Hand;
-            btnCancelar.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
-            btnCancelar.Depth = 0;
-            btnCancelar.HighEmphasis = false;
-            btnCancelar.Icon = null;
-            btnCancelar.Location = new Point(597, 310);
-            btnCancelar.Margin = new Padding(3, 4, 10, 4);
-            btnCancelar.MouseState = MaterialSkin.MouseState.HOVER;
-            btnCancelar.Name = "btnCancelar";
-            btnCancelar.NoAccentTextColor = Color.Empty;
-            btnCancelar.Size = new Size(105, 29);
-            btnCancelar.TabIndex = 7;
-            btnCancelar.Text = "CANCELAR";
-            btnCancelar.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Outlined;
-            btnCancelar.UseAccentColor = false;
-            btnCancelar.UseVisualStyleBackColor = true;
-            btnCancelar.Click += btnCancelar_Click;
-            // 
-            // chkEstado
-            // 
-            chkEstado.AutoSize = true;
-            chkEstado.Checked = true;
-            chkEstado.CheckState = CheckState.Checked;
-            chkEstado.Depth = 0;
-            chkEstado.Font = new Font("Microsoft Sans Serif", 16F);
-            chkEstado.Location = new Point(21, 260);
-            chkEstado.Margin = new Padding(0);
-            chkEstado.MouseLocation = new Point(-1, -1);
-            chkEstado.MouseState = MaterialSkin.MouseState.HOVER;
-            chkEstado.Name = "chkEstado";
-            chkEstado.ReadOnly = false;
-            chkEstado.Ripple = true;
-            chkEstado.Size = new Size(79, 37);
-            chkEstado.TabIndex = 6;
-            chkEstado.Text = "Activo";
-            chkEstado.UseVisualStyleBackColor = true;
-            // 
-            // txtStockMinimo
-            // 
-            txtStockMinimo.AllowPromptAsInput = true;
-            txtStockMinimo.AnimateReadOnly = false;
-            txtStockMinimo.AsciiOnly = false;
-            txtStockMinimo.BackgroundImageLayout = ImageLayout.None;
-            txtStockMinimo.BeepOnError = false;
-            txtStockMinimo.CutCopyMaskFormat = MaskFormat.IncludeLiterals;
-            txtStockMinimo.Depth = 0;
-            txtStockMinimo.Font = new Font("Microsoft Sans Serif", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
-            txtStockMinimo.HidePromptOnLeave = false;
-            txtStockMinimo.HideSelection = true;
-            txtStockMinimo.Hint = "Límite Alerta (Stock Bajo)";
-            txtStockMinimo.InsertKeyMode = InsertKeyMode.Default;
-            txtStockMinimo.LeadingIcon = null;
-            txtStockMinimo.Location = new Point(436, 190);
-            txtStockMinimo.Margin = new Padding(2, 2, 2, 2);
-            txtStockMinimo.Mask = "";
-            txtStockMinimo.MaxLength = 32767;
-            txtStockMinimo.MouseState = MaterialSkin.MouseState.OUT;
-            txtStockMinimo.Name = "txtStockMinimo";
-            txtStockMinimo.PasswordChar = '\0';
-            txtStockMinimo.PrefixSuffixText = null;
-            txtStockMinimo.PromptChar = '_';
-            txtStockMinimo.ReadOnly = false;
-            txtStockMinimo.RejectInputOnFirstFailure = false;
-            txtStockMinimo.ResetOnPrompt = true;
-            txtStockMinimo.ResetOnSpace = true;
-            txtStockMinimo.RightToLeft = RightToLeft.No;
-            txtStockMinimo.SelectedText = "";
-            txtStockMinimo.SelectionLength = 0;
-            txtStockMinimo.SelectionStart = 0;
-            txtStockMinimo.ShortcutsEnabled = true;
-            txtStockMinimo.Size = new Size(395, 50);
-            txtStockMinimo.SkipLiterals = true;
-            txtStockMinimo.TabIndex = 5;
-            txtStockMinimo.TabStop = false;
-            txtStockMinimo.TextAlign = HorizontalAlignment.Left;
-            txtStockMinimo.TextMaskFormat = MaskFormat.IncludeLiterals;
-            txtStockMinimo.TrailingIcon = null;
-            txtStockMinimo.UseSystemPasswordChar = false;
-            txtStockMinimo.ValidatingType = null;
-            // 
-            // txtStock
-            // 
-            txtStock.AllowPromptAsInput = true;
-            txtStock.AnimateReadOnly = false;
-            txtStock.AsciiOnly = false;
-            txtStock.BackgroundImageLayout = ImageLayout.None;
-            txtStock.BeepOnError = false;
-            txtStock.CutCopyMaskFormat = MaskFormat.IncludeLiterals;
-            txtStock.Depth = 0;
-            txtStock.Font = new Font("Microsoft Sans Serif", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
-            txtStock.HidePromptOnLeave = false;
-            txtStock.HideSelection = true;
-            txtStock.Hint = "Stock Actual";
-            txtStock.InsertKeyMode = InsertKeyMode.Default;
-            txtStock.LeadingIcon = null;
-            txtStock.Location = new Point(21, 190);
-            txtStock.Margin = new Padding(2, 2, 2, 2);
-            txtStock.Mask = "";
-            txtStock.MaxLength = 32767;
-            txtStock.MouseState = MaterialSkin.MouseState.OUT;
-            txtStock.Name = "txtStock";
-            txtStock.PasswordChar = '\0';
-            txtStock.PrefixSuffixText = null;
-            txtStock.PromptChar = '_';
-            txtStock.ReadOnly = false;
-            txtStock.RejectInputOnFirstFailure = false;
-            txtStock.ResetOnPrompt = true;
-            txtStock.ResetOnSpace = true;
-            txtStock.RightToLeft = RightToLeft.No;
-            txtStock.SelectedText = "";
-            txtStock.SelectionLength = 0;
-            txtStock.SelectionStart = 0;
-            txtStock.ShortcutsEnabled = true;
-            txtStock.Size = new Size(395, 50);
-            txtStock.SkipLiterals = true;
-            txtStock.TabIndex = 4;
-            txtStock.TabStop = false;
-            txtStock.TextAlign = HorizontalAlignment.Left;
-            txtStock.TextMaskFormat = MaskFormat.IncludeLiterals;
-            txtStock.TrailingIcon = null;
-            txtStock.UseSystemPasswordChar = false;
-            txtStock.ValidatingType = null;
-            // 
-            // cmbCategoria
-            // 
-            cmbCategoria.AutoResize = false;
-            cmbCategoria.BackColor = Color.FromArgb(255, 255, 255);
-            cmbCategoria.Depth = 0;
-            cmbCategoria.DrawMode = DrawMode.OwnerDrawVariable;
-            cmbCategoria.DropDownHeight = 174;
-            cmbCategoria.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbCategoria.DropDownWidth = 121;
-            cmbCategoria.Font = new Font("Microsoft Sans Serif", 14F, FontStyle.Bold, GraphicsUnit.Pixel);
-            cmbCategoria.ForeColor = Color.FromArgb(222, 0, 0, 0);
-            cmbCategoria.FormattingEnabled = true;
-            cmbCategoria.Hint = "Categoría";
-            cmbCategoria.IntegralHeight = false;
-            cmbCategoria.ItemHeight = 43;
-            cmbCategoria.Location = new Point(436, 120);
-            cmbCategoria.Margin = new Padding(2, 2, 2, 2);
-            cmbCategoria.MaxDropDownItems = 4;
-            cmbCategoria.MouseState = MaterialSkin.MouseState.OUT;
-            cmbCategoria.Name = "cmbCategoria";
-            cmbCategoria.Size = new Size(395, 50);
-            cmbCategoria.StartIndex = 0;
-            cmbCategoria.TabIndex = 3;
-            // 
-            // txtPrecio
-            // 
-            txtPrecio.AllowPromptAsInput = true;
-            txtPrecio.AnimateReadOnly = false;
-            txtPrecio.AsciiOnly = false;
-            txtPrecio.BackgroundImageLayout = ImageLayout.None;
-            txtPrecio.BeepOnError = false;
-            txtPrecio.CutCopyMaskFormat = MaskFormat.IncludeLiterals;
-            txtPrecio.Depth = 0;
-            txtPrecio.Font = new Font("Microsoft Sans Serif", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
-            txtPrecio.HidePromptOnLeave = false;
-            txtPrecio.HideSelection = true;
-            txtPrecio.Hint = "Precio ($)";
-            txtPrecio.InsertKeyMode = InsertKeyMode.Default;
-            txtPrecio.LeadingIcon = null;
-            txtPrecio.Location = new Point(21, 120);
-            txtPrecio.Margin = new Padding(2, 2, 2, 2);
-            txtPrecio.Mask = "";
-            txtPrecio.MaxLength = 32767;
-            txtPrecio.MouseState = MaterialSkin.MouseState.OUT;
-            txtPrecio.Name = "txtPrecio";
-            txtPrecio.PasswordChar = '\0';
-            txtPrecio.PrefixSuffixText = null;
-            txtPrecio.PromptChar = '_';
-            txtPrecio.ReadOnly = false;
-            txtPrecio.RejectInputOnFirstFailure = false;
-            txtPrecio.ResetOnPrompt = true;
-            txtPrecio.ResetOnSpace = true;
-            txtPrecio.RightToLeft = RightToLeft.No;
-            txtPrecio.SelectedText = "";
-            txtPrecio.SelectionLength = 0;
-            txtPrecio.SelectionStart = 0;
-            txtPrecio.ShortcutsEnabled = true;
-            txtPrecio.Size = new Size(395, 50);
-            txtPrecio.SkipLiterals = true;
-            txtPrecio.TabIndex = 2;
-            txtPrecio.TabStop = false;
-            txtPrecio.TextAlign = HorizontalAlignment.Left;
-            txtPrecio.TextMaskFormat = MaskFormat.IncludeLiterals;
-            txtPrecio.TrailingIcon = null;
-            txtPrecio.UseSystemPasswordChar = false;
-            txtPrecio.ValidatingType = null;
-            // 
-            // txtNombre
-            // 
-            txtNombre.AllowPromptAsInput = true;
-            txtNombre.AnimateReadOnly = false;
-            txtNombre.AsciiOnly = false;
-            txtNombre.BackgroundImageLayout = ImageLayout.None;
-            txtNombre.BeepOnError = false;
-            txtNombre.CutCopyMaskFormat = MaskFormat.IncludeLiterals;
-            txtNombre.Depth = 0;
-            txtNombre.Font = new Font("Microsoft Sans Serif", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
-            txtNombre.HidePromptOnLeave = false;
-            txtNombre.HideSelection = true;
-            txtNombre.Hint = "Nombre del Producto";
-            txtNombre.InsertKeyMode = InsertKeyMode.Default;
-            txtNombre.LeadingIcon = null;
-            txtNombre.Location = new Point(21, 50);
-            txtNombre.Margin = new Padding(2, 2, 2, 2);
-            txtNombre.Mask = "";
-            txtNombre.MaxLength = 32767;
-            txtNombre.MouseState = MaterialSkin.MouseState.OUT;
-            txtNombre.Name = "txtNombre";
-            txtNombre.PasswordChar = '\0';
-            txtNombre.PrefixSuffixText = null;
-            txtNombre.PromptChar = '_';
-            txtNombre.ReadOnly = false;
-            txtNombre.RejectInputOnFirstFailure = false;
-            txtNombre.ResetOnPrompt = true;
-            txtNombre.ResetOnSpace = true;
-            txtNombre.RightToLeft = RightToLeft.No;
-            txtNombre.SelectedText = "";
-            txtNombre.SelectionLength = 0;
-            txtNombre.SelectionStart = 0;
-            txtNombre.ShortcutsEnabled = true;
-            txtNombre.Size = new Size(810, 50);
-            txtNombre.SkipLiterals = true;
-            txtNombre.TabIndex = 1;
-            txtNombre.TabStop = false;
-            txtNombre.TextAlign = HorizontalAlignment.Left;
-            txtNombre.TextMaskFormat = MaskFormat.IncludeLiterals;
-            txtNombre.TrailingIcon = null;
-            txtNombre.UseSystemPasswordChar = false;
-            txtNombre.ValidatingType = null;
+
             // 
             // lblSeccionDatos
             // 
@@ -387,15 +142,142 @@
             lblSeccionDatos.Size = new Size(180, 19);
             lblSeccionDatos.TabIndex = 0;
             lblSeccionDatos.Text = "Información del Producto";
+
+            // 
+            // txtCodigo   (Fila 1 izq)
+            // 
+            ConfigurarTextBox(txtCodigo, "Código", new Point(21, 50), new Size(250, 50), 1);
+
+            // 
+            // txtNombre   (Fila 1 der)
+            // 
+            ConfigurarTextBox(txtNombre, "Nombre del Producto", new Point(291, 50), new Size(540, 50), 2);
+
+            // 
+            // txtDescripcion   (Fila 2, ancho completo)
+            // 
+            ConfigurarTextBox(txtDescripcion, "Descripción", new Point(21, 120), new Size(810, 50), 3);
+
+            // 
+            // txtPrecioCompra   (Fila 3 izq)
+            // 
+            ConfigurarTextBox(txtPrecioCompra, "Precio Compra ($)", new Point(21, 190), new Size(395, 50), 4);
+
+            // 
+            // txtPrecioVenta   (Fila 3 der)
+            // 
+            ConfigurarTextBox(txtPrecioVenta, "Precio Venta ($)", new Point(436, 190), new Size(395, 50), 5);
+
+            // 
+            // txtPorcentajeIVA   (Fila 4 izq)
+            // 
+            ConfigurarTextBox(txtPorcentajeIVA, "Porcentaje IVA (%)", new Point(21, 260), new Size(250, 50), 6);
+
+            // 
+            // chkAplicaIVA   (Fila 4 der)
+            // 
+            chkAplicaIVA.AutoSize = true;
+            chkAplicaIVA.Checked = false;
+            chkAplicaIVA.CheckState = CheckState.Unchecked;
+            chkAplicaIVA.Depth = 0;
+            chkAplicaIVA.Font = new Font("Microsoft Sans Serif", 16F);
+            chkAplicaIVA.Location = new Point(291, 268);
+            chkAplicaIVA.Margin = new Padding(0);
+            chkAplicaIVA.MouseLocation = new Point(-1, -1);
+            chkAplicaIVA.MouseState = MaterialSkin.MouseState.HOVER;
+            chkAplicaIVA.Name = "chkAplicaIVA";
+            chkAplicaIVA.ReadOnly = false;
+            chkAplicaIVA.Ripple = true;
+            chkAplicaIVA.Size = new Size(120, 37);
+            chkAplicaIVA.TabIndex = 7;
+            chkAplicaIVA.Text = "Aplica IVA";
+            chkAplicaIVA.UseVisualStyleBackColor = true;
+
+            // 
+            // cmbProveedor   (Fila 5 izq)
+            // 
+            ConfigurarCombo(cmbProveedor, "Proveedor", new Point(21, 330), new Size(395, 50), 8);
+
+            // 
+            // cmbCategoria   (Fila 5 der)
+            // 
+            ConfigurarCombo(cmbCategoria, "Categoría", new Point(436, 330), new Size(395, 50), 9);
+
+            // 
+            // chkEstado   (Fila 6 izq)
+            // 
+            chkEstado.AutoSize = true;
+            chkEstado.Checked = true;
+            chkEstado.CheckState = CheckState.Checked;
+            chkEstado.Depth = 0;
+            chkEstado.Font = new Font("Microsoft Sans Serif", 16F);
+            chkEstado.Location = new Point(21, 425);
+            chkEstado.Margin = new Padding(0);
+            chkEstado.MouseLocation = new Point(-1, -1);
+            chkEstado.MouseState = MaterialSkin.MouseState.HOVER;
+            chkEstado.Name = "chkEstado";
+            chkEstado.ReadOnly = false;
+            chkEstado.Ripple = true;
+            chkEstado.Size = new Size(79, 37);
+            chkEstado.TabIndex = 10;
+            chkEstado.Text = "Activo";
+            chkEstado.UseVisualStyleBackColor = true;
+
+            // 
+            // btnCancelar
+            // 
+            btnCancelar.AutoSize = false;
+            btnCancelar.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            btnCancelar.Cursor = Cursors.Hand;
+            btnCancelar.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            btnCancelar.Depth = 0;
+            btnCancelar.HighEmphasis = false;
+            btnCancelar.Icon = null;
+            btnCancelar.Location = new Point(597, 470);
+            btnCancelar.Margin = new Padding(3, 4, 10, 4);
+            btnCancelar.MouseState = MaterialSkin.MouseState.HOVER;
+            btnCancelar.Name = "btnCancelar";
+            btnCancelar.NoAccentTextColor = Color.Empty;
+            btnCancelar.Size = new Size(105, 29);
+            btnCancelar.TabIndex = 11;
+            btnCancelar.Text = "CANCELAR";
+            btnCancelar.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Outlined;
+            btnCancelar.UseAccentColor = false;
+            btnCancelar.UseVisualStyleBackColor = true;
+            btnCancelar.Click += btnCancelar_Click;
+
+            // 
+            // btnGuardar
+            // 
+            btnGuardar.AutoSize = false;
+            btnGuardar.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            btnGuardar.Cursor = Cursors.Hand;
+            btnGuardar.Density = MaterialSkin.Controls.MaterialButton.MaterialButtonDensity.Default;
+            btnGuardar.Depth = 0;
+            btnGuardar.HighEmphasis = true;
+            btnGuardar.Icon = null;
+            btnGuardar.Location = new Point(712, 470);
+            btnGuardar.Margin = new Padding(3, 4, 3, 4);
+            btnGuardar.MouseState = MaterialSkin.MouseState.HOVER;
+            btnGuardar.Name = "btnGuardar";
+            btnGuardar.NoAccentTextColor = Color.Empty;
+            btnGuardar.Size = new Size(119, 29);
+            btnGuardar.TabIndex = 12;
+            btnGuardar.Text = "GUARDAR";
+            btnGuardar.Type = MaterialSkin.Controls.MaterialButton.MaterialButtonType.Contained;
+            btnGuardar.UseAccentColor = false;
+            btnGuardar.UseVisualStyleBackColor = true;
+            btnGuardar.Click += btnGuardar_Click;
+
             // 
             // ucProductoFrm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(900, 480);
+            ClientSize = new Size(900, 640);
             Controls.Add(pnlContenedorCentral);
             Controls.Add(pnlHeader);
-            Margin = new Padding(2, 2, 2, 2);
+            Margin = new Padding(2);
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "ucProductoFrm";
@@ -411,6 +293,55 @@
             ResumeLayout(false);
         }
 
+        // Helpers para no repetir 20 líneas de setup por cada MaterialMaskedTextBox
+        private void ConfigurarTextBox(
+            MaterialSkin.Controls.MaterialMaskedTextBox tb,
+            string hint, Point ubicacion, Size tamano, int tabIndex)
+        {
+            tb.Depth = 0;
+            tb.Font = new Font("Microsoft Sans Serif", 16F, FontStyle.Regular, GraphicsUnit.Pixel);
+            tb.Hint = hint;
+            tb.Location = ubicacion;
+            tb.Margin = new Padding(2);
+            tb.Mask = "";
+            tb.MaxLength = 32767;
+            tb.MouseState = MaterialSkin.MouseState.OUT;
+            tb.Name = "tb_" + hint;
+            tb.PromptChar = '_';
+            tb.Size = tamano;
+            tb.TabIndex = tabIndex;
+            tb.TabStop = true;
+            tb.TextAlign = HorizontalAlignment.Left;
+            tb.TextMaskFormat = MaskFormat.IncludeLiterals;
+        }
+
+        private void ConfigurarCombo(
+            MaterialSkin.Controls.MaterialComboBox cmb,
+            string hint, Point ubicacion, Size tamano, int tabIndex)
+        {
+            cmb.AutoResize = false;
+            cmb.BackColor = Color.FromArgb(255, 255, 255);
+            cmb.Depth = 0;
+            cmb.DrawMode = DrawMode.OwnerDrawVariable;
+            cmb.DropDownHeight = 174;
+            cmb.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmb.DropDownWidth = 121;
+            cmb.Font = new Font("Microsoft Sans Serif", 14F, FontStyle.Bold, GraphicsUnit.Pixel);
+            cmb.ForeColor = Color.FromArgb(222, 0, 0, 0);
+            cmb.FormattingEnabled = true;
+            cmb.Hint = hint;
+            cmb.IntegralHeight = false;
+            cmb.ItemHeight = 43;
+            cmb.Location = ubicacion;
+            cmb.Margin = new Padding(2);
+            cmb.MaxDropDownItems = 4;
+            cmb.MouseState = MaterialSkin.MouseState.OUT;
+            cmb.Name = "cmb_" + hint;
+            cmb.Size = tamano;
+            cmb.StartIndex = 0;
+            cmb.TabIndex = tabIndex;
+        }
+
         #endregion
 
         private Panel pnlHeader;
@@ -419,11 +350,15 @@
         private Panel pnlContenedorCentral;
         private MaterialSkin.Controls.MaterialCard cardFormulario;
         private MaterialSkin.Controls.MaterialLabel lblSeccionDatos;
+        private MaterialSkin.Controls.MaterialMaskedTextBox txtCodigo;
         private MaterialSkin.Controls.MaterialMaskedTextBox txtNombre;
-        private MaterialSkin.Controls.MaterialMaskedTextBox txtPrecio;
+        private MaterialSkin.Controls.MaterialMaskedTextBox txtDescripcion;
+        private MaterialSkin.Controls.MaterialMaskedTextBox txtPrecioCompra;
+        private MaterialSkin.Controls.MaterialMaskedTextBox txtPrecioVenta;
+        private MaterialSkin.Controls.MaterialMaskedTextBox txtPorcentajeIVA;
+        private MaterialSkin.Controls.MaterialComboBox cmbProveedor;
         private MaterialSkin.Controls.MaterialComboBox cmbCategoria;
-        private MaterialSkin.Controls.MaterialMaskedTextBox txtStock;
-        private MaterialSkin.Controls.MaterialMaskedTextBox txtStockMinimo;
+        private MaterialSkin.Controls.MaterialCheckbox chkAplicaIVA;
         private MaterialSkin.Controls.MaterialCheckbox chkEstado;
         private MaterialSkin.Controls.MaterialButton btnCancelar;
         private MaterialSkin.Controls.MaterialButton btnGuardar;

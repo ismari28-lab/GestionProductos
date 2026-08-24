@@ -29,7 +29,6 @@
             this.dgvUsuarios = new System.Windows.Forms.DataGridView();
             this.colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colNombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colCorreo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colRol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colEstado = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colActions = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -92,7 +91,7 @@
             this.pnlBusqueda.Controls.Add(this.btnBuscar);
             this.pnlBusqueda.Location = new System.Drawing.Point(30, 130);
             this.pnlBusqueda.Name = "pnlBusqueda";
-            this.pnlBusqueda.Size = new System.Drawing.Size(1050, 100);
+            this.pnlBusqueda.Size = new System.Drawing.Size(1050, 110);
             // 
             // txtBuscar
             // 
@@ -104,7 +103,7 @@
             this.txtBuscar.Font = new System.Drawing.Font("Roboto", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.txtBuscar.Hint = "Buscar por nombre o correo...";
             this.txtBuscar.LeadingIcon = null;
-            this.txtBuscar.Location = new System.Drawing.Point(25, 73);
+            this.txtBuscar.Location = new System.Drawing.Point(25, 31);
             this.txtBuscar.MaxLength = 50;
             this.txtBuscar.MouseState = MaterialSkin.MouseState.OUT;
             this.txtBuscar.Name = "txtBuscar";
@@ -131,7 +130,7 @@
             this.cboFiltro.IntegralHeight = false;
             this.cboFiltro.ItemHeight = 43;
             this.cboFiltro.Items.AddRange(new object[] { "Todos", "Activos", "Inactivos" });
-            this.cboFiltro.Location = new System.Drawing.Point(610, 73);
+            this.cboFiltro.Location = new System.Drawing.Point(610, 31);
             this.cboFiltro.MaxDropDownItems = 4;
             this.cboFiltro.MouseState = MaterialSkin.MouseState.OUT;
             this.cboFiltro.Name = "cboFiltro";
@@ -148,7 +147,7 @@
             this.btnBuscar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnBuscar.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             this.btnBuscar.ForeColor = System.Drawing.Color.White;
-            this.btnBuscar.Location = new System.Drawing.Point(870, 78);
+            this.btnBuscar.Location = new System.Drawing.Point(870, 34);
             this.btnBuscar.Name = "btnBuscar";
             this.btnBuscar.Size = new System.Drawing.Size(150, 42);
             this.btnBuscar.Text = "Buscar";
@@ -162,7 +161,7 @@
             this.pnlLista.Controls.Add(this.dgvUsuarios);
             this.pnlLista.Controls.Add(this.pnlPaginacion);
             this.pnlLista.Controls.Add(this.lblTituloLista);
-            this.pnlLista.Location = new System.Drawing.Point(30, 245);
+            this.pnlLista.Location = new System.Drawing.Point(30, 255);
             this.pnlLista.Name = "pnlLista";
             this.pnlLista.Padding = new System.Windows.Forms.Padding(20, 15, 20, 15);
             this.pnlLista.Size = new System.Drawing.Size(1050, 480);
@@ -190,7 +189,7 @@
             this.dgvUsuarios.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             this.dgvUsuarios.ColumnHeadersHeight = 40;
             this.dgvUsuarios.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-                this.colId, this.colNombre, this.colCorreo, this.colRol, this.colEstado, this.colActions});
+                this.colId, this.colNombre, this.colRol, this.colEstado, this.colActions});
             this.dgvUsuarios.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvUsuarios.EnableHeadersVisualStyles = false;
             this.dgvUsuarios.GridColor = System.Drawing.Color.FromArgb(235, 238, 242);
@@ -203,9 +202,8 @@
             // Columnas
             // 
             this.colId.HeaderText = "ID"; this.colId.Name = "colId"; this.colId.ReadOnly = true; this.colId.FillWeight = 40;
-            this.colNombre.HeaderText = "Nombre"; this.colNombre.Name = "colNombre"; this.colNombre.ReadOnly = true; this.colNombre.FillWeight = 130;
-            this.colCorreo.HeaderText = "Correo"; this.colCorreo.Name = "colCorreo"; this.colCorreo.ReadOnly = true; this.colCorreo.FillWeight = 160;
-            this.colRol.HeaderText = "Rol"; this.colRol.Name = "colRol"; this.colRol.ReadOnly = true; this.colRol.FillWeight = 90;
+            this.colNombre.HeaderText = "Nombre"; this.colNombre.Name = "colNombre"; this.colNombre.ReadOnly = true; this.colNombre.FillWeight = 180;
+            this.colRol.HeaderText = "Rol"; this.colRol.Name = "colRol"; this.colRol.ReadOnly = true; this.colRol.FillWeight = 120;
             this.colEstado.HeaderText = "Estado"; this.colEstado.Name = "colEstado"; this.colEstado.ReadOnly = true; this.colEstado.FillWeight = 70;
             this.colActions.HeaderText = "Actions"; this.colActions.Name = "colActions"; this.colActions.ReadOnly = true; this.colActions.FillWeight = 100;
             // 
@@ -276,7 +274,6 @@
         private System.Windows.Forms.DataGridView dgvUsuarios;
         private System.Windows.Forms.DataGridViewTextBoxColumn colId;
         private System.Windows.Forms.DataGridViewTextBoxColumn colNombre;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colCorreo;
         private System.Windows.Forms.DataGridViewTextBoxColumn colRol;
         private System.Windows.Forms.DataGridViewTextBoxColumn colEstado;
         private System.Windows.Forms.DataGridViewTextBoxColumn colActions;
