@@ -14,6 +14,7 @@ namespace ESFE.GestionProductos.UI
         private bool inicioCargado = false;
         private bool empleadosCargado = false;
         private bool productosCargado = false; // Flag para el catálogo de productos
+        private bool usuariosCargado = false;
 
         public frmMain()
         {
@@ -59,6 +60,10 @@ namespace ESFE.GestionProductos.UI
             {
                 CargarVistaProductos();
             }
+            else if (e.TabPage == tabUsuarios)
+            {
+                CargarVistaUsuarios();
+            }
         }
 
         private void CargarVistaInicio()
@@ -95,6 +100,18 @@ namespace ESFE.GestionProductos.UI
             ucProd.BringToFront();
 
             productosCargado = true;
+        }
+
+        private void CargarVistaUsuarios()
+        {
+            if (usuariosCargado) return;
+
+            pnlContenedorUsuarios.Controls.Clear();
+            var ucUsr = new ucUsuario { Dock = DockStyle.Fill };
+            pnlContenedorUsuarios.Controls.Add(ucUsr);
+            ucUsr.BringToFront();
+
+            usuariosCargado = true;
         }
     }
 }

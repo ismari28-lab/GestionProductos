@@ -4,6 +4,9 @@ using System.Drawing;
 using System.Windows.Forms;
 using MaterialSkin.Controls;
 using ESFE.GestionProductos.EN;
+using ESFE.GestionProductos.LN;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace ESFE.GestionProductos.UI
 {
@@ -60,17 +63,43 @@ namespace ESFE.GestionProductos.UI
 
         private void CargarCombos()
         {
-            // TODO: Ajusta según cómo manejes la lista/catálogo de Cargos
-            // Ejemplo con lista de prueba o enum/DAL de cargos:
+            // Cargo (hardcodeado por ahora)
             cmbCargo.Items.Clear();
             cmbCargo.Items.Add("1 - Gerente");
             cmbCargo.Items.Add("2 - Vendedor");
             cmbCargo.Items.Add("3 - Bodeguero");
 
-            // TODO: Cargar catálogo de Usuarios disponibles (ej. desde UsuarioDAL)
-            // cmbUsuario.DataSource = usuarioDAL.ObtenerUsuarios();
-            // cmbUsuario.DisplayMember = "Nombre";
-            // cmbUsuario.ValueMember = "IdUsuarioPK";
+            // Usuarios
+            try
+            {
+                var userLN = new UserLN();
+                var usuarios = userLN.ObtenerActivos();
+
+                // Si estamos editando y el usuario asignado NO está en los activos,
+                // lo agregamos para que se pueda seleccionar (aunque esté inactivo)
+                if (EmpleadoActual?.IdUsuarioFK.HasValue == true)
+                {
+                    short idAsignado = EmpleadoActual.IdUsuarioFK.Value;
+
+                    if (!usuarios.Any(u => u.IdUsuarioPK == idAsignado))
+                    {
+                        var asignado = userLN.Buscar(null, idAsignado).FirstOrDefault();
+                        if (asignado != null)
+                            usuarios.Insert(0, asignado);
+                    }
+                }
+
+                cmbUsuario.DataSource = null;
+                cmbUsuario.DisplayMember = "NombreConRol";
+                cmbUsuario.ValueMember = "IdUsuarioPK";
+                cmbUsuario.DataSource = usuarios;
+                cmbUsuario.SelectedIndex = -1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudieron cargar los usuarios: " + ex.Message,
+                    "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void CargarDatosEnControles()
@@ -95,7 +124,13 @@ namespace ESFE.GestionProductos.UI
                 // Cargar Usuario seleccionado (si no es nulo)
                 if (EmpleadoActual.IdUsuarioFK.HasValue)
                 {
-                    // cmbUsuario.SelectedValue = EmpleadoActual.IdUsuarioFK.Value;
+                    var usuarios = cmbUsuario.DataSource as List<Usuario>;
+                    if (usuarios != null)
+                    {
+                        int index = usuarios.FindIndex(u => u.IdUsuarioPK == EmpleadoActual.IdUsuarioFK.Value);
+                        if (index >= 0)
+                            cmbUsuario.SelectedIndex = index;
+                    }
                 }
             }
         }

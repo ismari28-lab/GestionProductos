@@ -63,6 +63,8 @@ namespace ESFE.GestionProductos.DAL
                         {
                             int ordId = lector.GetOrdinal("IdUsuarioPK");
                             int ordNombre = lector.GetOrdinal("Nombre");
+                            int ordIdRolFK = lector.GetOrdinal("Id_RolFK");
+                            int ordNombreRol = lector.GetOrdinal("NombreRol");
                             int ordEstado = lector.GetOrdinal("Estado");
 
                             Usuario usuario = new Usuario
@@ -72,6 +74,12 @@ namespace ESFE.GestionProductos.DAL
                                 Nombre = lector.IsDBNull(ordNombre)
                                     ? string.Empty
                                     : lector.GetString(ordNombre),
+
+                                Id_RolFK = lector.IsDBNull(ordIdRolFK)
+                                    ? (short?)null
+                                    : Convert.ToInt16(lector[ordIdRolFK]),
+
+                                NombreRol = lector.IsDBNull(ordNombreRol) ? string.Empty : lector.GetString(ordNombreRol),
 
                                 Estado = lector.IsDBNull(ordEstado)
                                     ? (bool?)null
@@ -105,6 +113,14 @@ namespace ESFE.GestionProductos.DAL
                         usuario.Nombre);
 
                     comando.Parameters.AddWithValue(
+                        "@Password",
+                        (object)usuario.Password ?? DBNull.Value);
+
+                    comando.Parameters.AddWithValue(
+                        "@Id_RolFK",
+                        (object)usuario.Id_RolFK ?? DBNull.Value);
+
+                    comando.Parameters.AddWithValue(
                         "@Estado",
                         (object)usuario.Estado ?? true);
 
@@ -113,7 +129,28 @@ namespace ESFE.GestionProductos.DAL
             }
         }
 
-        // 4. Actualizar Usuario
+        // 4. Obtener la contraseña actual (para conservarla si al editar se deja en blanco)
+        public string ObtenerPasswordActual(int idUsuario)
+        {
+            using (IDbConnection conexion = DBComun.ObtenerConexion())
+            {
+                conexion.Open();
+
+                using (SqlCommand comando = new SqlCommand(
+                    "SELECT Password FROM Usuario WHERE IdUsuarioPK = @IdUsuarioPK",
+                    conexion as SqlConnection))
+                {
+                    comando.Parameters.AddWithValue("@IdUsuarioPK", idUsuario);
+
+                    object resultado = comando.ExecuteScalar();
+                    return resultado == null || resultado == DBNull.Value
+                        ? null
+                        : resultado.ToString();
+                }
+            }
+        }
+
+        // 5. Actualizar Usuario
         public int Actualizar(Usuario usuario)
         {
             using (IDbConnection conexion = DBComun.ObtenerConexion())
@@ -135,6 +172,14 @@ namespace ESFE.GestionProductos.DAL
                         (object)usuario.Nombre ?? DBNull.Value);
 
                     comando.Parameters.AddWithValue(
+                        "@Password",
+                        (object)usuario.Password ?? DBNull.Value);
+
+                    comando.Parameters.AddWithValue(
+                        "@Id_RolFK",
+                        (object)usuario.Id_RolFK ?? DBNull.Value);
+
+                    comando.Parameters.AddWithValue(
                         "@Estado",
                         (object)usuario.Estado ?? DBNull.Value);
 
@@ -143,7 +188,7 @@ namespace ESFE.GestionProductos.DAL
             }
         }
 
-        // 5. Eliminación lógica
+        // 6. Eliminación lógica
         public int EliminarLogico(short idUsuario)
         {
             using (IDbConnection conexion = DBComun.ObtenerConexion())

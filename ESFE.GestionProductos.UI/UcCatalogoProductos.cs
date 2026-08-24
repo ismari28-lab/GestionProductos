@@ -4,6 +4,9 @@ using System.Drawing;
 using System.Windows.Forms;
 using ESFE.GestionProductos.EN;
 using ESFE.GestionProductos.LN;
+using System.Linq;
+using System.Collections.Generic;
+using ESFE.GestionProductos.LN;
 
 namespace ESFE.GestionProductos.UI
 {
@@ -23,9 +26,10 @@ namespace ESFE.GestionProductos.UI
             dgvProductos.AutoGenerateColumns = false;
 
             colId.DataPropertyName = "IdProductoPK";
+            colCodigo.DataPropertyName = "Codigo";       
             colNombre.DataPropertyName = "Nombre";
             colPrecio.DataPropertyName = "PrecioVenta";
-            colCategoria.DataPropertyName = "IdCategoriaFK";
+            colCategoria.DataPropertyName = "Categoria";
             colEstado.DataPropertyName = "Estado";
 
             dgvProductos.ContextMenuStrip = cmsOpciones;
@@ -86,6 +90,10 @@ namespace ESFE.GestionProductos.UI
             try
             {
                 DataTable dt = _productoLN.Listar();
+                MessageBox.Show(
+                    $"Filas: {dt.Rows.Count}\nColumnas: {string.Join(", ", dt.Columns.Cast<DataColumn>().Select(c => c.ColumnName))}"
+                );
+                dgvProductos.DataSource = dt;
                 dgvProductos.DataSource = dt;
             }
             catch (Exception ex)
@@ -210,29 +218,56 @@ namespace ESFE.GestionProductos.UI
                 return;
             }
 
-            var resultados =
-                _productoLN.Buscar(criterio, null);
+            // Buscar por Nombre
+            var porNombre = _productoLN.Buscar(criterio, null, null);
+
+            // Buscar por Código
+            var porCodigo = _productoLN.Buscar(null, null, criterio);
+
+            // Unir sin duplicados
+            var resultados = porNombre
+                .Union(porCodigo, new ProductoIdComparer())
+                .ToList();
 
             DataTable dt = new DataTable();
-
             dt.Columns.Add("IdProductoPK", typeof(short));
+            dt.Columns.Add("Codigo", typeof(string));
             dt.Columns.Add("Nombre", typeof(string));
             dt.Columns.Add("PrecioVenta", typeof(decimal));
-            dt.Columns.Add("IdCategoriaFK", typeof(short));
+            dt.Columns.Add("Categoria", typeof(string));   // nombre, no FK
             dt.Columns.Add("Estado", typeof(bool));
+
+            // Diccionario de categorías para mapear FK → nombre
+            var categorias = new CategoriaLN().Buscar()
+                .ToDictionary(c => c.IdCategoriaPK, c => c.Nombre);
 
             foreach (var prod in resultados)
             {
+                string nombreCat = "";
+                if (prod.IdCategoriaFK.HasValue &&
+                    categorias.TryGetValue(prod.IdCategoriaFK.Value, out string nom))
+                {
+                    nombreCat = nom;
+                }
+
                 dt.Rows.Add(
                     prod.IdProductoPK,
+                    prod.Codigo ?? "",
                     prod.Nombre,
                     prod.PrecioVenta ?? 0,
-                    prod.IdCategoriaFK ?? (object)DBNull.Value,
+                    nombreCat,
                     prod.Estado ?? false
                 );
             }
 
             dgvProductos.DataSource = dt;
+        }
+
+        // Comparador para evitar duplicados cuando un producto matchea Nombre y Código
+        private class ProductoIdComparer : IEqualityComparer<Producto>
+        {
+            public bool Equals(Producto x, Producto y) => x.IdProductoPK == y.IdProductoPK;
+            public int GetHashCode(Producto obj) => obj.IdProductoPK.GetHashCode();
         }
     }
 }
