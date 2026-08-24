@@ -15,14 +15,12 @@
 
         #region Windows Form Designer generated code
 
-<<<<<<< HEAD
+
         /// <summary>
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
        
-=======
->>>>>>> db9b30737bd316a09940f9d771eda075e475465c
         private void InitializeComponent()
         {
             cardLogin = new MaterialSkin.Controls.MaterialCard();

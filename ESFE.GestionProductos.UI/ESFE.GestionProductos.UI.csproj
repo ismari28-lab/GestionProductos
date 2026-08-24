@@ -8,7 +8,6 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
-<<<<<<< HEAD
   <ItemGroup>
     <None Remove="img\ojo_abierto.png" />
     <None Remove="img\ojo_cerrado.png" />
@@ -27,7 +26,7 @@
     <PackageReference Include="MaterialSkin.2" Version="2.3.1" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.2" />
   </ItemGroup>
-=======
+
 	<!-- Reglas para anidar archivos Designer debajo de sus clases principales -->
 	<ItemGroup>
 		<!-- Anidación para uCRecuperarContraseña -->
@@ -37,7 +36,6 @@
 		<Compile Update="uCRecuperarContraseña.Designer.cs">
 			<DependentUpon>uCRecuperarContraseña.cs</DependentUpon>
 		</Compile>
->>>>>>> db9b30737bd316a09940f9d771eda075e475465c
 
 		<!-- Anidación para Login -->
 		<Compile Update="Login.cs" />
@@ -45,12 +43,6 @@
 			<DependentUpon>Login.cs</DependentUpon>
 		</Compile>
 	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="MaterialSkin.2" Version="2.3.1" />
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.2" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<ProjectReference Include="..\ESFE.GestionProductos.DAL\ESFE.GestionProductos.DAL.csproj" />
 		<ProjectReference Include="..\ESFE.GestionProductos.EN\ESFE.GestionProductos.EN.csproj" />

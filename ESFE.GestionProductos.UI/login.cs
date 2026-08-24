@@ -11,7 +11,6 @@ namespace ESFE.GestionProductos.UI
 {
     public partial class login : MaterialForm
     {
-<<<<<<< HEAD
         // Indica si la contraseña está visible
         private bool contraseñaVisible = false;
 
@@ -41,21 +40,6 @@ namespace ESFE.GestionProductos.UI
                 TextShade.WHITE
             );
         }
-=======
-        public login()
-{
-    InitializeComponent();
-
-    var materialSkinManager = MaterialSkinManager.Instance;
-    materialSkinManager.AddFormToManage(this);
-    materialSkinManager.Theme = MaterialSkinManager.Themes.LIGHT;
-    materialSkinManager.ColorScheme = new ColorScheme(
-        Primary.Blue600, Primary.Blue400,
-        Primary.Blue100, Accent.LightBlue200,
-        TextShade.WHITE
-    );
-}
->>>>>>> db9b30737bd316a09940f9d771eda075e475465c
 
         // =========================================================
         // CREAR OJO
@@ -135,7 +119,6 @@ namespace ESFE.GestionProductos.UI
             object? sender,
             EventArgs e)
         {
-<<<<<<< HEAD
             contraseñaVisible = !contraseñaVisible;
 
             if (contraseñaVisible)
@@ -208,8 +191,7 @@ namespace ESFE.GestionProductos.UI
             object sender,
             EventArgs e)
         {
-=======
->>>>>>> db9b30737bd316a09940f9d771eda075e475465c
+
             try
             {
                 string nombre =
@@ -231,7 +213,6 @@ namespace ESFE.GestionProductos.UI
                     return;
                 }
 
-<<<<<<< HEAD
                 Usuario? usuarioAutenticado =
                     UsuarioDAL.ValidarLogin(
                         nombre,
@@ -246,13 +227,6 @@ namespace ESFE.GestionProductos.UI
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information
                     );
-=======
-                Usuario? usuarioAutenticado = UsuarioDAL.ValidarLogin(nombre, password);
-
-                if (usuarioAutenticado != null)
-                {
-                    MessageBox.Show($"¡Bienvenido, {usuarioAutenticado.Nombre}!", "Acceso Concedido", MessageBoxButtons.OK, MessageBoxIcon.Information);
->>>>>>> db9b30737bd316a09940f9d771eda075e475465c
 
                     this.Hide();
 
@@ -283,8 +257,7 @@ namespace ESFE.GestionProductos.UI
                     MessageBoxIcon.Error
                 );
             }
-<<<<<<< HEAD
-=======
+
         }
 
         private void btnRecuperarContraseña_Click(object sender, EventArgs e)
@@ -310,7 +283,6 @@ namespace ESFE.GestionProductos.UI
             frmRecuperar.Controls.Add(uc);
 
             frmRecuperar.ShowDialog(this);
->>>>>>> db9b30737bd316a09940f9d771eda075e475465c
         }
     }
 }

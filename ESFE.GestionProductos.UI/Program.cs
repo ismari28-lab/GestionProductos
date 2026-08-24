@@ -11,7 +11,7 @@ namespace ESFE.GestionProductos.UI
             ApplicationConfiguration.Initialize();
 
             // Ejecuta directamente el formulario FrmCodigoAcceso
-            Application.Run(new FrmCodigoAcceso());
+            Application.Run(new login());
         }
     }
 }
