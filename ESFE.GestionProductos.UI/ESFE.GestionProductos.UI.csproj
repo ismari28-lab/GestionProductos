@@ -1,26 +1,64 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net10.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net10.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+<<<<<<< HEAD
+  <ItemGroup>
+    <None Remove="img\ojo_abierto.png" />
+    <None Remove="img\ojo_cerrado.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="img\ojo_abierto.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="img\ojo_cerrado.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MaterialSkin.2" Version="2.3.1" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.2" />
   </ItemGroup>
+=======
+	<!-- Reglas para anidar archivos Designer debajo de sus clases principales -->
+	<ItemGroup>
+		<!-- Anidación para uCRecuperarContraseña -->
+		<Compile Update="uCRecuperarContraseña.cs">
+			<SubType>UserControl</SubType>
+		</Compile>
+		<Compile Update="uCRecuperarContraseña.Designer.cs">
+			<DependentUpon>uCRecuperarContraseña.cs</DependentUpon>
+		</Compile>
+>>>>>>> db9b30737bd316a09940f9d771eda075e475465c
 
-  <ItemGroup>
-    <ProjectReference Include="..\ESFE.GestionProductos.DAL\ESFE.GestionProductos.DAL.csproj" />
-    <ProjectReference Include="..\ESFE.GestionProductos.EN\ESFE.GestionProductos.EN.csproj" />
-    <ProjectReference Include="..\ESFE.GestionProductos.LN\ESFE.GestionProductos.LN.csproj" />
-  </ItemGroup>
+		<!-- Anidación para Login -->
+		<Compile Update="Login.cs" />
+		<Compile Update="Login.Designer.cs">
+			<DependentUpon>Login.cs</DependentUpon>
+		</Compile>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="NewFolder\" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MaterialSkin.2" Version="2.3.1" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ESFE.GestionProductos.DAL\ESFE.GestionProductos.DAL.csproj" />
+		<ProjectReference Include="..\ESFE.GestionProductos.EN\ESFE.GestionProductos.EN.csproj" />
+		<ProjectReference Include="..\ESFE.GestionProductos.LN\ESFE.GestionProductos.LN.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="NewFolder\" />
+	</ItemGroup>
 
 </Project>
