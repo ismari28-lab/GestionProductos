@@ -219,5 +219,10 @@ namespace ESFE.GestionProductos.UI
                 "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return null;
         }
+
+        private void cardFormulario_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }
