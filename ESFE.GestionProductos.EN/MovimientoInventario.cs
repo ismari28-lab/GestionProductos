@@ -18,6 +18,6 @@ namespace ESFE.GestionProductos.EN
         public short? IdUsuarioFK { get; set; } 
 
         public short? Estado { get; set; }
-
+        
     }
 }
