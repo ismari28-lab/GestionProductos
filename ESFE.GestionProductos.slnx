@@ -3,4 +3,5 @@
   <Project Path="ESFE.GestionProductos.EN/ESFE.GestionProductos.EN.csproj" Id="b694afce-54f0-4d60-b4cf-5cb29e2fa6da" />
   <Project Path="ESFE.GestionProductos.LN/ESFE.GestionProductos.LN.csproj" Id="84ba64db-fee8-438d-a43b-fcd010016e69" />
   <Project Path="ESFE.GestionProductos.UI/ESFE.GestionProductos.UI.csproj" Id="0e8c92ee-0da8-45d2-a967-02f1bad030c4" />
+  <Project Path="ESFE.InventarioProd.Web/ESFE.InventarioProd.Web.csproj" Id="b5270930-e78f-48d3-ad1c-fe41d14544d5" />
 </Solution>
