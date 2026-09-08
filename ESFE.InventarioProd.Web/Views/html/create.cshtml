@@ -1,0 +1,126 @@
+﻿@{
+    ViewData["Title"] = "Nuevo proveedor";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/proveedores.css" />
+}
+
+<div class="form-page">
+
+    <div class="form-card">
+
+        <div class="form-header">
+
+            <div>
+                <h1>Nuevo proveedor</h1>
+                <p>Registra la información del proveedor</p>
+            </div>
+
+            <a href="#" class="btn-close">
+                ×
+            </a>
+
+        </div>
+
+
+        <div class="form-divider"></div>
+
+
+        <form>
+
+            <div class="section-title">
+                Datos del proveedor
+            </div>
+
+
+            <div class="form-grid">
+
+                <!-- NOMBRE -->
+                <div class="form-group">
+
+                    <label>Nombre</label>
+
+                    <input type="text"
+                           placeholder="Ingrese el nombre completo" />
+
+                </div>
+
+
+                <!-- EMPRESA -->
+                <div class="form-group">
+
+                    <label>Empresa / Compañía</label>
+
+                    <input type="text"
+                           placeholder="Ingrese el nombre de la empresa" />
+
+                </div>
+
+
+                <!-- TELEFONO -->
+                <div class="form-group">
+
+                    <label>Teléfono</label>
+
+                    <input type="text"
+                           placeholder="0000-0000" />
+
+                </div>
+
+
+                <!-- CORREO -->
+                <div class="form-group">
+
+                    <label>Correo electrónico</label>
+
+                    <input type="email"
+                           placeholder="correo@empresa.com" />
+
+                </div>
+
+
+                <!-- DIRECCION -->
+                <div class="form-group full-width">
+
+                    <label>Dirección</label>
+
+                    <textarea placeholder="Ingrese la dirección del proveedor"></textarea>
+
+                </div>
+
+
+                <!-- ESTADO -->
+                <div class="form-group">
+
+                    <label>Estado</label>
+
+                    <select>
+
+                        <option selected>Activo</option>
+                        <option>Inactivo</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <a href="#" class="btn-secondary">
+                    Cancelar
+                </a>
+
+                <button type="button" class="btn-primary">
+                    Guardar proveedor
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

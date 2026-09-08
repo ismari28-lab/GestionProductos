@@ -1,0 +1,288 @@
+﻿@{
+    ViewData["Title"] = "Proveedores";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/proveedores.css" />
+}
+
+<div class="proveedores-page">
+
+    <!-- ENCABEZADO -->
+    <div class="page-header">
+
+        <div>
+            <h1>PROVEEDORES</h1>
+            <p>Gestión de proveedores</p>
+        </div>
+
+        <div class="usuario-logueado">
+            Ana Pérez - Bodeguero
+        </div>
+
+    </div>
+
+
+    <!-- TÍTULO Y ACCIONES -->
+    <div class="content-header">
+
+        <div>
+            <h2>Listado de proveedores</h2>
+            <span>Administración de proveedores registrados</span>
+        </div>
+
+        <a href="#" class="btn-primary">
+            + Nuevo proveedor
+        </a>
+
+    </div>
+
+
+    <!-- FILTROS -->
+    <div class="filters">
+
+        <div class="search-box">
+            <input type="text"
+                   placeholder="Buscar por nombre, empresa o teléfono..." />
+        </div>
+
+        <button class="filter active">
+            Todos
+        </button>
+
+        <button class="filter">
+            Activos
+        </button>
+
+        <button class="filter">
+            Inactivos
+        </button>
+
+    </div>
+
+
+    <!-- TABLA -->
+    <div class="table-container">
+
+        <table class="proveedores-table">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>NOMBRE</th>
+                    <th>EMPRESA</th>
+                    <th>TELÉFONO</th>
+                    <th>CORREO</th>
+                    <th>DIRECCIÓN</th>
+                    <th>ESTADO</th>
+                    <th>ACCIONES</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <!-- PROVEEDOR 1 -->
+                <tr>
+                    <td>P-001</td>
+
+                    <td>
+                        Carlos Martínez
+                    </td>
+
+                    <td>
+                        Distribuidora Martínez
+                    </td>
+
+                    <td>
+                        7856-2145
+                    </td>
+
+                    <td>
+                        carlos@distribuidoramartinez.com
+                    </td>
+
+                    <td>
+                        San Salvador
+                    </td>
+
+                    <td>
+                        <span class="status active-status">
+                            Activo
+                        </span>
+                    </td>
+
+                    <td class="actions">
+
+                        <a href="#" title="Ver">
+                            👁
+                        </a>
+
+                        <a href="#" title="Editar">
+                            ✎
+                        </a>
+
+                        <a href="#" title="Eliminar">
+                            🗑
+                        </a>
+
+                    </td>
+
+                </tr>
+
+
+                <!-- PROVEEDOR 2 -->
+                <tr>
+
+                    <td>P-002</td>
+
+                    <td>
+                        María López
+                    </td>
+
+                    <td>
+                        Comercial López
+                    </td>
+
+                    <td>
+                        7123-4589
+                    </td>
+
+                    <td>
+                        maria@comerciallopez.com
+                    </td>
+
+                    <td>
+                        Santa Tecla
+                    </td>
+
+                    <td>
+                        <span class="status active-status">
+                            Activo
+                        </span>
+                    </td>
+
+                    <td class="actions">
+
+                        <a href="#" title="Ver">
+                            👁
+                        </a>
+
+                        <a href="#" title="Editar">
+                            ✎
+                        </a>
+
+                        <a href="#" title="Eliminar">
+                            🗑
+                        </a>
+
+                    </td>
+
+                </tr>
+
+
+                <!-- PROVEEDOR 3 -->
+                <tr>
+
+                    <td>P-003</td>
+
+                    <td>
+                        José Hernández
+                    </td>
+
+                    <td>
+                        Ferretería Hernández
+                    </td>
+
+                    <td>
+                        7890-3214
+                    </td>
+
+                    <td>
+                        jose@ferreteriahn.com
+                    </td>
+
+                    <td>
+                        Soyapango
+                    </td>
+
+                    <td>
+                        <span class="status inactive-status">
+                            Inactivo
+                        </span>
+                    </td>
+
+                    <td class="actions">
+
+                        <a href="#" title="Ver">
+                            👁
+                        </a>
+
+                        <a href="#" title="Editar">
+                            ✎
+                        </a>
+
+                        <a href="#" title="Eliminar">
+                            🗑
+                        </a>
+
+                    </td>
+
+                </tr>
+
+
+                <!-- PROVEEDOR 4 -->
+                <tr>
+
+                    <td>P-004</td>
+
+                    <td>
+                        Ana Ramírez
+                    </td>
+
+                    <td>
+                        Suministros Ramírez
+                    </td>
+
+                    <td>
+                        7012-6543
+                    </td>
+
+                    <td>
+                        ana@suministrosr.com
+                    </td>
+
+                    <td>
+                        Antiguo Cuscatlán
+                    </td>
+
+                    <td>
+                        <span class="status active-status">
+                            Activo
+                        </span>
+                    </td>
+
+                    <td class="actions">
+
+                        <a href="#" title="Ver">
+                            👁
+                        </a>
+
+                        <a href="#" title="Editar">
+                            ✎
+                        </a>
+
+                        <a href="#" title="Eliminar">
+                            🗑
+                        </a>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
