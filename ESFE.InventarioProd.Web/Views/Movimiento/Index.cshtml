@@ -1,0 +1,419 @@
+@model ESFE.InventarioProd.Web.Models.MovimientoIndexViewModel
+@{
+    ViewBag.Title = "Registrar movimiento";
+}
+
+<link rel="stylesheet" href="~/css/movimiento.css" asp-append-version="true" />
+
+<h1 class="h4 movimiento-titulo mt-4">Movimientos de inventario</h1>
+
+@await Html.PartialAsync("_Tabs", "Registrar")
+
+@Html.AntiForgeryToken()
+
+<fieldset class="movimiento-fieldset">
+    <legend>Cabecera del movimiento</legend>
+    <div class="row g-3">
+        <div class="col-md-3">
+            <div class="movimiento-form-label">Tipo de movimiento</div>
+            <div class="movimiento-toggle-group">
+                <button type="button" class="movimiento-toggle-btn activo" id="btnTipoEntrada">Entrada</button>
+                <button type="button" class="movimiento-toggle-btn" id="btnTipoSalida">Salida</button>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label class="movimiento-form-label" for="inputReferencia">Referencia</label>
+            <input type="text" id="inputReferencia" class="form-control" placeholder="Factura #1234" maxlength="100" />
+        </div>
+        <div class="col-md-3">
+            <label class="movimiento-form-label" for="inputFecha">Fecha</label>
+            <input type="date" id="inputFecha" class="form-control" value="@Model.FechaHoyIso" max="@Model.FechaHoyIso" />
+        </div>
+        <div class="col-md-3">
+            <label class="movimiento-form-label" for="inputUsuario">Usuario</label>
+            <input type="text" id="inputUsuario" class="form-control" value="@Model.NombreUsuario" readonly />
+        </div>
+    </div>
+</fieldset>
+
+<fieldset class="movimiento-fieldset">
+    <legend>Detalle</legend>
+
+    <div id="detalleErrorGeneral" class="movimiento-error-inline" hidden></div>
+
+    <div class="row g-3 align-items-start mb-3">
+        <div class="col-md-7">
+            <label class="movimiento-form-label" for="inputBuscarProducto">Producto</label>
+            <div class="movimiento-autocomplete-wrap">
+                <input type="text" id="inputBuscarProducto" class="form-control" placeholder="Buscar producto por nombre o código..." autocomplete="off" />
+                <div id="autocompleteDropdown" class="movimiento-autocomplete-dropdown" hidden></div>
+            </div>
+            <div id="cantidadError" class="movimiento-error-inline" hidden></div>
+        </div>
+        <div class="col-md-2">
+            <label class="movimiento-form-label" for="inputCantidad">Cantidad</label>
+            <input type="number" id="inputCantidad" class="form-control" min="1" step="1" value="1" />
+        </div>
+        <div class="col-md-3">
+            <label class="movimiento-form-label">&nbsp;</label>
+            <button type="button" id="btnAgregarDetalle" class="btn btn-outline-primary w-100" disabled>Agregar</button>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="movimiento-detalle-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="detalleTbody">
+                <tr id="detalleVacioRow">
+                    <td colspan="4" class="movimiento-detalle-vacio">Aún no hay productos en el detalle</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-end mt-3">
+        <button type="button" id="btnGuardarMovimiento" class="btn btn-primary" disabled>Guardar movimiento</button>
+    </div>
+</fieldset>
+
+@section Scripts {
+    <script>
+        (function () {
+            var TRASH_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path></svg>';
+
+            var FECHA_HOY = '@Model.FechaHoyIso';
+
+            var btnTipoEntrada = document.getElementById('btnTipoEntrada');
+            var btnTipoSalida = document.getElementById('btnTipoSalida');
+            var inputReferencia = document.getElementById('inputReferencia');
+            var inputFecha = document.getElementById('inputFecha');
+            var inputBuscarProducto = document.getElementById('inputBuscarProducto');
+            var dropdown = document.getElementById('autocompleteDropdown');
+            var inputCantidad = document.getElementById('inputCantidad');
+            var cantidadError = document.getElementById('cantidadError');
+            var detalleErrorGeneral = document.getElementById('detalleErrorGeneral');
+            var btnAgregarDetalle = document.getElementById('btnAgregarDetalle');
+            var detalleTbody = document.getElementById('detalleTbody');
+            var btnGuardarMovimiento = document.getElementById('btnGuardarMovimiento');
+
+            var tipoMovimientoActual = 'Entrada';
+            var productoSeleccionado = null;
+            var detalleActual = [];
+            var debounceTimer = null;
+
+            function token() {
+                var campo = document.querySelector('input[name="__RequestVerificationToken"]');
+                return campo ? campo.value : '';
+            }
+
+            function escapeHtml(texto) {
+                var div = document.createElement('div');
+                div.textContent = texto || '';
+                return div.innerHTML;
+            }
+
+            function mostrarError(el, mensaje) {
+                el.textContent = mensaje;
+                el.hidden = false;
+            }
+
+            function ocultarError(el) {
+                el.hidden = true;
+                el.textContent = '';
+            }
+
+            function mostrarToast(mensaje, tipo) {
+                var toast = document.createElement('div');
+                toast.className = 'movimiento-toast ' + tipo;
+                toast.textContent = mensaje;
+                document.body.appendChild(toast);
+                setTimeout(function () {
+                    toast.remove();
+                }, 3500);
+            }
+
+            // --- Tipo de movimiento ---
+
+            function cambiarTipo(nuevoTipo) {
+                if (nuevoTipo === tipoMovimientoActual) return;
+
+                if (detalleActual.length > 0) {
+                    var confirmado = window.confirm('Cambiar el tipo de movimiento vaciará el detalle actual. ¿Continuar?');
+                    if (!confirmado) return;
+                }
+
+                tipoMovimientoActual = nuevoTipo;
+                detalleActual = [];
+                renderDetalle();
+
+                btnTipoEntrada.classList.toggle('activo', nuevoTipo === 'Entrada');
+                btnTipoSalida.classList.toggle('activo', nuevoTipo === 'Salida');
+
+                limpiarSeleccion();
+                actualizarEstadoBotones();
+            }
+
+            btnTipoEntrada.addEventListener('click', function () { cambiarTipo('Entrada'); });
+            btnTipoSalida.addEventListener('click', function () { cambiarTipo('Salida'); });
+
+            // --- Autocomplete ---
+
+            function cerrarAutocomplete() {
+                dropdown.hidden = true;
+                dropdown.innerHTML = '';
+            }
+
+            function limpiarSeleccion() {
+                productoSeleccionado = null;
+                actualizarEstadoBotones();
+            }
+
+            function buscarProductos(termino) {
+                fetch('@Url.Action("BuscarProductos", "Movimiento")?termino=' + encodeURIComponent(termino), { credentials: 'same-origin' })
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) { renderAutocomplete(data); })
+                    .catch(function () { cerrarAutocomplete(); });
+            }
+
+            function renderAutocomplete(lista) {
+                if (!lista || lista.length === 0) {
+                    dropdown.innerHTML = '<div class="movimiento-autocomplete-empty">Sin resultados</div>';
+                    dropdown.hidden = false;
+                    return;
+                }
+
+                var html = '';
+                lista.forEach(function (p) {
+                    var sinStock = tipoMovimientoActual === 'Salida' && p.stockActual <= 0;
+                    var etiqueta = (p.codigo ? escapeHtml(p.codigo) + ' — ' : '') + escapeHtml(p.nombre) + ' (Stock: ' + p.stockActual + ')';
+                    html += '<div class="movimiento-autocomplete-item' + (sinStock ? ' sin-stock' : '') + '" ' +
+                        'data-id="' + p.idProductoPK + '" data-codigo="' + escapeHtml(p.codigo) + '" data-nombre="' + escapeHtml(p.nombre) + '" data-stock="' + p.stockActual + '">' +
+                        etiqueta + (sinStock ? ' · sin stock' : '') +
+                        '</div>';
+                });
+                dropdown.innerHTML = html;
+                dropdown.hidden = false;
+            }
+
+            inputBuscarProducto.addEventListener('input', function () {
+                clearTimeout(debounceTimer);
+                limpiarSeleccion();
+                var termino = inputBuscarProducto.value.trim();
+
+                if (termino.length === 0) {
+                    cerrarAutocomplete();
+                    return;
+                }
+
+                debounceTimer = setTimeout(function () {
+                    buscarProductos(termino);
+                }, 200);
+            });
+
+            dropdown.addEventListener('click', function (ev) {
+                var item = ev.target.closest('.movimiento-autocomplete-item');
+                if (!item || item.classList.contains('sin-stock')) return;
+
+                productoSeleccionado = {
+                    idProductoPK: parseInt(item.getAttribute('data-id'), 10),
+                    codigo: item.getAttribute('data-codigo'),
+                    nombre: item.getAttribute('data-nombre'),
+                    stockActual: parseInt(item.getAttribute('data-stock'), 10)
+                };
+
+                inputBuscarProducto.value = productoSeleccionado.nombre;
+                cerrarAutocomplete();
+                actualizarEstadoBotones();
+                inputCantidad.focus();
+                inputCantidad.select();
+            });
+
+            document.addEventListener('click', function (ev) {
+                if (!ev.target.closest('.movimiento-autocomplete-wrap')) {
+                    cerrarAutocomplete();
+                }
+            });
+
+            document.addEventListener('keydown', function (ev) {
+                if (ev.key === 'Escape') cerrarAutocomplete();
+            });
+
+            // --- Detalle ---
+
+            function stockDisponible(idProductoPK, stockActual) {
+                var enDetalle = detalleActual.find(function (d) { return d.idProductoPK === idProductoPK; });
+                return stockActual - (enDetalle ? enDetalle.cantidad : 0);
+            }
+
+            function renderDetalle() {
+                if (detalleActual.length === 0) {
+                    detalleTbody.innerHTML = '<tr id="detalleVacioRow"><td colspan="4" class="movimiento-detalle-vacio">Aún no hay productos en el detalle</td></tr>';
+                    return;
+                }
+
+                var html = '';
+                detalleActual.forEach(function (d) {
+                    html += '<tr data-id="' + d.idProductoPK + '">' +
+                        '<td>' + (d.codigo ? escapeHtml(d.codigo) : '—') + '</td>' +
+                        '<td>' + escapeHtml(d.nombre) + '</td>' +
+                        '<td>' + d.cantidad + '</td>' +
+                        '<td><button type="button" class="movimiento-eliminar-fila" data-id="' + d.idProductoPK + '" title="Eliminar" aria-label="Eliminar">' + TRASH_SVG + '</button></td>' +
+                        '</tr>';
+                });
+                detalleTbody.innerHTML = html;
+            }
+
+            function actualizarEstadoBotones() {
+                var cantidad = parseInt(inputCantidad.value, 10);
+                btnAgregarDetalle.disabled = !(productoSeleccionado && cantidad >= 1);
+                btnGuardarMovimiento.disabled = detalleActual.length === 0;
+            }
+
+            function limpiarBusqueda() {
+                inputBuscarProducto.value = '';
+                inputCantidad.value = '1';
+                productoSeleccionado = null;
+                cerrarAutocomplete();
+                actualizarEstadoBotones();
+                inputBuscarProducto.focus();
+            }
+
+            function agregarDetalle() {
+                ocultarError(cantidadError);
+                if (!productoSeleccionado) return;
+
+                var cantidad = parseInt(inputCantidad.value, 10);
+                if (!cantidad || cantidad < 1) {
+                    mostrarError(cantidadError, 'Ingresa una cantidad válida.');
+                    return;
+                }
+
+                var filaExistente = detalleActual.find(function (d) { return d.idProductoPK === productoSeleccionado.idProductoPK; });
+                var cantidadPrevia = filaExistente ? filaExistente.cantidad : 0;
+                var cantidadTotal = cantidadPrevia + cantidad;
+
+                if (tipoMovimientoActual === 'Salida' && cantidadTotal > productoSeleccionado.stockActual) {
+                    mostrarError(cantidadError, 'Stock insuficiente: disponible ' + (productoSeleccionado.stockActual - cantidadPrevia) + '.');
+                    return;
+                }
+
+                if (filaExistente) {
+                    filaExistente.cantidad = cantidadTotal;
+                } else {
+                    detalleActual.push({
+                        idProductoPK: productoSeleccionado.idProductoPK,
+                        codigo: productoSeleccionado.codigo,
+                        nombre: productoSeleccionado.nombre,
+                        cantidad: cantidadTotal,
+                        stockActual: productoSeleccionado.stockActual
+                    });
+                }
+
+                renderDetalle();
+                limpiarBusqueda();
+            }
+
+            inputCantidad.addEventListener('input', actualizarEstadoBotones);
+            btnAgregarDetalle.addEventListener('click', agregarDetalle);
+
+            detalleTbody.addEventListener('click', function (ev) {
+                var btn = ev.target.closest('.movimiento-eliminar-fila');
+                if (!btn) return;
+
+                var id = parseInt(btn.getAttribute('data-id'), 10);
+                detalleActual = detalleActual.filter(function (d) { return d.idProductoPK !== id; });
+                renderDetalle();
+                actualizarEstadoBotones();
+            });
+
+            // --- Guardar ---
+
+            function limpiarFormularioPostGuardar() {
+                inputReferencia.value = '';
+                inputFecha.value = FECHA_HOY;
+                detalleActual = [];
+                renderDetalle();
+                limpiarBusqueda();
+                actualizarEstadoBotones();
+            }
+
+            function guardarMovimiento() {
+                ocultarError(detalleErrorGeneral);
+
+                var fechaVal = inputFecha.value;
+                if (!fechaVal) {
+                    mostrarError(detalleErrorGeneral, 'Selecciona una fecha.');
+                    return;
+                }
+                if (fechaVal > FECHA_HOY) {
+                    mostrarError(detalleErrorGeneral, 'La fecha no puede ser futura.');
+                    return;
+                }
+                if (detalleActual.length === 0) {
+                    mostrarError(detalleErrorGeneral, 'Debes agregar al menos un producto.');
+                    return;
+                }
+
+                var payload = {
+                    tipoMovimiento: tipoMovimientoActual,
+                    referencia: inputReferencia.value.trim() || null,
+                    fecha: fechaVal,
+                    detalles: detalleActual.map(function (d) {
+                        return { idProductoPK: d.idProductoPK, cantidad: d.cantidad };
+                    })
+                };
+
+                var textoOriginal = btnGuardarMovimiento.textContent;
+                btnGuardarMovimiento.disabled = true;
+                btnGuardarMovimiento.textContent = 'Guardando...';
+
+                fetch('@Url.Action("Guardar", "Movimiento")', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token()
+                    },
+                    body: JSON.stringify(payload)
+                })
+                    .then(function (r) {
+                        return r.json().then(function (data) { return { status: r.status, data: data }; });
+                    })
+                    .then(function (res) {
+                        if (res.status >= 200 && res.status < 300 && res.data.ok) {
+                            mostrarToast(res.data.mensaje || 'Movimiento registrado correctamente', 'exito');
+                            limpiarFormularioPostGuardar();
+                            return;
+                        }
+
+                        var mensaje = res.data.mensaje || 'Ocurrió un error al guardar el movimiento.';
+                        mostrarToast(mensaje, 'error');
+
+                        if (res.data.productos && res.data.productos.length) {
+                            mostrarError(detalleErrorGeneral, mensaje + ' — ' + res.data.productos.join('; '));
+                        } else {
+                            mostrarError(detalleErrorGeneral, mensaje);
+                        }
+                    })
+                    .catch(function () {
+                        mostrarToast('No se pudo conectar con el servidor.', 'error');
+                    })
+                    .finally(function () {
+                        btnGuardarMovimiento.textContent = textoOriginal;
+                        actualizarEstadoBotones();
+                    });
+            }
+
+            btnGuardarMovimiento.addEventListener('click', guardarMovimiento);
+
+            actualizarEstadoBotones();
+        })();
+    </script>
+}

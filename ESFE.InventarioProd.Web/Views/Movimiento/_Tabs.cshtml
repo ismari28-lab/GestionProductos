@@ -1,0 +1,10 @@
+@model string
+@{
+    bool esRegistrar = Model == "Registrar";
+    bool esHistorial = Model == "Historial";
+}
+
+<div class="movimiento-tabs mb-4">
+    <a asp-controller="Movimiento" asp-action="Index" class="movimiento-tab @(esRegistrar ? "activo" : "")">Registrar movimiento</a>
+    <a asp-controller="Movimiento" asp-action="Historial" class="movimiento-tab @(esHistorial ? "activo" : "")">Historial de movimientos</a>
+</div>

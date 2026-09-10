@@ -14,4 +14,8 @@
     <None Include="Views\html\login.cshtml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ESFE.GestionProductos.LN\ESFE.GestionProductos.LN.csproj" />
+  </ItemGroup>
+
 </Project>

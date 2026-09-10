@@ -1,0 +1,335 @@
+@model ESFE.InventarioProd.Web.Models.HistorialIndexViewModel
+@{
+    ViewBag.Title = "Historial de movimientos";
+}
+
+<link rel="stylesheet" href="~/css/movimiento.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/movimiento-historial.css" asp-append-version="true" />
+
+<h1 class="h4 movimiento-titulo mt-4">Movimientos de inventario</h1>
+
+@await Html.PartialAsync("_Tabs", "Historial")
+
+<div class="mh-filtros">
+    <div class="mh-filtro-campo">
+        <label for="mhDesde">Desde</label>
+        <input type="date" id="mhDesde" class="form-control" value="@Model.DesdeIso" max="@Model.HastaIso" />
+    </div>
+    <div class="mh-filtro-campo">
+        <label for="mhHasta">Hasta</label>
+        <input type="date" id="mhHasta" class="form-control" value="@Model.HastaIso" max="@Model.HastaIso" />
+    </div>
+    <div class="mh-filtro-campo">
+        <label for="mhTipo">Tipo</label>
+        <select id="mhTipo" class="form-select">
+            <option value="">Todos</option>
+            <option value="Entrada">Entrada</option>
+            <option value="Salida">Salida</option>
+        </select>
+    </div>
+    <div class="mh-filtro-campo mh-filtro-buscar">
+        <label for="mhBuscar">Buscar</label>
+        <input type="text" id="mhBuscar" class="form-control" placeholder="Buscar usuario o producto..." />
+    </div>
+    <div class="mh-filtro-campo mh-filtro-tamanio">
+        <label for="mhTamanio">Tamaño página</label>
+        <select id="mhTamanio" class="form-select">
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="75">75</option>
+        </select>
+    </div>
+</div>
+
+<div class="mh-tabla-wrap">
+    <table class="mh-tabla" id="mhTabla">
+        <thead>
+            <tr>
+                <th>ID / Referencia</th>
+                <th>Fecha y hora</th>
+                <th>Tipo</th>
+                <th>Usuario</th>
+                <th>Total ítems</th>
+            </tr>
+        </thead>
+        <tbody id="mhTbody">
+            <tr><td colspan="5" class="mh-estado-mensaje">Cargando...</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="mh-paginacion-wrap">
+    <div class="mh-paginacion" id="mhPaginacion"></div>
+    <div class="mh-resumen" id="mhResumen"></div>
+</div>
+
+<!-- Modal detalle -->
+<div id="mhModalOverlay" class="mh-modal-overlay" hidden>
+    <div class="mh-modal" role="dialog" aria-modal="true" aria-labelledby="mhModalHeader">
+        <div id="mhModalHeader" class="mh-modal-header"></div>
+        <div id="mhModalSubheader" class="mh-modal-subheader"></div>
+
+        <div class="mh-modal-body" id="mhModalBody">
+            <div class="mh-modal-loading">Cargando detalle...</div>
+        </div>
+
+        <div class="mh-modal-footer">
+            <button type="button" id="mhBtnCerrarModal" class="btn btn-outline-secondary">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            var inputDesde = document.getElementById('mhDesde');
+            var inputHasta = document.getElementById('mhHasta');
+            var selectTipo = document.getElementById('mhTipo');
+            var inputBuscar = document.getElementById('mhBuscar');
+            var selectTamanio = document.getElementById('mhTamanio');
+            var tbody = document.getElementById('mhTbody');
+            var tabla = document.getElementById('mhTabla');
+            var paginacionEl = document.getElementById('mhPaginacion');
+            var resumenEl = document.getElementById('mhResumen');
+
+            var modalOverlay = document.getElementById('mhModalOverlay');
+            var modalHeader = document.getElementById('mhModalHeader');
+            var modalSubheader = document.getElementById('mhModalSubheader');
+            var modalBody = document.getElementById('mhModalBody');
+            var btnCerrarModal = document.getElementById('mhBtnCerrarModal');
+
+            var estadoActual = {
+                desde: inputDesde.value,
+                hasta: inputHasta.value,
+                tipo: '',
+                termino: '',
+                tamanioPagina: parseInt(selectTamanio.value, 10),
+                pagina: 1
+            };
+
+            var debounceBuscar = null;
+
+            function escapeHtml(texto) {
+                var div = document.createElement('div');
+                div.textContent = texto || '';
+                return div.innerHTML;
+            }
+
+            function formatearIdMovimiento(id) {
+                return 'MOV-' + String(id).padStart(4, '0');
+            }
+
+            function formatearFecha(iso) {
+                var d = new Date(iso);
+                if (isNaN(d.getTime())) return iso;
+                var dd = String(d.getDate()).padStart(2, '0');
+                var mm = String(d.getMonth() + 1).padStart(2, '0');
+                var yyyy = d.getFullYear();
+                var hh = String(d.getHours()).padStart(2, '0');
+                var min = String(d.getMinutes()).padStart(2, '0');
+                return dd + '/' + mm + '/' + yyyy + ' ' + hh + ':' + min;
+            }
+
+            // --- Carga de la tabla ---
+
+            function cargarPagina(nuevaPagina) {
+                estadoActual.pagina = nuevaPagina;
+                tabla.classList.add('mh-cargando');
+                tbody.innerHTML = '<tr><td colspan="5" class="mh-estado-mensaje">Cargando...</td></tr>';
+
+                var params = new URLSearchParams({
+                    desde: estadoActual.desde,
+                    hasta: estadoActual.hasta,
+                    tipo: estadoActual.tipo,
+                    termino: estadoActual.termino,
+                    pagina: estadoActual.pagina,
+                    tamanioPagina: estadoActual.tamanioPagina
+                });
+
+                fetch('@Url.Action("ListarHistorial", "Movimiento")?' + params.toString(), { credentials: 'same-origin' })
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                        renderTabla(data);
+                        renderPaginacion(data);
+                    })
+                    .catch(function () {
+                        tbody.innerHTML = '<tr><td colspan="5" class="mh-estado-mensaje">No se pudo cargar el historial.</td></tr>';
+                        paginacionEl.innerHTML = '';
+                        resumenEl.textContent = '';
+                    })
+                    .finally(function () {
+                        tabla.classList.remove('mh-cargando');
+                    });
+            }
+
+            function renderTabla(resultado) {
+                var items = resultado.items || [];
+
+                if (items.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="mh-vacio">No hay movimientos con los filtros seleccionados</td></tr>';
+                    return;
+                }
+
+                var html = '';
+                items.forEach(function (m) {
+                    var badgeClase = m.tipoMovimiento === 'Entrada' ? 'entrada' : 'salida';
+                    html += '<tr class="mh-fila-clickeable" data-id="' + m.idMovimientoPK + '">' +
+                        '<td>' + formatearIdMovimiento(m.idMovimientoPK) +
+                        (m.referencia ? '<span class="mh-referencia">' + escapeHtml(m.referencia) + '</span>' : '') +
+                        '</td>' +
+                        '<td>' + formatearFecha(m.fecha) + '</td>' +
+                        '<td><span class="mh-badge ' + badgeClase + '">' + escapeHtml(m.tipoMovimiento) + '</span></td>' +
+                        '<td>' + escapeHtml(m.nombreUsuario) + '</td>' +
+                        '<td>' + m.totalItems + '</td>' +
+                        '</tr>';
+                });
+                tbody.innerHTML = html;
+            }
+
+            function generarPaginas(paginaActual, totalPaginas) {
+                var paginas = [];
+                if (totalPaginas <= 7) {
+                    for (var i = 1; i <= totalPaginas; i++) paginas.push(i);
+                    return paginas;
+                }
+
+                paginas.push(1);
+                var inicio = Math.max(2, paginaActual - 2);
+                var fin = Math.min(totalPaginas - 1, paginaActual + 2);
+
+                if (inicio > 2) paginas.push('...');
+                for (var j = inicio; j <= fin; j++) paginas.push(j);
+                if (fin < totalPaginas - 1) paginas.push('...');
+                paginas.push(totalPaginas);
+
+                return paginas;
+            }
+
+            function renderPaginacion(resultado) {
+                var totalPaginas = resultado.totalPaginas || 0;
+                var paginaActual = resultado.pagina || 1;
+                var totalRegistros = resultado.totalRegistros || 0;
+                var tamanioPagina = resultado.tamanioPagina || estadoActual.tamanioPagina;
+
+                if (totalRegistros === 0) {
+                    paginacionEl.innerHTML = '';
+                    resumenEl.textContent = 'Mostrando 0 de 0 movimientos';
+                    return;
+                }
+
+                var html = '';
+                html += '<button type="button" class="mh-pagina-btn" data-pagina="' + (paginaActual - 1) + '" ' + (paginaActual <= 1 ? 'disabled' : '') + '>← Anterior</button>';
+
+                generarPaginas(paginaActual, totalPaginas).forEach(function (p) {
+                    if (p === '...') {
+                        html += '<span class="mh-pagina-elipsis">…</span>';
+                    } else {
+                        html += '<button type="button" class="mh-pagina-btn' + (p === paginaActual ? ' activa' : '') + '" data-pagina="' + p + '">' + p + '</button>';
+                    }
+                });
+
+                html += '<button type="button" class="mh-pagina-btn" data-pagina="' + (paginaActual + 1) + '" ' + (paginaActual >= totalPaginas ? 'disabled' : '') + '>Siguiente →</button>';
+
+                paginacionEl.innerHTML = html;
+
+                var desdeItem = (paginaActual - 1) * tamanioPagina + 1;
+                var hastaItem = Math.min(paginaActual * tamanioPagina, totalRegistros);
+                resumenEl.textContent = 'Mostrando ' + desdeItem + '-' + hastaItem + ' de ' + totalRegistros + ' movimientos';
+            }
+
+            paginacionEl.addEventListener('click', function (ev) {
+                var btn = ev.target.closest('.mh-pagina-btn');
+                if (!btn || btn.disabled || btn.classList.contains('activa')) return;
+                cargarPagina(parseInt(btn.getAttribute('data-pagina'), 10));
+            });
+
+            // --- Filtros ---
+
+            function resetearYcargar() {
+                estadoActual.desde = inputDesde.value;
+                estadoActual.hasta = inputHasta.value;
+                estadoActual.tipo = selectTipo.value;
+                estadoActual.tamanioPagina = parseInt(selectTamanio.value, 10);
+                cargarPagina(1);
+            }
+
+            inputDesde.addEventListener('change', function () {
+                inputHasta.max = inputHasta.value < inputDesde.value ? inputDesde.value : inputHasta.max;
+                resetearYcargar();
+            });
+            inputHasta.addEventListener('change', resetearYcargar);
+            selectTipo.addEventListener('change', resetearYcargar);
+            selectTamanio.addEventListener('change', resetearYcargar);
+
+            inputBuscar.addEventListener('input', function () {
+                clearTimeout(debounceBuscar);
+                debounceBuscar = setTimeout(function () {
+                    var termino = inputBuscar.value.trim();
+                    if (termino.length > 0 && termino.length < 2) return;
+                    estadoActual.termino = termino;
+                    cargarPagina(1);
+                }, 300);
+            });
+
+            // --- Modal detalle ---
+
+            function abrirModalDetalle(id) {
+                modalHeader.textContent = '';
+                modalSubheader.textContent = '';
+                modalBody.innerHTML = '<div class="mh-modal-loading">Cargando detalle...</div>';
+                modalOverlay.hidden = false;
+
+                fetch('@Url.Action("Detalle", "Movimiento")/' + id, { credentials: 'same-origin' })
+                    .then(function (r) {
+                        if (!r.ok) throw new Error('No encontrado');
+                        return r.json();
+                    })
+                    .then(function (data) {
+                        modalHeader.textContent = formatearIdMovimiento(data.idMovimientoPK) + ' · ' + data.tipoMovimiento;
+
+                        var subheader = formatearFecha(data.fecha) + ' · Registrado por ' + data.nombreUsuario;
+                        if (data.referencia) subheader += ' · Ref: ' + data.referencia;
+                        modalSubheader.textContent = subheader;
+
+                        if (!data.lineas || data.lineas.length === 0) {
+                            modalBody.innerHTML = '<p class="mh-estado-mensaje">Este movimiento no tiene líneas de detalle.</p>';
+                            return;
+                        }
+
+                        var html = '<table class="movimiento-detalle-table"><thead><tr><th>Código</th><th>Producto</th><th>Cantidad</th></tr></thead><tbody>';
+                        data.lineas.forEach(function (l) {
+                            html += '<tr><td>' + (l.codigo ? escapeHtml(l.codigo) : '—') + '</td><td>' + escapeHtml(l.productoNombre) + '</td><td>' + l.cantidad + '</td></tr>';
+                        });
+                        html += '</tbody></table>';
+                        modalBody.innerHTML = html;
+                    })
+                    .catch(function () {
+                        modalHeader.textContent = '';
+                        modalSubheader.textContent = '';
+                        modalBody.innerHTML = '<div class="mh-modal-error">No se pudo cargar el detalle</div>';
+                    });
+            }
+
+            function cerrarModal() {
+                modalOverlay.hidden = true;
+            }
+
+            tbody.addEventListener('click', function (ev) {
+                var fila = ev.target.closest('.mh-fila-clickeable');
+                if (!fila) return;
+                abrirModalDetalle(parseInt(fila.getAttribute('data-id'), 10));
+            });
+
+            btnCerrarModal.addEventListener('click', cerrarModal);
+            modalOverlay.addEventListener('click', function (ev) {
+                if (ev.target === modalOverlay) cerrarModal();
+            });
+            document.addEventListener('keydown', function (ev) {
+                if (ev.key === 'Escape' && !modalOverlay.hidden) cerrarModal();
+            });
+
+            // --- Carga inicial ---
+            cargarPagina(1);
+        })();
+    </script>
+}
