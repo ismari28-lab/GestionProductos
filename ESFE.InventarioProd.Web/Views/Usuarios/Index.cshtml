@@ -1,467 +1,488 @@
-﻿@{
-    ViewData["Title"] = "Administración de Usuarios";
+@model ESFE.InventarioProd.Web.Models.UsuariosIndexViewModel
+@{
+    ViewBag.Title = "Usuarios";
 }
 
-<link rel="stylesheet" href="~/css/usuario.css" />
+<link rel="stylesheet" href="~/css/usuario.css" asp-append-version="true" />
 
 <div class="usuarios-container">
-
-    <!-- ENCABEZADO -->
     <div class="page-header">
         <div>
-            <h1>Administración de Usuarios y Roles</h1>
-            <p>Gestiona los usuarios y los permisos asignados a cada rol.</p>
-        </div>
-
-        <div class="usuario-actual">
-            <span class="usuario-icono">👤</span>
-            <span>Administrador</span>
+            <h1>Administración de Usuarios</h1>
+            <p>Gestiona los usuarios del sistema y el rol asignado a cada uno.</p>
         </div>
     </div>
 
-    <!-- CONTENIDO -->
-    <div class="contenido">
-
-        <!-- USUARIOS -->
-        <section class="usuarios-section">
-
-            <div class="section-header">
-                <div>
-                    <h2>Usuarios</h2>
-                    <p>Lista de usuarios registrados en el sistema.</p>
-                </div>
-
-                <button class="btn-nuevo" onclick="nuevoUsuario()">
-                    + Nuevo usuario
-                </button>
+    <section class="usuarios-section">
+        <div class="section-header">
+            <div>
+                <h2>Usuarios</h2>
+                <p>Lista de usuarios registrados en el sistema.</p>
             </div>
-
-
-            <!-- USUARIO 1 -->
-            <div class="usuario-card">
-
-                <div class="usuario-info">
-
-                    <div class="avatar">
-                        AP
-                    </div>
-
-                    <div>
-                        <h3>Ana Pérez</h3>
-                        <p>ana.perez@empresa.com</p>
-                    </div>
-
-                </div>
-
-                <div class="usuario-rol">
-                    <span class="rol">
-                        Bodeguero
-                    </span>
-                </div>
-
-                <div class="usuario-estado activo">
-                    Activo
-                </div>
-
-                <button class="btn-editar"
-                        onclick="editarUsuario(
-                    'Ana Pérez',
-                    'ana.perez@empresa.com',
-                    'Bodeguero',
-                    'Activo'
-                    )">
-                    ✎
-                </button>
-
-            </div>
-
-
-            <!-- USUARIO 2 -->
-            <div class="usuario-card">
-
-                <div class="usuario-info">
-
-                    <div class="avatar">
-                        LG
-                    </div>
-
-                    <div>
-                        <h3>Luis Gómez</h3>
-                        <p>luis.gomez@empresa.com</p>
-                    </div>
-
-                </div>
-
-                <div class="usuario-rol">
-                    <span class="rol">
-                        Consulta
-                    </span>
-                </div>
-
-                <div class="usuario-estado activo">
-                    Activo
-                </div>
-
-                <button class="btn-editar"
-                        onclick="editarUsuario(
-                    'Luis Gómez',
-                    'luis.gomez@empresa.com',
-                    'Consulta',
-                    'Activo'
-                    )">
-                    ✎
-                </button>
-
-            </div>
-
-
-            <!-- USUARIO 3 -->
-            <div class="usuario-card">
-
-                <div class="usuario-info">
-
-                    <div class="avatar">
-                        MR
-                    </div>
-
-                    <div>
-                        <h3>Marta Ríos</h3>
-                        <p>marta.rios@empresa.com</p>
-                    </div>
-
-                </div>
-
-                <div class="usuario-rol">
-                    <span class="rol">
-                        Administrador
-                    </span>
-                </div>
-
-                <div class="usuario-estado activo">
-                    Activo
-                </div>
-
-                <button class="btn-editar"
-                        onclick="editarUsuario(
-                    'Marta Ríos',
-                    'marta.rios@empresa.com',
-                    'Administrador',
-                    'Activo'
-                    )">
-                    ✎
-                </button>
-
-            </div>
-
-
-            <!-- USUARIO 4 -->
-            <div class="usuario-card">
-
-                <div class="usuario-info">
-
-                    <div class="avatar">
-                        CD
-                    </div>
-
-                    <div>
-                        <h3>Carlos Díaz</h3>
-                        <p>carlos.diaz@empresa.com</p>
-                    </div>
-
-                </div>
-
-                <div class="usuario-rol">
-                    <span class="rol">
-                        Consulta
-                    </span>
-                </div>
-
-                <div class="usuario-estado inactivo">
-                    Inactivo
-                </div>
-
-                <button class="btn-editar"
-                        onclick="editarUsuario(
-                    'Carlos Díaz',
-                    'carlos.diaz@empresa.com',
-                    'Consulta',
-                    'Inactivo'
-                    )">
-                    ✎
-                </button>
-
-            </div>
-
-        </section>
-
-
-        <!-- PERMISOS -->
-        <section class="permisos-section">
-
-            <div class="section-header">
-
-                <div>
-                    <h2>Permisos por rol</h2>
-                    <p>
-                        Consulta los permisos disponibles para cada rol.
-                    </p>
-                </div>
-
-            </div>
-
-
-            <div class="tabla-container">
-
-                <table class="permisos-table">
-
-                    <thead>
-
-                        <tr>
-                            <th>Permiso</th>
-                            <th>Administrador</th>
-                            <th>Bodeguero</th>
-                            <th>Consulta</th>
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        <tr>
-                            <td>Gestionar usuarios</td>
-                            <td class="check">✓</td>
-                            <td class="dash">—</td>
-                            <td class="dash">—</td>
-                        </tr>
-
-                        <tr>
-                            <td>Gestionar productos</td>
-                            <td class="check">✓</td>
-                            <td class="check">✓</td>
-                            <td class="dash">—</td>
-                        </tr>
-
-                        <tr>
-                            <td>Gestionar inventario</td>
-                            <td class="check">✓</td>
-                            <td class="check">✓</td>
-                            <td class="dash">—</td>
-                        </tr>
-
-                        <tr>
-                            <td>Registrar ventas</td>
-                            <td class="check">✓</td>
-                            <td class="check">✓</td>
-                            <td class="dash">—</td>
-                        </tr>
-
-                        <tr>
-                            <td>Consultar reportes</td>
-                            <td class="check">✓</td>
-                            <td class="check">✓</td>
-                            <td class="check">✓</td>
-                        </tr>
-
-                        <tr>
-                            <td>Ver auditoría</td>
-                            <td class="check">✓</td>
-                            <td class="dash">—</td>
-                            <td class="dash">—</td>
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
-    </div>
-
+            <button type="button" class="btn-nuevo" id="btnNuevoUsuario">+ Nuevo usuario</button>
+        </div>
+
+        <div id="usuariosLista">
+            <p class="usuarios-vacio">Cargando...</p>
+        </div>
+    </section>
 </div>
 
+@Html.AntiForgeryToken()
 
-<!-- MODAL -->
-<div id="modalUsuario" class="modal">
-
-    <div class="modal-contenido">
-
+<!-- Modal crear/editar -->
+<div id="modal-usuario" class="modal-overlay" style="display:none;">
+    <div class="modal-card modal-pequeno">
         <div class="modal-header">
-
-            <h2 id="modalTitulo">
-                Nuevo usuario
-            </h2>
-
-            <button class="btn-cerrar"
-                    onclick="cerrarModal()">
-                ×
-            </button>
-
+            <h2 id="modal-titulo">Nuevo usuario</h2>
         </div>
 
+        <div class="modal-body">
+            <input type="hidden" id="usu-id" />
 
-        <div class="formulario">
+            <fieldset class="seccion">
+                <legend>DATOS DE ACCESO</legend>
 
-            <label for="nombreUsuario">
-                Nombre
-            </label>
+                <div class="campo">
+                    <label for="usu-nombre">Nombre *</label>
+                    <input type="text" id="usu-nombre" maxlength="100" autocomplete="off" />
+                    <span class="error-inline" data-campo="nombre"></span>
+                </div>
 
-            <input type="text"
-                   id="nombreUsuario"
-                   placeholder="Ingrese el nombre">
+                <div class="campo" style="margin-top: 0.75rem;">
+                    <label for="usu-password">Contraseña <span id="usu-password-requerida">*</span></label>
+                    <input type="password" id="usu-password" maxlength="256" autocomplete="new-password" />
+                    <small class="nota-campo" id="usu-password-nota" style="display:none;">Déjalo en blanco para conservar la contraseña actual.</small>
+                    <span class="error-inline" data-campo="password"></span>
+                </div>
 
+                <div class="campo" style="margin-top: 0.75rem;">
+                    <label for="usu-rol">Rol *</label>
+                    <select id="usu-rol">
+                        <option value="">Seleccione...</option>
+                        @foreach (var rol in Model.Roles)
+                        {
+                            <option value="@rol.IdRolPK">@rol.NombreRol</option>
+                        }
+                    </select>
+                    <span class="error-inline" data-campo="rol"></span>
+                </div>
+            </fieldset>
 
-            <label for="correoUsuario">
-                Correo electrónico
-            </label>
+            <fieldset class="seccion" id="seccion-estado" style="display:none;">
+                <legend>ESTADO</legend>
+                <div class="campo">
+                    <label>
+                        <input type="checkbox" id="usu-estado" checked />
+                        Usuario activo
+                    </label>
+                </div>
+            </fieldset>
 
-            <input type="email"
-                   id="correoUsuario"
-                   placeholder="Ingrese el correo">
-
-
-            <label for="passwordUsuario">
-                Contraseña
-            </label>
-
-            <input type="password"
-                   id="passwordUsuario"
-                   placeholder="Ingrese la contraseña">
-
-
-            <label for="rolUsuario">
-                Rol
-            </label>
-
-            <select id="rolUsuario">
-
-                <option value="">
-                    Seleccione un rol
-                </option>
-
-                <option value="Administrador">
-                    Administrador
-                </option>
-
-                <option value="Bodeguero">
-                    Bodeguero
-                </option>
-
-                <option value="Consulta">
-                    Consulta
-                </option>
-
-            </select>
-
-
-            <label for="estadoUsuario">
-                Estado
-            </label>
-
-            <select id="estadoUsuario">
-
-                <option value="Activo">
-                    Activo
-                </option>
-
-                <option value="Inactivo">
-                    Inactivo
-                </option>
-
-            </select>
-
+            <div class="mensaje-error-general" id="mensaje-error-general"></div>
         </div>
-
 
         <div class="modal-footer">
-
-            <button class="btn-cancelar"
-                    onclick="cerrarModal()">
-                Cancelar
-            </button>
-
-            <button class="btn-guardar"
-                    onclick="guardarUsuario()">
-                Guardar usuario
-            </button>
-
+            <button type="button" class="btn-eliminar" id="btn-eliminar" style="display:none;">Eliminar</button>
+            <div class="footer-derecha">
+                <button type="button" class="btn-secundario" id="btn-cancelar-usuario">Cancelar</button>
+                <button type="button" class="btn-primario" id="btn-guardar">Guardar</button>
+            </div>
         </div>
-
     </div>
-
 </div>
 
+<!-- Modal confirmación eliminar -->
+<div id="modal-confirmar-eliminar" class="modal-overlay" style="display:none;">
+    <div class="modal-card modal-pequeno">
+        <div class="modal-body">
+            <p id="texto-confirmar-eliminar"></p>
+            <div class="mensaje-error-general" id="mensaje-error-eliminar"></div>
+        </div>
+        <div class="modal-footer">
+            <div class="footer-derecha">
+                <button type="button" class="btn-secundario" id="btn-cancelar-eliminar">Cancelar</button>
+                <button type="button" class="btn-primario-rojo" id="btn-confirmar-eliminar-def">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-<script>
+@section Scripts {
+    <script>
+        (function () {
+            var lista = document.getElementById('usuariosLista');
+            var btnNuevoUsuario = document.getElementById('btnNuevoUsuario');
 
-    function nuevoUsuario() {
+            var modalOverlay = document.getElementById('modal-usuario');
+            var modalTitulo = document.getElementById('modal-titulo');
+            var inputId = document.getElementById('usu-id');
+            var inputNombre = document.getElementById('usu-nombre');
+            var inputPassword = document.getElementById('usu-password');
+            var passwordRequerida = document.getElementById('usu-password-requerida');
+            var passwordNota = document.getElementById('usu-password-nota');
+            var selectRol = document.getElementById('usu-rol');
+            var seccionEstado = document.getElementById('seccion-estado');
+            var checkEstado = document.getElementById('usu-estado');
+            var mensajeErrorGeneral = document.getElementById('mensaje-error-general');
+            var btnEliminar = document.getElementById('btn-eliminar');
+            var btnCancelarUsuario = document.getElementById('btn-cancelar-usuario');
+            var btnGuardar = document.getElementById('btn-guardar');
 
-        document.getElementById("modalTitulo").innerText =
-            "Nuevo usuario";
+            var modalConfirmarEliminar = document.getElementById('modal-confirmar-eliminar');
+            var textoConfirmarEliminar = document.getElementById('texto-confirmar-eliminar');
+            var mensajeErrorEliminar = document.getElementById('mensaje-error-eliminar');
+            var btnCancelarEliminar = document.getElementById('btn-cancelar-eliminar');
+            var btnConfirmarEliminarDef = document.getElementById('btn-confirmar-eliminar-def');
 
-        document.getElementById("nombreUsuario").value = "";
-        document.getElementById("correoUsuario").value = "";
-        document.getElementById("passwordUsuario").value = "";
-        document.getElementById("rolUsuario").value = "";
-        document.getElementById("estadoUsuario").value = "Activo";
+            var modoEdicion = false;
+            var usuarioIdActual = null;
+            var nombreActualParaEliminar = '';
 
-        document.getElementById("modalUsuario").style.display =
-            "flex";
-    }
+            function escapeHtml(texto) {
+                var div = document.createElement('div');
+                div.textContent = texto || '';
+                return div.innerHTML;
+            }
 
+            function iniciales(nombre) {
+                var partes = (nombre || '').trim().split(/\s+/).filter(Boolean);
+                if (partes.length === 0) return '?';
+                if (partes.length === 1) return partes[0].substring(0, 2).toUpperCase();
+                return (partes[0][0] + partes[1][0]).toUpperCase();
+            }
 
-    function editarUsuario(nombre, correo, rol, estado) {
+            function token() {
+                var campo = document.querySelector('input[name="__RequestVerificationToken"]');
+                return campo ? campo.value : '';
+            }
 
-        document.getElementById("modalTitulo").innerText =
-            "Editar usuario";
+            function mostrarToast(mensaje, tipo) {
+                var toast = document.createElement('div');
+                toast.className = 'app-toast ' + tipo;
+                toast.textContent = mensaje;
+                document.body.appendChild(toast);
+                setTimeout(function () {
+                    toast.remove();
+                }, 3500);
+            }
 
-        document.getElementById("nombreUsuario").value =
-            nombre;
+            function mostrarModal(el) {
+                el.style.display = 'flex';
+            }
 
-        document.getElementById("correoUsuario").value =
-            correo;
+            function ocultarModal(el) {
+                el.style.display = 'none';
+            }
 
-        document.getElementById("passwordUsuario").value =
-            "";
+            // --- Listado ---
 
-        document.getElementById("rolUsuario").value =
-            rol;
+            function cargarUsuarios() {
+                lista.innerHTML = '<p class="usuarios-vacio">Cargando...</p>';
 
-        document.getElementById("estadoUsuario").value =
-            estado;
+                fetch('@Url.Action("Listar", "Usuarios")', { credentials: 'same-origin' })
+                    .then(function (r) { return r.json(); })
+                    .then(renderLista)
+                    .catch(function () {
+                        lista.innerHTML = '<p class="usuarios-vacio">No se pudo cargar el listado de usuarios.</p>';
+                    });
+            }
 
-        document.getElementById("modalUsuario").style.display =
-            "flex";
-    }
+            function renderLista(usuarios) {
+                if (!usuarios || usuarios.length === 0) {
+                    lista.innerHTML = '<p class="usuarios-vacio">Aún no hay usuarios registrados</p>';
+                    return;
+                }
 
+                var html = '';
+                usuarios.forEach(function (u) {
+                    var badgeClase = u.estado ? 'activo' : 'inactivo';
+                    var badgeTexto = u.estado ? 'Activo' : 'Inactivo';
 
-    function cerrarModal() {
+                    html += '<div class="usuario-card">' +
+                        '<div class="usuario-info">' +
+                        '<div class="avatar">' + escapeHtml(iniciales(u.nombre)) + '</div>' +
+                        '<div><h3>' + escapeHtml(u.nombre) + '</h3></div>' +
+                        '</div>' +
+                        '<span class="rol">' + escapeHtml(u.nombreRol) + '</span>' +
+                        '<span class="usuario-estado ' + badgeClase + '">' + badgeTexto + '</span>' +
+                        '<button type="button" class="btn-editar" data-id="' + u.idUsuarioPK + '" title="Editar" aria-label="Editar">✎</button>' +
+                        '</div>';
+                });
+                lista.innerHTML = html;
+            }
 
-        document.getElementById("modalUsuario").style.display =
-            "none";
-    }
+            lista.addEventListener('click', function (ev) {
+                var btn = ev.target.closest('.btn-editar');
+                if (!btn) return;
+                abrirModalEditar(parseInt(btn.getAttribute('data-id'), 10));
+            });
 
+            // --- Modal Crear/Editar ---
 
-    function guardarUsuario() {
+            function limpiarErroresCampo() {
+                modalOverlay.querySelectorAll('.error-inline').forEach(function (el) {
+                    el.textContent = '';
+                    el.style.display = 'none';
+                });
+                ocultarErrorGeneral();
+            }
 
-        alert("Usuario guardado correctamente.");
+            function mostrarErrorCampo(campo, mensaje) {
+                var el = modalOverlay.querySelector('.error-inline[data-campo="' + campo + '"]');
+                if (el) {
+                    el.textContent = mensaje;
+                    el.style.display = 'block';
+                }
+            }
 
-        cerrarModal();
-    }
+            function mostrarErrorGeneral(mensaje) {
+                mensajeErrorGeneral.textContent = mensaje;
+                mensajeErrorGeneral.style.display = 'block';
+            }
 
+            function ocultarErrorGeneral() {
+                mensajeErrorGeneral.style.display = 'none';
+                mensajeErrorGeneral.textContent = '';
+            }
 
-    window.onclick = function(event) {
+            function mostrarErrorEliminar(mensaje) {
+                mensajeErrorEliminar.textContent = mensaje;
+                mensajeErrorEliminar.style.display = 'block';
+            }
 
-        const modal =
-            document.getElementById("modalUsuario");
+            function ocultarErrorEliminar() {
+                mensajeErrorEliminar.style.display = 'none';
+                mensajeErrorEliminar.textContent = '';
+            }
 
-        if (event.target === modal) {
+            function abrirModalCrear() {
+                modoEdicion = false;
+                usuarioIdActual = null;
 
-            cerrarModal();
+                modalTitulo.textContent = 'Nuevo usuario';
+                inputId.value = '';
+                limpiarErroresCampo();
 
-        }
+                inputNombre.value = '';
+                inputPassword.value = '';
+                selectRol.value = '';
+                checkEstado.checked = true;
 
-    };
+                passwordRequerida.style.display = '';
+                passwordNota.style.display = 'none';
+                seccionEstado.style.display = 'none';
+                btnEliminar.style.display = 'none';
 
-</script>
+                btnGuardar.disabled = false;
+                btnGuardar.textContent = 'Guardar';
+                mostrarModal(modalOverlay);
+                inputNombre.focus();
+            }
+
+            function abrirModalEditar(id) {
+                modoEdicion = true;
+
+                modalTitulo.textContent = 'Editar usuario';
+                inputId.value = id;
+                limpiarErroresCampo();
+
+                passwordRequerida.style.display = 'none';
+                passwordNota.style.display = '';
+                seccionEstado.style.display = '';
+                btnEliminar.style.display = '';
+
+                btnGuardar.disabled = false;
+                btnGuardar.textContent = 'Guardar';
+                mostrarModal(modalOverlay);
+
+                fetch('@Url.Action("ObtenerParaEdicion", "Usuarios")/' + id, { credentials: 'same-origin' })
+                    .then(function (r) {
+                        if (!r.ok) throw new Error('No encontrado');
+                        return r.json();
+                    })
+                    .then(function (data) {
+                        var u = data.usuario;
+
+                        inputNombre.value = u.nombre;
+                        inputPassword.value = '';
+                        selectRol.value = u.idRolFK != null ? u.idRolFK : '';
+                        checkEstado.checked = u.estado;
+
+                        usuarioIdActual = u.idUsuarioPK;
+                        nombreActualParaEliminar = u.nombre;
+                    })
+                    .catch(function () {
+                        cerrarModal();
+                        mostrarToast('No se pudo cargar el usuario para editar.', 'error');
+                    });
+            }
+
+            function validarFormulario() {
+                limpiarErroresCampo();
+                var valido = true;
+
+                if (!inputNombre.value.trim()) {
+                    mostrarErrorCampo('nombre', 'El nombre es obligatorio.');
+                    valido = false;
+                }
+
+                if (!modoEdicion && !inputPassword.value.trim()) {
+                    mostrarErrorCampo('password', 'La contraseña es obligatoria.');
+                    valido = false;
+                }
+
+                if (!selectRol.value) {
+                    mostrarErrorCampo('rol', 'El rol es obligatorio.');
+                    valido = false;
+                }
+
+                return valido;
+            }
+
+            function guardarUsuario() {
+                if (!validarFormulario()) return;
+
+                var payload = {
+                    idUsuarioPK: modoEdicion ? parseInt(inputId.value, 10) : null,
+                    nombre: inputNombre.value.trim(),
+                    password: inputPassword.value.trim() || null,
+                    idRolFK: selectRol.value ? parseInt(selectRol.value, 10) : null,
+                    estado: modoEdicion ? checkEstado.checked : true
+                };
+
+                var url = modoEdicion ? '@Url.Action("Editar", "Usuarios")' : '@Url.Action("Crear", "Usuarios")';
+
+                btnGuardar.disabled = true;
+                btnGuardar.textContent = 'Guardando...';
+
+                fetch(url, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token()
+                    },
+                    body: JSON.stringify(payload)
+                })
+                    .then(function (r) {
+                        return r.json().then(function (data) { return { status: r.status, data: data }; });
+                    })
+                    .then(function (res) {
+                        if (res.status === 200 && res.data.ok) {
+                            cerrarModal();
+                            mostrarToast(res.data.mensaje || 'Usuario guardado correctamente', 'exito');
+                            cargarUsuarios();
+                            return;
+                        }
+
+                        if (res.status === 409) {
+                            var msg = res.data.mensaje || 'El nombre ya está en uso.';
+                            mostrarErrorCampo('nombre', msg);
+                            return;
+                        }
+
+                        if (res.status === 400 || res.status === 404) {
+                            mostrarErrorGeneral(res.data.mensaje || 'Datos inválidos.');
+                            return;
+                        }
+
+                        mostrarToast(res.data.mensaje || 'No se pudo guardar el usuario.', 'error');
+                    })
+                    .catch(function () {
+                        mostrarToast('No se pudo conectar con el servidor.', 'error');
+                    })
+                    .finally(function () {
+                        btnGuardar.disabled = false;
+                        btnGuardar.textContent = 'Guardar';
+                    });
+            }
+
+            function confirmarEliminar() {
+                textoConfirmarEliminar.textContent = '¿Eliminar el usuario «' + nombreActualParaEliminar + '»?';
+                ocultarErrorEliminar();
+                mostrarModal(modalConfirmarEliminar);
+            }
+
+            function eliminarDefinitivo() {
+                btnConfirmarEliminarDef.disabled = true;
+                btnConfirmarEliminarDef.textContent = 'Eliminando...';
+
+                fetch('@Url.Action("Eliminar", "Usuarios")', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token()
+                    },
+                    body: JSON.stringify({ id: usuarioIdActual })
+                })
+                    .then(function (r) {
+                        return r.json().then(function (data) { return { status: r.status, data: data }; });
+                    })
+                    .then(function (res) {
+                        if (res.status === 200 && res.data.ok) {
+                            cerrarConfirmarEliminar();
+                            cerrarModal();
+                            mostrarToast(res.data.mensaje || 'Usuario eliminado correctamente', 'exito');
+                            cargarUsuarios();
+                            return;
+                        }
+
+                        if (res.status === 409) {
+                            mostrarErrorEliminar(res.data.mensaje || 'No se puede eliminar el usuario.');
+                            return;
+                        }
+
+                        cerrarConfirmarEliminar();
+                        mostrarToast(res.data.mensaje || 'No se pudo eliminar el usuario.', 'error');
+                    })
+                    .catch(function () {
+                        mostrarToast('No se pudo conectar con el servidor.', 'error');
+                    })
+                    .finally(function () {
+                        btnConfirmarEliminarDef.disabled = false;
+                        btnConfirmarEliminarDef.textContent = 'Eliminar';
+                    });
+            }
+
+            function cerrarModal() {
+                ocultarModal(modalOverlay);
+                limpiarErroresCampo();
+            }
+
+            function cerrarConfirmarEliminar() {
+                ocultarModal(modalConfirmarEliminar);
+                ocultarErrorEliminar();
+            }
+
+            btnNuevoUsuario.addEventListener('click', abrirModalCrear);
+            btnCancelarUsuario.addEventListener('click', cerrarModal);
+            btnGuardar.addEventListener('click', guardarUsuario);
+            btnEliminar.addEventListener('click', confirmarEliminar);
+            btnCancelarEliminar.addEventListener('click', cerrarConfirmarEliminar);
+            btnConfirmarEliminarDef.addEventListener('click', eliminarDefinitivo);
+
+            modalOverlay.addEventListener('click', function (ev) {
+                if (ev.target === modalOverlay) cerrarModal();
+            });
+            modalConfirmarEliminar.addEventListener('click', function (ev) {
+                if (ev.target === modalConfirmarEliminar) cerrarConfirmarEliminar();
+            });
+
+            document.addEventListener('keydown', function (ev) {
+                if (ev.key !== 'Escape') return;
+                if (modalConfirmarEliminar.style.display !== 'none') {
+                    cerrarConfirmarEliminar();
+                    return;
+                }
+                if (modalOverlay.style.display !== 'none') {
+                    cerrarModal();
+                }
+            });
+
+            // --- Carga inicial ---
+            cargarUsuarios();
+        })();
+    </script>
+}

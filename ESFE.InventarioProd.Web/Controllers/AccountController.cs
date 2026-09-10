@@ -8,12 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ESFE.InventarioProd.Web.Controllers
 {
-    [AllowAnonymous]
     public class AccountController : Controller
     {
         private readonly UsuarioLN usuarioLN = new UsuarioLN();
+        private readonly UserLN userLN = new UserLN();
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Login(string? returnUrl = null)
         {
             if (User.Identity?.IsAuthenticated == true)
@@ -24,6 +25,7 @@ namespace ESFE.InventarioProd.Web.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
         {
@@ -68,9 +70,93 @@ namespace ESFE.InventarioProd.Web.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult AccessDenied()
         {
             return View();
+        }
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult Perfil()
+        {
+            var vm = new PerfilViewModel
+            {
+                Nombre = User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty,
+                NombreRol = User.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty
+            };
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CambiarPassword(PerfilViewModel model)
+        {
+            // Recargar datos de solo lectura: el POST no los trae de vuelta
+            model.Nombre = User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty;
+            model.NombreRol = User.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty;
+
+            if (!ModelState.IsValid)
+                return View("Perfil", model);
+
+            var validacion = usuarioLN.ValidarLogin(model.Nombre, model.PasswordActual);
+            if (validacion == null)
+            {
+                ModelState.AddModelError(nameof(model.PasswordActual), "La contraseña actual no es correcta.");
+                return View("Perfil", model);
+            }
+
+            try
+            {
+                bool actualizado = userLN.CambiarPassword(validacion.Usuario.IdUsuarioPK, model.PasswordNueva);
+                if (!actualizado)
+                {
+                    ModelState.AddModelError(string.Empty, "No se pudo actualizar la contraseña.");
+                    return View("Perfil", model);
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View("Perfil", model);
+            }
+
+            return RedirectToAction("Login");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult TestMinimo(PerfilViewModel model)
+        {
+            model.Nombre = User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty;
+            model.NombreRol = User.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty;
+
+            if (!ModelState.IsValid)
+                return View("Perfil", model);
+
+            var validacion = usuarioLN.ValidarLogin(model.Nombre, model.PasswordActual);
+            if (validacion == null)
+            {
+                ModelState.AddModelError(nameof(model.PasswordActual), "La contraseña actual no es correcta.");
+                return View("Perfil", model);
+            }
+
+            try
+            {
+                bool actualizado = userLN.CambiarPassword(validacion.Usuario.IdUsuarioPK, model.PasswordNueva);
+                if (!actualizado)
+                {
+                    ModelState.AddModelError(string.Empty, "No se pudo actualizar la contraseña.");
+                    return View("Perfil", model);
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return View("Perfil", model);
+            }
+
+            return RedirectToAction("Login");
         }
     }
 }

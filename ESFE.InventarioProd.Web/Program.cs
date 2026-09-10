@@ -30,25 +30,19 @@ if (!app.Environment.IsDevelopment())
 // Redireccionar HTTP a HTTPS
 app.UseHttpsRedirection();
 
-// Permitir archivos de wwwroot
-app.UseStaticFiles();
-
 // Habilitar el sistema de rutas
 app.UseRouting();
 
-<<<<<<< HEAD
-// Autorización
-=======
+// Autenticación y autorización
 app.UseAuthentication();
->>>>>>> 4b42be3e61357b0472cecc72e08dda7dabef4a4b
 app.UseAuthorization();
 
-// Ruta principal de la aplicación
-// Al ejecutar, abrirá:
-// UsuariosController -> Index()
-// -> Views/Usuarios/Index.cshtml
+app.MapStaticAssets();
+
+// Ruta principal: HomeController.Index() redirige a Dashboard (autenticado) o Login (anónimo)
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Usuarios}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
 
 app.Run();

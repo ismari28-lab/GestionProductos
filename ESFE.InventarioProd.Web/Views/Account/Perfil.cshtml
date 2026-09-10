@@ -1,0 +1,56 @@
+@model ESFE.InventarioProd.Web.Models.PerfilViewModel
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Mi perfil";
+}
+
+<link rel="stylesheet" href="~/css/perfil.css" asp-append-version="true" />
+
+<div class="perfil-container mt-4">
+    <h1 class="h4 fw-bold mb-3">Mi perfil</h1>
+
+    @if (TempData["PerfilMensaje"] != null)
+    {
+        <div class="alert alert-success">@TempData["PerfilMensaje"]</div>
+    }
+
+    <div class="perfil-card">
+        <div class="perfil-datos">
+            <div class="perfil-campo">
+                <span class="perfil-etiqueta">Usuario</span>
+                <span class="perfil-valor">@Model.Nombre</span>
+            </div>
+            <div class="perfil-campo">
+                <span class="perfil-etiqueta">Rol</span>
+                <span class="perfil-valor">@Model.NombreRol</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="perfil-card mt-3">
+        <h2 class="h6 fw-bold mb-3">Cambiar contraseña</h2>
+
+        <form asp-controller="Account" asp-action="CambiarPassword" method="post" novalidate>
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="PasswordActual" class="form-label"></label>
+                <input asp-for="PasswordActual" class="form-control" autocomplete="current-password" />
+                <span asp-validation-for="PasswordActual" class="text-danger small"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="PasswordNueva" class="form-label"></label>
+                <input asp-for="PasswordNueva" class="form-control" autocomplete="new-password" />
+                <span asp-validation-for="PasswordNueva" class="text-danger small"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="PasswordConfirmar" class="form-label"></label>
+                <input asp-for="PasswordConfirmar" class="form-control" autocomplete="new-password" />
+                <span asp-validation-for="PasswordConfirmar" class="text-danger small"></span>
+            </div>
+
+            <button type="submit" class="btn-primario">Guardar cambios</button>
+        </form>
+    </div>
+</div>
