@@ -1,0 +1,124 @@
+@model ESFE.InventarioProd.Web.Models.DashboardViewModel
+@{
+    ViewBag.Title = "Panel principal";
+}
+
+<style>
+    .kpi-card {
+        background-color: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+    }
+
+    .kpi-label {
+        color: #9ca3af;
+        font-size: 0.75rem;
+        letter-spacing: 0.03em;
+    }
+
+    .kpi-value {
+        color: #1f2937;
+    }
+
+    .quick-link-block {
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        display: block;
+        text-decoration: none;
+        color: #1f2937;
+    }
+
+    .quick-link-block:hover {
+        background-color: #f9fafb;
+    }
+</style>
+
+<div class="row g-3 mb-4 mt-4">
+    <div class="col-md-4">
+        <div class="kpi-card">
+            <div class="kpi-label text-uppercase fw-bold mb-2">Valor total del inventario</div>
+            <div class="kpi-value fs-2 fw-bold">@Model.ValorTotalInventario.ToString("C", new System.Globalization.CultureInfo("es-SV"))</div>
+            <div class="text-muted text-uppercase small mt-1">Al cierre de hoy</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="kpi-card">
+            <div class="kpi-label text-uppercase fw-bold mb-2">Bajo stock</div>
+            <div class="kpi-value fs-2 fw-bold">@Model.ProductosBajoStockCount</div>
+            <div class="text-muted text-uppercase small mt-1">Productos por reponer</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="kpi-card">
+            <div class="kpi-label text-uppercase fw-bold mb-2">Más vendidos (mes)</div>
+            @if (Model.ProductoMasVendido != null)
+            {
+                <div class="kpi-value fs-2 fw-bold">@Model.ProductoMasVendido.Nombre</div>
+                <div class="text-muted text-uppercase small mt-1">@Model.ProductoMasVendido.TotalUnidades unidades</div>
+            }
+            else
+            {
+                <div class="kpi-value fs-4 fw-bold">Sin ventas este mes</div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-8">
+        <div class="kpi-card h-100">
+            <div class="kpi-label text-uppercase fw-bold mb-3">Alertas de bajo stock</div>
+
+            @if (Model.AlertasBajoStock.Count == 0)
+            {
+                <p class="text-muted mb-0">Sin alertas de stock</p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr class="text-muted text-uppercase small">
+                                <th>Producto</th>
+                                <th>Existencias</th>
+                                <th>Mínimo</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var alerta in Model.AlertasBajoStock)
+                            {
+                                var esCritico = alerta.Existencias <= alerta.Minimo / 2;
+                                <tr>
+                                    <td>@alerta.Nombre</td>
+                                    <td>@alerta.Existencias</td>
+                                    <td>@alerta.Minimo</td>
+                                    <td>
+                                        @if (esCritico)
+                                        {
+                                            <span class="badge rounded-pill" style="background-color:#fde2e2;color:#b42318;">Crítico</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge rounded-pill" style="background-color:#dbeafe;color:#1e40af;">Bajo</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="kpi-label text-uppercase fw-bold mb-3">Accesos rápidos</div>
+        <div class="d-flex flex-column gap-2">
+            <a asp-controller="Productos" asp-action="Create" class="quick-link-block">+ Nuevo producto</a>
+            <a asp-controller="Movimientos" asp-action="Create" class="quick-link-block">Registrar movimiento</a>
+            <a asp-controller="Productos" asp-action="Index" class="link-primary">Ver todos los productos</a>
+        </div>
+    </div>
+</div>

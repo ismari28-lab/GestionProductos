@@ -1,0 +1,57 @@
+@model ESFE.InventarioProd.Web.Models.LoginViewModel
+@{
+    ViewBag.Title = "STOCKEO — Iniciar sesión";
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ESFE_web.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/login.css" />
+</head>
+<body>
+
+<main class="login-wrap">
+    <section class="login-card">
+
+        <header class="login-header">
+            <h1 class="login-brand">STOCKEO</h1>
+            <p class="login-subtitle">Sistema de Inventario</p>
+        </header>
+
+        <hr class="login-divider" />
+
+        <form asp-controller="Account" asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post" class="login-form" novalidate>
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="All" class="text-danger form-error"></div>
+
+            <div class="form-field">
+                <label asp-for="Nombre">Usuario</label>
+                <input asp-for="Nombre" autocomplete="username" />
+                <span asp-validation-for="Nombre" class="field-error"></span>
+            </div>
+
+            <div class="form-field">
+                <label asp-for="Password">Contraseña</label>
+                <input asp-for="Password" autocomplete="current-password" />
+                <span asp-validation-for="Password" class="field-error"></span>
+            </div>
+
+            <button type="submit" class="btn-submit" id="btnIngresar">
+                <span class="btn-text">Ingresar</span>
+            </button>
+        </form>
+
+    </section>
+</main>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>

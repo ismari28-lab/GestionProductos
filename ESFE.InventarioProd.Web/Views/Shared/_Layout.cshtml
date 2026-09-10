@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
@@ -39,13 +40,13 @@
                     <div class="dropdown">
                         <button class="btn btn-outline-secondary rounded-pill dropdown-toggle" type="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
-                            @(User.Identity?.Name ?? "Ana Pérez") - Bodeguero
+                            @(User.Identity?.Name ?? "Ana Pérez") - @(User.FindFirst(ClaimTypes.Role)?.Value ?? "Bodeguero")
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" asp-controller="Cuenta" asp-action="Perfil">Mi perfil</a></li>
+                            <li><a class="dropdown-item" asp-controller="Account" asp-action="Perfil">Mi perfil</a></li>
                             <li><hr class="dropdown-divider" /></li>
                             <li>
-                                <form asp-controller="Cuenta" asp-action="Logout" method="post">
+                                <form asp-controller="Account" asp-action="Logout" method="post">
                                     <button type="submit" class="dropdown-item">Cerrar sesión</button>
                                 </form>
                             </li>
