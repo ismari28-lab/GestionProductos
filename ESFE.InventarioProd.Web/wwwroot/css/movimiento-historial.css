@@ -1,0 +1,219 @@
+/* Filtros */
+.mh-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: end;
+    margin-bottom: 1rem;
+}
+
+.mh-filtro-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.mh-filtro-campo label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #9ca3af;
+    font-weight: 600;
+}
+
+.mh-filtro-buscar {
+    flex: 1 1 220px;
+}
+
+.mh-filtro-tamanio {
+    margin-left: auto;
+}
+
+/* Tabla */
+.mh-tabla-wrap {
+    position: relative;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.mh-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+}
+
+.mh-tabla th {
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: #9ca3af;
+    text-align: left;
+    padding: 0.65rem 0.9rem;
+    border-bottom: 1px solid #e5e7eb;
+    background-color: #f9fafb;
+}
+
+.mh-tabla td {
+    padding: 0.65rem 0.9rem;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 0.9rem;
+    color: #1f2937;
+    vertical-align: middle;
+}
+
+.mh-tabla tbody tr.mh-fila-clickeable {
+    cursor: pointer;
+}
+
+.mh-tabla tbody tr.mh-fila-clickeable:hover {
+    background-color: #f9fafb;
+}
+
+.mh-tabla.mh-cargando {
+    opacity: 0.5;
+}
+
+.mh-referencia {
+    display: block;
+    font-size: 0.78rem;
+    color: #9ca3af;
+    margin-top: 0.1rem;
+}
+
+.mh-vacio,
+.mh-estado-mensaje {
+    text-align: center;
+    color: #9ca3af;
+    padding: 2rem 0.9rem;
+}
+
+/* Badges tipo */
+.mh-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.mh-badge.entrada {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.mh-badge.salida {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+/* Paginación */
+.mh-paginacion-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+}
+
+.mh-paginacion {
+    display: flex;
+    gap: 0.35rem;
+    align-items: center;
+}
+
+.mh-pagina-btn {
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 0.5rem;
+    border: 1px solid #e5e7eb;
+    background-color: #fff;
+    color: #374151;
+    border-radius: 0.35rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.mh-pagina-btn:hover:not(:disabled):not(.activa) {
+    background-color: #f3f4f6;
+}
+
+.mh-pagina-btn.activa {
+    background-color: #2563eb;
+    border-color: #2563eb;
+    color: #fff;
+    cursor: default;
+}
+
+.mh-pagina-btn:disabled {
+    color: #d1d5db;
+    cursor: not-allowed;
+}
+
+.mh-pagina-elipsis {
+    padding: 0 0.35rem;
+    color: #9ca3af;
+    font-size: 0.85rem;
+}
+
+.mh-resumen {
+    font-size: 0.82rem;
+    color: #9ca3af;
+}
+
+/* Modal detalle */
+.mh-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+}
+
+.mh-modal {
+    background-color: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 550px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+}
+
+.mh-modal-header {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: #1f2937;
+    margin-bottom: 0.2rem;
+}
+
+.mh-modal-subheader {
+    font-size: 0.85rem;
+    color: #9ca3af;
+    margin-bottom: 1rem;
+}
+
+.mh-modal-body {
+    overflow-y: auto;
+}
+
+.mh-modal-loading,
+.mh-modal-error {
+    text-align: center;
+    color: #9ca3af;
+    padding: 2rem 0;
+}
+
+.mh-modal-error {
+    color: #b42318;
+}
+
+.mh-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1.25rem;
+}

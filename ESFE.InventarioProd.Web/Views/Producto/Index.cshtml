@@ -1,0 +1,883 @@
+@model ESFE.InventarioProd.Web.Models.ProductoIndexViewModel
+@{
+    ViewBag.Title = "Productos";
+}
+
+<link rel="stylesheet" href="~/css/producto.css" asp-append-version="true" />
+
+<div class="producto-header mt-4 mb-3">
+    <h1 class="h4 fw-bold mb-0">Productos</h1>
+
+    <div class="producto-header-acciones">
+        <button type="button" class="pr-btn-icono pr-btn-proximamente" disabled title="Disponible próximamente" aria-label="Escanear">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+                <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+                <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+                <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+            </svg>
+        </button>
+        <button type="button" class="btn btn-outline-secondary pr-btn-proximamente" disabled title="Disponible próximamente">Exportar</button>
+        <button type="button" class="btn btn-primary" id="btnNuevoProducto">+ Nuevo producto</button>
+    </div>
+</div>
+
+<div class="pr-filtros">
+    <div class="pr-filtro-campo pr-filtro-buscar">
+        <label for="prBuscar">Buscar</label>
+        <input type="text" id="prBuscar" class="form-control" placeholder="Buscar por nombre o código..." />
+    </div>
+    <div class="pr-filtro-campo">
+        <label for="prCategoria">Categoría</label>
+        <select id="prCategoria" class="form-select">
+            <option value="">Todas</option>
+            @foreach (var categoria in Model.Categorias)
+            {
+                <option value="@categoria.IdCategoriaPK">@categoria.Nombre</option>
+            }
+        </select>
+    </div>
+    <div class="pr-filtro-campo pr-filtro-inactivos">
+        <input type="checkbox" id="prInactivos" />
+        <label for="prInactivos">Mostrar inactivos</label>
+    </div>
+</div>
+
+<div class="pr-tabla-wrap">
+    <table class="pr-tabla" id="prTabla">
+        <thead>
+            <tr>
+                <th class="pr-th-ordenable" data-columna="codigo">Código <span class="pr-th-icono">⇅</span></th>
+                <th class="pr-th-ordenable" data-columna="nombre">Nombre <span class="pr-th-icono">⇅</span></th>
+                <th class="pr-th-ordenable" data-columna="categoria">Categoría <span class="pr-th-icono">⇅</span></th>
+                <th class="pr-th-ordenable" data-columna="existencias">Existencias <span class="pr-th-icono">⇅</span></th>
+                <th class="pr-th-ordenable" data-columna="preciocompra">P. Compra <span class="pr-th-icono">⇅</span></th>
+                <th class="pr-th-ordenable" data-columna="precioventa">P. Venta <span class="pr-th-icono">⇅</span></th>
+                <th class="pr-th-ordenable" data-columna="estado">Estado <span class="pr-th-icono">⇅</span></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="prTbody">
+            <tr><td colspan="8" class="pr-estado-mensaje">Cargando...</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="pr-paginacion-wrap">
+    <div class="pr-paginacion" id="prPaginacion"></div>
+    <div class="pr-paginacion-footer">
+        <div class="pr-resumen" id="prResumen"></div>
+        <div class="pr-tamanio">
+            <label for="prTamanio">Tamaño</label>
+            <select id="prTamanio" class="form-select form-select-sm">
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="75">75</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+@Html.AntiForgeryToken()
+
+<!-- Modal crear/editar -->
+<div id="modal-producto" class="modal-overlay" style="display:none;">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2 id="modal-titulo">Nuevo producto</h2>
+        </div>
+
+        <div class="modal-body">
+            <input type="hidden" id="prod-id" />
+
+            <fieldset class="seccion">
+                <legend>INFORMACIÓN BÁSICA</legend>
+                <div class="grid-2col">
+                    <div class="campo">
+                        <label for="prod-codigo">Código</label>
+                        <input type="text" id="prod-codigo" readonly />
+                        <span class="error-inline" data-campo="codigo"></span>
+                    </div>
+                    <div class="campo">
+                        <label for="prod-nombre">Nombre *</label>
+                        <input type="text" id="prod-nombre" maxlength="150" />
+                        <span class="error-inline" data-campo="nombre"></span>
+                    </div>
+                    <div class="campo">
+                        <label for="prod-categoria">Categoría *</label>
+                        <select id="prod-categoria"></select>
+                        <span class="error-inline" data-campo="categoria"></span>
+                    </div>
+                    <div class="campo">
+                        <label for="prod-proveedor">Proveedor</label>
+                        <select id="prod-proveedor">
+                            <option value="">(sin proveedor)</option>
+                        </select>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="seccion">
+                <legend>PRECIOS E IMPUESTOS</legend>
+                <div class="grid-2col">
+                    <div class="campo">
+                        <label for="prod-precio-compra">Precio Compra *</label>
+                        <input type="number" id="prod-precio-compra" min="0" step="0.01" />
+                        <span class="error-inline" data-campo="precioCompra"></span>
+                    </div>
+                    <div class="campo">
+                        <label for="prod-precio-venta">Precio Venta *</label>
+                        <input type="number" id="prod-precio-venta" min="0" step="0.01" />
+                        <span class="advertencia-inline" id="advertencia-precio">Precio venta menor o igual al de compra</span>
+                        <span class="error-inline" data-campo="precioVenta"></span>
+                    </div>
+                    <div class="campo">
+                        <label>
+                            <input type="checkbox" id="prod-aplica-iva" checked />
+                            Aplica IVA
+                        </label>
+                    </div>
+                    <div class="campo" id="campo-porcentaje-iva">
+                        <label for="prod-porcentaje-iva">Porcentaje IVA (%)</label>
+                        <input type="number" id="prod-porcentaje-iva" min="0" max="100" step="0.01" value="13.00" />
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="seccion">
+                <legend>INVENTARIO</legend>
+                <div class="grid-2col">
+                    <div class="campo" id="campo-stock-actual" style="display:none;">
+                        <label for="prod-stock-actual">Stock actual</label>
+                        <input type="text" id="prod-stock-actual" readonly />
+                        <small class="nota-campo">Se ajusta desde el módulo Movimientos</small>
+                    </div>
+                    <div class="campo">
+                        <label for="prod-stock-minimo">Stock mínimo</label>
+                        <input type="number" id="prod-stock-minimo" min="0" step="1" value="0" />
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset class="seccion" id="seccion-estado" style="display:none;">
+                <legend>ESTADO</legend>
+                <div class="campo">
+                    <label>
+                        <input type="checkbox" id="prod-estado" checked />
+                        Producto activo
+                    </label>
+                </div>
+            </fieldset>
+
+            <div class="mensaje-error-general" id="mensaje-error-general"></div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn-eliminar" id="btn-eliminar" style="display:none;">Eliminar</button>
+            <div class="footer-derecha">
+                <button type="button" class="btn-secundario" id="btn-cancelar-producto">Cancelar</button>
+                <button type="button" class="btn-primario" id="btn-guardar">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal confirmación eliminar -->
+<div id="modal-confirmar-eliminar" class="modal-overlay" style="display:none;">
+    <div class="modal-card modal-pequeno">
+        <div class="modal-body">
+            <p id="texto-confirmar-eliminar"></p>
+            <div class="mensaje-error-general" id="mensaje-error-eliminar"></div>
+        </div>
+        <div class="modal-footer">
+            <div class="footer-derecha">
+                <button type="button" class="btn-secundario" id="btn-cancelar-eliminar">Cancelar</button>
+                <button type="button" class="btn-primario-rojo" id="btn-confirmar-eliminar-def">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            var inputBuscar = document.getElementById('prBuscar');
+            var selectCategoria = document.getElementById('prCategoria');
+            var checkInactivos = document.getElementById('prInactivos');
+            var selectTamanio = document.getElementById('prTamanio');
+            var tabla = document.getElementById('prTabla');
+            var tbody = document.getElementById('prTbody');
+            var theadRow = tabla.querySelector('thead tr');
+            var paginacionEl = document.getElementById('prPaginacion');
+            var resumenEl = document.getElementById('prResumen');
+
+            var btnNuevoProducto = document.getElementById('btnNuevoProducto');
+
+            var modalOverlay = document.getElementById('modal-producto');
+            var modalTitulo = document.getElementById('modal-titulo');
+            var inputId = document.getElementById('prod-id');
+            var inputCodigo = document.getElementById('prod-codigo');
+            var inputNombre = document.getElementById('prod-nombre');
+            var selectCategoriaModal = document.getElementById('prod-categoria');
+            var selectProveedorModal = document.getElementById('prod-proveedor');
+            var inputPrecioCompra = document.getElementById('prod-precio-compra');
+            var inputPrecioVenta = document.getElementById('prod-precio-venta');
+            var advertenciaPrecio = document.getElementById('advertencia-precio');
+            var checkAplicaIVA = document.getElementById('prod-aplica-iva');
+            var campoPorcentajeIVA = document.getElementById('campo-porcentaje-iva');
+            var inputPorcentajeIVA = document.getElementById('prod-porcentaje-iva');
+            var campoStockActual = document.getElementById('campo-stock-actual');
+            var inputStockActual = document.getElementById('prod-stock-actual');
+            var inputStockMinimo = document.getElementById('prod-stock-minimo');
+            var seccionEstado = document.getElementById('seccion-estado');
+            var checkEstado = document.getElementById('prod-estado');
+            var mensajeErrorGeneral = document.getElementById('mensaje-error-general');
+            var btnEliminar = document.getElementById('btn-eliminar');
+            var btnCancelarProducto = document.getElementById('btn-cancelar-producto');
+            var btnGuardar = document.getElementById('btn-guardar');
+
+            var modalConfirmarEliminar = document.getElementById('modal-confirmar-eliminar');
+            var textoConfirmarEliminar = document.getElementById('texto-confirmar-eliminar');
+            var mensajeErrorEliminar = document.getElementById('mensaje-error-eliminar');
+            var btnCancelarEliminar = document.getElementById('btn-cancelar-eliminar');
+            var btnConfirmarEliminarDef = document.getElementById('btn-confirmar-eliminar-def');
+
+            var modoEdicion = false;
+            var stockActualCargado = 0;
+            var estadoOriginalCargado = true;
+            var nombreActualParaEliminar = '';
+            var prodIdActual = null;
+
+            var COLSPAN = 8;
+
+            var estadoActual = {
+                termino: '',
+                idCategoria: '',
+                incluirInactivos: false,
+                ordenarPor: 'nombre',
+                direccion: 'ASC',
+                pagina: 1,
+                tamanioPagina: parseInt(selectTamanio.value, 10)
+            };
+
+            var debounceBuscar = null;
+
+            function escapeHtml(texto) {
+                var div = document.createElement('div');
+                div.textContent = texto || '';
+                return div.innerHTML;
+            }
+
+            function formatearMoneda(valor) {
+                var numero = Number(valor) || 0;
+                return '$' + numero.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+
+            // --- Carga de la tabla ---
+
+            function cargarPagina(nuevaPagina) {
+                estadoActual.pagina = nuevaPagina;
+                tabla.classList.add('pr-cargando');
+                tbody.innerHTML = '<tr><td colspan="' + COLSPAN + '" class="pr-estado-mensaje">Cargando...</td></tr>';
+
+                var params = new URLSearchParams({
+                    termino: estadoActual.termino,
+                    idCategoria: estadoActual.idCategoria,
+                    incluirInactivos: estadoActual.incluirInactivos,
+                    ordenarPor: estadoActual.ordenarPor,
+                    direccion: estadoActual.direccion,
+                    pagina: estadoActual.pagina,
+                    tamanioPagina: estadoActual.tamanioPagina
+                });
+
+                fetch('@Url.Action("Listar", "Producto")?' + params.toString(), { credentials: 'same-origin' })
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                        renderTabla(data);
+                        renderPaginacion(data);
+                    })
+                    .catch(function () {
+                        tbody.innerHTML = '<tr><td colspan="' + COLSPAN + '" class="pr-estado-mensaje">No se pudo cargar el listado de productos.</td></tr>';
+                        paginacionEl.innerHTML = '';
+                        resumenEl.textContent = '';
+                    })
+                    .finally(function () {
+                        tabla.classList.remove('pr-cargando');
+                    });
+            }
+
+            function existenciasClase(existencias, stockMinimo) {
+                if (existencias === 0) return 'pr-existencias-cero';
+                if (existencias > 0 && existencias <= stockMinimo) return 'pr-existencias-bajo';
+                return '';
+            }
+
+            function renderTabla(resultado) {
+                var items = resultado.items || [];
+
+                if (items.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="' + COLSPAN + '" class="pr-vacio">No hay productos con los filtros seleccionados</td></tr>';
+                    return;
+                }
+
+                var html = '';
+                items.forEach(function (p) {
+                    var badgeClase = p.estado ? 'activo' : 'inactivo';
+                    var badgeTexto = p.estado ? 'Activo' : 'Inactivo';
+                    var claseExistencias = existenciasClase(p.existencias, p.stockMinimo);
+
+                    html += '<tr>' +
+                        '<td>' + escapeHtml(p.codigo) + '</td>' +
+                        '<td>' + escapeHtml(p.nombre) + '</td>' +
+                        '<td>' + escapeHtml(p.categoriaNombre) + '</td>' +
+                        '<td class="' + claseExistencias + '">' + p.existencias + '</td>' +
+                        '<td class="pr-col-precio">' + formatearMoneda(p.precioCompra) + '</td>' +
+                        '<td class="pr-col-precio">' + formatearMoneda(p.precioVenta) + '</td>' +
+                        '<td><span class="pr-badge ' + badgeClase + '">' + badgeTexto + '</span></td>' +
+                        '<td>' +
+                        '<button type="button" class="pr-editar-btn" data-id="' + p.idProductoPK + '" title="Editar" aria-label="Editar">' +
+                        '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>' +
+                        '</button>' +
+                        '</td>' +
+                        '</tr>';
+                });
+                tbody.innerHTML = html;
+            }
+
+            function generarPaginas(paginaActual, totalPaginas) {
+                var paginas = [];
+                if (totalPaginas <= 7) {
+                    for (var i = 1; i <= totalPaginas; i++) paginas.push(i);
+                    return paginas;
+                }
+
+                paginas.push(1);
+                var inicio = Math.max(2, paginaActual - 2);
+                var fin = Math.min(totalPaginas - 1, paginaActual + 2);
+
+                if (inicio > 2) paginas.push('...');
+                for (var j = inicio; j <= fin; j++) paginas.push(j);
+                if (fin < totalPaginas - 1) paginas.push('...');
+                paginas.push(totalPaginas);
+
+                return paginas;
+            }
+
+            function renderPaginacion(resultado) {
+                var totalPaginas = resultado.totalPaginas || 0;
+                var paginaActual = resultado.pagina || 1;
+                var totalRegistros = resultado.totalRegistros || 0;
+                var tamanioPagina = resultado.tamanioPagina || estadoActual.tamanioPagina;
+
+                if (totalRegistros === 0) {
+                    paginacionEl.innerHTML = '';
+                    resumenEl.textContent = 'Mostrando 0 de 0 productos';
+                    return;
+                }
+
+                var html = '';
+                html += '<button type="button" class="pr-pagina-btn" data-pagina="' + (paginaActual - 1) + '" ' + (paginaActual <= 1 ? 'disabled' : '') + '>← Anterior</button>';
+
+                generarPaginas(paginaActual, totalPaginas).forEach(function (p) {
+                    if (p === '...') {
+                        html += '<span class="pr-pagina-elipsis">…</span>';
+                    } else {
+                        html += '<button type="button" class="pr-pagina-btn' + (p === paginaActual ? ' activa' : '') + '" data-pagina="' + p + '">' + p + '</button>';
+                    }
+                });
+
+                html += '<button type="button" class="pr-pagina-btn" data-pagina="' + (paginaActual + 1) + '" ' + (paginaActual >= totalPaginas ? 'disabled' : '') + '>Siguiente →</button>';
+
+                paginacionEl.innerHTML = html;
+
+                var desdeItem = (paginaActual - 1) * tamanioPagina + 1;
+                var hastaItem = Math.min(paginaActual * tamanioPagina, totalRegistros);
+                resumenEl.textContent = 'Mostrando ' + desdeItem + '-' + hastaItem + ' de ' + totalRegistros + ' productos';
+            }
+
+            paginacionEl.addEventListener('click', function (ev) {
+                var btn = ev.target.closest('.pr-pagina-btn');
+                if (!btn || btn.disabled || btn.classList.contains('activa')) return;
+                cargarPagina(parseInt(btn.getAttribute('data-pagina'), 10));
+            });
+
+            tbody.addEventListener('click', function (ev) {
+                var btn = ev.target.closest('.pr-editar-btn');
+                if (!btn) return;
+                abrirModalEditar(parseInt(btn.getAttribute('data-id'), 10));
+            });
+
+            // --- Sort ---
+
+            function actualizarIconosSort() {
+                theadRow.querySelectorAll('.pr-th-ordenable').forEach(function (th) {
+                    var columna = th.getAttribute('data-columna');
+                    var icono = th.querySelector('.pr-th-icono');
+                    if (columna === estadoActual.ordenarPor) {
+                        th.classList.add('pr-th-activa');
+                        icono.textContent = estadoActual.direccion === 'ASC' ? '↑' : '↓';
+                    } else {
+                        th.classList.remove('pr-th-activa');
+                        icono.textContent = '⇅';
+                    }
+                });
+            }
+
+            function cambiarSort(columna) {
+                if (columna === estadoActual.ordenarPor) {
+                    estadoActual.direccion = estadoActual.direccion === 'ASC' ? 'DESC' : 'ASC';
+                } else {
+                    estadoActual.ordenarPor = columna;
+                    estadoActual.direccion = 'ASC';
+                }
+                actualizarIconosSort();
+                cargarPagina(1);
+            }
+
+            theadRow.querySelectorAll('.pr-th-ordenable').forEach(function (th) {
+                th.addEventListener('click', function () {
+                    cambiarSort(th.getAttribute('data-columna'));
+                });
+            });
+
+            // --- Filtros ---
+
+            inputBuscar.addEventListener('input', function () {
+                clearTimeout(debounceBuscar);
+                debounceBuscar = setTimeout(function () {
+                    var termino = inputBuscar.value.trim();
+                    if (termino.length > 0 && termino.length < 2) return;
+                    estadoActual.termino = termino;
+                    cargarPagina(1);
+                }, 300);
+            });
+
+            selectCategoria.addEventListener('change', function () {
+                estadoActual.idCategoria = selectCategoria.value;
+                cargarPagina(1);
+            });
+
+            checkInactivos.addEventListener('change', function () {
+                estadoActual.incluirInactivos = checkInactivos.checked;
+                cargarPagina(1);
+            });
+
+            selectTamanio.addEventListener('change', function () {
+                estadoActual.tamanioPagina = parseInt(selectTamanio.value, 10);
+                cargarPagina(1);
+            });
+
+            // --- Modal Crear/Editar (Sprint B) ---
+
+            function token() {
+                var campo = document.querySelector('input[name="__RequestVerificationToken"]');
+                return campo ? campo.value : '';
+            }
+
+            function mostrarToast(mensaje, tipo) {
+                var toast = document.createElement('div');
+                toast.className = 'pr-toast ' + tipo;
+                toast.textContent = mensaje;
+                document.body.appendChild(toast);
+                setTimeout(function () {
+                    toast.remove();
+                }, 3500);
+            }
+
+            function mostrarModal(el) {
+                el.style.display = 'flex';
+            }
+
+            function ocultarModal(el) {
+                el.style.display = 'none';
+            }
+
+            function limpiarErroresCampo() {
+                modalOverlay.querySelectorAll('.error-inline').forEach(function (el) {
+                    el.textContent = '';
+                    el.style.display = 'none';
+                });
+                ocultarErrorGeneral();
+            }
+
+            function mostrarErrorCampo(campo, mensaje) {
+                var el = modalOverlay.querySelector('.error-inline[data-campo="' + campo + '"]');
+                if (el) {
+                    el.textContent = mensaje;
+                    el.style.display = 'block';
+                }
+            }
+
+            function mostrarErrorGeneral(mensaje) {
+                mensajeErrorGeneral.textContent = mensaje;
+                mensajeErrorGeneral.style.display = 'block';
+            }
+
+            function ocultarErrorGeneral() {
+                mensajeErrorGeneral.style.display = 'none';
+                mensajeErrorGeneral.textContent = '';
+            }
+
+            function mostrarErrorEliminar(mensaje) {
+                mensajeErrorEliminar.textContent = mensaje;
+                mensajeErrorEliminar.style.display = 'block';
+            }
+
+            function ocultarErrorEliminar() {
+                mensajeErrorEliminar.style.display = 'none';
+                mensajeErrorEliminar.textContent = '';
+            }
+
+            function poblarCategorias(categorias, seleccionada) {
+                selectCategoriaModal.innerHTML = '<option value="">Seleccione...</option>';
+                categorias.forEach(function (c) {
+                    var opt = document.createElement('option');
+                    opt.value = c.idCategoriaPK;
+                    opt.textContent = c.nombre;
+                    if (seleccionada != null && c.idCategoriaPK === seleccionada) opt.selected = true;
+                    selectCategoriaModal.appendChild(opt);
+                });
+            }
+
+            function poblarProveedores(proveedores, seleccionado) {
+                if (!proveedores || proveedores.length === 0) {
+                    selectProveedorModal.innerHTML = '<option value="">(sin proveedores)</option>';
+                    return;
+                }
+                selectProveedorModal.innerHTML = '<option value="">(sin proveedor)</option>';
+                proveedores.forEach(function (p) {
+                    var opt = document.createElement('option');
+                    opt.value = p.idProveedorPK;
+                    opt.textContent = p.nombre;
+                    if (seleccionado != null && p.idProveedorPK === seleccionado) opt.selected = true;
+                    selectProveedorModal.appendChild(opt);
+                });
+            }
+
+            function actualizarVisibilidadIVA() {
+                campoPorcentajeIVA.style.display = checkAplicaIVA.checked ? '' : 'none';
+            }
+
+            function actualizarAdvertenciaPrecio() {
+                var compra = parseFloat(inputPrecioCompra.value);
+                var venta = parseFloat(inputPrecioVenta.value);
+                var mostrar = !isNaN(compra) && compra > 0 && !isNaN(venta) && venta <= compra;
+                advertenciaPrecio.style.display = mostrar ? 'block' : 'none';
+                inputPrecioVenta.classList.toggle('borde-ambar', mostrar);
+            }
+
+            function abrirModalCrear() {
+                modoEdicion = false;
+                stockActualCargado = 0;
+                estadoOriginalCargado = true;
+                prodIdActual = null;
+
+                modalTitulo.textContent = 'Nuevo producto';
+                inputId.value = '';
+                limpiarErroresCampo();
+
+                inputCodigo.value = 'Cargando...';
+                inputNombre.value = '';
+                inputPrecioCompra.value = '';
+                inputPrecioVenta.value = '';
+                checkAplicaIVA.checked = true;
+                inputPorcentajeIVA.value = '13.00';
+                inputStockMinimo.value = '0';
+                inputStockActual.value = '';
+                advertenciaPrecio.style.display = 'none';
+                inputPrecioVenta.classList.remove('borde-ambar');
+                actualizarVisibilidadIVA();
+
+                seccionEstado.style.display = 'none';
+                campoStockActual.style.display = 'none';
+                btnEliminar.style.display = 'none';
+
+                selectCategoriaModal.innerHTML = '<option value="">Cargando...</option>';
+                selectProveedorModal.innerHTML = '<option value="">Cargando...</option>';
+
+                btnGuardar.disabled = false;
+                btnGuardar.textContent = 'Guardar';
+                mostrarModal(modalOverlay);
+
+                fetch('@Url.Action("DatosNuevo", "Producto")', { credentials: 'same-origin' })
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                        inputCodigo.value = data.codigoSugerido;
+                        poblarCategorias(data.categorias, null);
+                        poblarProveedores(data.proveedores, null);
+                    })
+                    .catch(function () {
+                        cerrarModal();
+                        mostrarToast('No se pudo cargar el formulario de nuevo producto.', 'error');
+                    });
+            }
+
+            function abrirModalEditar(id) {
+                modoEdicion = true;
+
+                modalTitulo.textContent = 'Editar producto';
+                inputId.value = id;
+                limpiarErroresCampo();
+
+                seccionEstado.style.display = '';
+                campoStockActual.style.display = '';
+                btnEliminar.style.display = '';
+
+                selectCategoriaModal.innerHTML = '<option value="">Cargando...</option>';
+                selectProveedorModal.innerHTML = '<option value="">Cargando...</option>';
+
+                btnGuardar.disabled = false;
+                btnGuardar.textContent = 'Guardar';
+                mostrarModal(modalOverlay);
+
+                fetch('@Url.Action("ObtenerParaEdicion", "Producto")/' + id, { credentials: 'same-origin' })
+                    .then(function (r) {
+                        if (!r.ok) throw new Error('No encontrado');
+                        return r.json();
+                    })
+                    .then(function (data) {
+                        var p = data.producto;
+
+                        poblarCategorias(data.categorias, p.idCategoriaFK);
+                        poblarProveedores(data.proveedores, p.idProveedorFK);
+
+                        inputCodigo.value = p.codigo;
+                        inputNombre.value = p.nombre;
+                        inputPrecioCompra.value = p.precioCompra;
+                        inputPrecioVenta.value = p.precioVenta;
+                        checkAplicaIVA.checked = p.aplicaIVA;
+                        inputPorcentajeIVA.value = p.porcentajeIVA;
+                        inputStockActual.value = p.stockActual;
+                        inputStockMinimo.value = p.stockMinimo;
+                        checkEstado.checked = p.estado;
+
+                        actualizarVisibilidadIVA();
+                        actualizarAdvertenciaPrecio();
+
+                        stockActualCargado = p.stockActual;
+                        estadoOriginalCargado = p.estado;
+                        nombreActualParaEliminar = p.nombre;
+                        prodIdActual = p.idProductoPK;
+                    })
+                    .catch(function () {
+                        cerrarModal();
+                        mostrarToast('No se pudo cargar el producto para editar.', 'error');
+                    });
+            }
+
+            function validarFormulario() {
+                limpiarErroresCampo();
+                var valido = true;
+
+                if (!inputNombre.value.trim()) {
+                    mostrarErrorCampo('nombre', 'El nombre es obligatorio.');
+                    valido = false;
+                }
+
+                if (!selectCategoriaModal.value) {
+                    mostrarErrorCampo('categoria', 'La categoría es obligatoria.');
+                    valido = false;
+                }
+
+                var precioCompra = parseFloat(inputPrecioCompra.value);
+                if (isNaN(precioCompra) || precioCompra < 0) {
+                    mostrarErrorCampo('precioCompra', 'El precio de compra debe ser mayor o igual a 0.');
+                    valido = false;
+                }
+
+                var precioVenta = parseFloat(inputPrecioVenta.value);
+                if (isNaN(precioVenta) || precioVenta < 0) {
+                    mostrarErrorCampo('precioVenta', 'El precio de venta debe ser mayor o igual a 0.');
+                    valido = false;
+                }
+
+                if (checkAplicaIVA.checked) {
+                    var pctIVA = parseFloat(inputPorcentajeIVA.value);
+                    if (isNaN(pctIVA) || pctIVA < 0 || pctIVA > 100) {
+                        mostrarErrorGeneral('El porcentaje de IVA debe estar entre 0 y 100.');
+                        valido = false;
+                    }
+                }
+
+                var stockMinimo = parseInt(inputStockMinimo.value, 10);
+                if (isNaN(stockMinimo) || stockMinimo < 0) {
+                    mostrarErrorGeneral('El stock mínimo no puede ser negativo.');
+                    valido = false;
+                }
+
+                return valido;
+            }
+
+            function guardarProducto() {
+                if (!validarFormulario()) return;
+
+                if (modoEdicion && estadoOriginalCargado === true && checkEstado.checked === false && stockActualCargado > 0) {
+                    var continuar = window.confirm('Este producto tiene ' + stockActualCargado + ' unidades en stock. ¿Continuar?');
+                    if (!continuar) return;
+                }
+
+                var payload = {
+                    idProductoPK: modoEdicion ? parseInt(inputId.value, 10) : null,
+                    codigo: inputCodigo.value,
+                    nombre: inputNombre.value.trim(),
+                    idCategoriaFK: parseInt(selectCategoriaModal.value, 10),
+                    idProveedorFK: selectProveedorModal.value ? parseInt(selectProveedorModal.value, 10) : null,
+                    precioCompra: parseFloat(inputPrecioCompra.value),
+                    precioVenta: parseFloat(inputPrecioVenta.value),
+                    aplicaIVA: checkAplicaIVA.checked,
+                    porcentajeIVA: checkAplicaIVA.checked ? parseFloat(inputPorcentajeIVA.value) : 0,
+                    stockMinimo: parseInt(inputStockMinimo.value, 10),
+                    estado: modoEdicion ? checkEstado.checked : true
+                };
+
+                var url = modoEdicion ? '@Url.Action("Editar", "Producto")' : '@Url.Action("Crear", "Producto")';
+
+                btnGuardar.disabled = true;
+                btnGuardar.textContent = 'Guardando...';
+
+                fetch(url, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token()
+                    },
+                    body: JSON.stringify(payload)
+                })
+                    .then(function (r) {
+                        return r.json().then(function (data) { return { status: r.status, data: data }; });
+                    })
+                    .then(function (res) {
+                        if (res.status === 200 && res.data.ok) {
+                            cerrarModal();
+                            mostrarToast(res.data.mensaje || 'Producto guardado correctamente', 'exito');
+                            cargarPagina(estadoActual.pagina);
+                            return;
+                        }
+
+                        if (res.status === 409) {
+                            var msg = res.data.mensaje || 'El código ya está en uso.';
+                            if (msg.indexOf('código') !== -1) {
+                                mostrarErrorCampo('codigo', msg);
+                            } else {
+                                mostrarErrorGeneral(msg);
+                            }
+                            return;
+                        }
+
+                        if (res.status === 400 || res.status === 404) {
+                            mostrarErrorGeneral(res.data.mensaje || 'Datos inválidos.');
+                            return;
+                        }
+
+                        mostrarToast(res.data.mensaje || 'No se pudo guardar el producto.', 'error');
+                    })
+                    .catch(function () {
+                        mostrarToast('No se pudo conectar con el servidor.', 'error');
+                    })
+                    .finally(function () {
+                        btnGuardar.disabled = false;
+                        btnGuardar.textContent = 'Guardar';
+                    });
+            }
+
+            function confirmarEliminar() {
+                textoConfirmarEliminar.textContent = '¿Eliminar el producto «' + nombreActualParaEliminar + '»?';
+                ocultarErrorEliminar();
+                mostrarModal(modalConfirmarEliminar);
+            }
+
+            function eliminarDefinitivo() {
+                btnConfirmarEliminarDef.disabled = true;
+                btnConfirmarEliminarDef.textContent = 'Eliminando...';
+
+                fetch('@Url.Action("Eliminar", "Producto")', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token()
+                    },
+                    body: JSON.stringify({ id: prodIdActual })
+                })
+                    .then(function (r) {
+                        return r.json().then(function (data) { return { status: r.status, data: data }; });
+                    })
+                    .then(function (res) {
+                        if (res.status === 200 && res.data.ok) {
+                            cerrarConfirmarEliminar();
+                            cerrarModal();
+                            mostrarToast(res.data.mensaje || 'Producto eliminado correctamente', 'exito');
+                            cargarPagina(estadoActual.pagina);
+                            return;
+                        }
+
+                        if (res.status === 409) {
+                            mostrarErrorEliminar(res.data.mensaje || 'No se puede eliminar el producto.');
+                            return;
+                        }
+
+                        cerrarConfirmarEliminar();
+                        mostrarToast(res.data.mensaje || 'No se pudo eliminar el producto.', 'error');
+                    })
+                    .catch(function () {
+                        mostrarToast('No se pudo conectar con el servidor.', 'error');
+                    })
+                    .finally(function () {
+                        btnConfirmarEliminarDef.disabled = false;
+                        btnConfirmarEliminarDef.textContent = 'Eliminar';
+                    });
+            }
+
+            function cerrarModal() {
+                ocultarModal(modalOverlay);
+                limpiarErroresCampo();
+            }
+
+            function cerrarConfirmarEliminar() {
+                ocultarModal(modalConfirmarEliminar);
+                ocultarErrorEliminar();
+            }
+
+            btnNuevoProducto.addEventListener('click', abrirModalCrear);
+            btnCancelarProducto.addEventListener('click', cerrarModal);
+            btnGuardar.addEventListener('click', guardarProducto);
+            btnEliminar.addEventListener('click', confirmarEliminar);
+            btnCancelarEliminar.addEventListener('click', cerrarConfirmarEliminar);
+            btnConfirmarEliminarDef.addEventListener('click', eliminarDefinitivo);
+
+            checkAplicaIVA.addEventListener('change', function () {
+                actualizarVisibilidadIVA();
+                if (!checkAplicaIVA.checked) {
+                    inputPorcentajeIVA.value = '0';
+                }
+            });
+
+            inputPrecioCompra.addEventListener('input', actualizarAdvertenciaPrecio);
+            inputPrecioVenta.addEventListener('input', actualizarAdvertenciaPrecio);
+
+            modalOverlay.addEventListener('click', function (ev) {
+                if (ev.target === modalOverlay) cerrarModal();
+            });
+            modalConfirmarEliminar.addEventListener('click', function (ev) {
+                if (ev.target === modalConfirmarEliminar) cerrarConfirmarEliminar();
+            });
+
+            document.addEventListener('keydown', function (ev) {
+                if (ev.key !== 'Escape') return;
+                if (modalConfirmarEliminar.style.display !== 'none') {
+                    cerrarConfirmarEliminar();
+                    return;
+                }
+                if (modalOverlay.style.display !== 'none') {
+                    cerrarModal();
+                }
+            });
+
+            // --- Carga inicial ---
+            actualizarIconosSort();
+            cargarPagina(1);
+        })();
+    </script>
+}
