@@ -1,0 +1,404 @@
+﻿@{
+    ViewData["Title"] = "Administración de Usuarios";
+}
+
+<link rel="stylesheet" href="~/css/usuarios.css" />
+
+<div class="usuarios-container">
+
+    <!-- ENCABEZADO -->
+    <div class="usuarios-header">
+        <div>
+            <h1>ADMINISTRACIÓN DE USUARIOS Y ROLES</h1>
+            <p>Lista + matriz de permisos por rol</p>
+        </div>
+
+        <div class="usuario-actual">
+            Marta Ríos · Administrador
+        </div>
+    </div>
+
+
+    <!-- CONTENIDO -->
+    <div class="usuarios-contenido">
+
+        <!-- ============================= -->
+        <!-- COLUMNA DE USUARIOS -->
+        <!-- ============================= -->
+
+        <div class="lista-usuarios">
+
+            <h2>USUARIOS</h2>
+
+            <!-- ANA PÉREZ -->
+            <div class="usuario-item">
+
+                <div class="usuario-datos">
+
+                    <div class="nombre-usuario">
+                        <span class="punto activo"></span>
+                        Ana Pérez
+                    </div>
+
+                    <div class="correo-usuario">
+                        ana.perez@empresa.com
+                    </div>
+
+                </div>
+
+                <div class="usuario-rol">
+                    <span>Bodeguero</span>
+
+                    <button class="btn-editar"
+                            onclick="editarUsuario('Ana Pérez', 'ana.perez@empresa.com', 'Bodeguero')">
+                        ✎
+                    </button>
+                </div>
+
+            </div>
+
+
+            <!-- LUIS GÓMEZ -->
+            <div class="usuario-item">
+
+                <div class="usuario-datos">
+
+                    <div class="nombre-usuario">
+                        <span class="punto activo"></span>
+                        Luis Gómez
+                    </div>
+
+                    <div class="correo-usuario">
+                        luis.gomez@empresa.com
+                    </div>
+
+                </div>
+
+                <div class="usuario-rol">
+                    <span>Consulta</span>
+
+                    <button class="btn-editar"
+                            onclick="editarUsuario('Luis Gómez', 'luis.gomez@empresa.com', 'Consulta')">
+                        ✎
+                    </button>
+                </div>
+
+            </div>
+
+
+            <!-- MARTA RÍOS -->
+            <div class="usuario-item">
+
+                <div class="usuario-datos">
+
+                    <div class="nombre-usuario">
+                        <span class="punto activo"></span>
+                        Marta Ríos
+                    </div>
+
+                    <div class="correo-usuario">
+                        marta.rios@empresa.com
+                    </div>
+
+                </div>
+
+                <div class="usuario-rol">
+                    <span>Administrador</span>
+
+                    <button class="btn-editar"
+                            onclick="editarUsuario('Marta Ríos', 'marta.rios@empresa.com', 'Administrador')">
+                        ✎
+                    </button>
+                </div>
+
+            </div>
+
+
+            <!-- CARLOS DÍAZ -->
+            <div class="usuario-item usuario-inactivo">
+
+                <div class="usuario-datos">
+
+                    <div class="nombre-usuario">
+                        <span class="punto inactivo"></span>
+                        Carlos Díaz
+                    </div>
+
+                    <div class="correo-usuario">
+                        carlos.diaz@empresa.com
+                    </div>
+
+                </div>
+
+                <div class="usuario-rol">
+                    <span>Consulta</span>
+
+                    <button class="btn-editar"
+                            onclick="editarUsuario('Carlos Díaz', 'carlos.diaz@empresa.com', 'Consulta')">
+                        ✎
+                    </button>
+                </div>
+
+            </div>
+
+
+            <!-- NUEVO USUARIO -->
+            <button class="btn-nuevo" onclick="nuevoUsuario()">
+                + Nuevo usuario
+            </button>
+
+        </div>
+
+
+        <!-- ============================= -->
+        <!-- COLUMNA DE PERMISOS -->
+        <!-- ============================= -->
+
+        <div class="permisos">
+
+            <h2>PERMISOS POR ROL</h2>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>PERMISO</th>
+                        <th>ADMINISTRADOR</th>
+                        <th>BODEGUERO</th>
+                        <th>CONSULTA</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>Ver inventario</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                    </tr>
+
+                    <tr>
+                        <td>Registrar movimientos</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                        <td>—</td>
+                    </tr>
+
+                    <tr>
+                        <td>Editar productos</td>
+                        <td>✓</td>
+                        <td>—</td>
+                        <td>—</td>
+                    </tr>
+
+                    <tr>
+                        <td>Administrar categorías</td>
+                        <td>✓</td>
+                        <td>—</td>
+                        <td>—</td>
+                    </tr>
+
+                    <tr>
+                        <td>Administrar usuarios</td>
+                        <td>✓</td>
+                        <td>—</td>
+                        <td>—</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ========================================= -->
+<!-- MODAL NUEVO / EDITAR USUARIO -->
+<!-- ========================================= -->
+
+<div id="modalUsuario" class="modal">
+
+    <div class="modal-contenido">
+
+        <div class="modal-header">
+
+            <h2 id="tituloModal">
+                Nuevo usuario
+            </h2>
+
+            <button class="cerrar"
+                    onclick="cerrarModal()">
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="modal-body">
+
+            <div class="campo">
+
+                <label>Nombre</label>
+
+                <input type="text"
+                       id="txtNombre"
+                       placeholder="Ingrese el nombre" />
+
+            </div>
+
+
+            <div class="campo">
+
+                <label>Correo electrónico</label>
+
+                <input type="email"
+                       id="txtCorreo"
+                       placeholder="Ingrese el correo" />
+
+            </div>
+
+
+            <div class="campo">
+
+                <label>Contraseña</label>
+
+                <input type="password"
+                       id="txtPassword"
+                       placeholder="Ingrese la contraseña" />
+
+            </div>
+
+
+            <div class="campo">
+
+                <label>Rol</label>
+
+                <select id="cmbRol">
+
+                    <option value="">
+                        Seleccione un rol
+                    </option>
+
+                    <option value="Administrador">
+                        Administrador
+                    </option>
+
+                    <option value="Bodeguero">
+                        Bodeguero
+                    </option>
+
+                    <option value="Consulta">
+                        Consulta
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="campo">
+
+                <label>Estado</label>
+
+                <select id="cmbEstado">
+
+                    <option value="Activo">
+                        Activo
+                    </option>
+
+                    <option value="Inactivo">
+                        Inactivo
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="modal-footer">
+
+            <button class="btn-cancelar"
+                    onclick="cerrarModal()">
+                Cancelar
+            </button>
+
+            <button class="btn-guardar"
+                    onclick="guardarUsuario()">
+                Guardar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    // Abrir modal para nuevo usuario
+    function nuevoUsuario() {
+
+        document.getElementById("tituloModal").innerText =
+            "Nuevo usuario";
+
+        document.getElementById("txtNombre").value = "";
+        document.getElementById("txtCorreo").value = "";
+        document.getElementById("txtPassword").value = "";
+        document.getElementById("cmbRol").value = "";
+        document.getElementById("cmbEstado").value = "Activo";
+
+        document.getElementById("modalUsuario").style.display = "flex";
+    }
+
+
+    // Abrir modal para editar
+    function editarUsuario(nombre, correo, rol) {
+
+        document.getElementById("tituloModal").innerText =
+            "Editar usuario";
+
+        document.getElementById("txtNombre").value = nombre;
+        document.getElementById("txtCorreo").value = correo;
+        document.getElementById("txtPassword").value = "";
+        document.getElementById("cmbRol").value = rol;
+        document.getElementById("cmbEstado").value = "Activo";
+
+        document.getElementById("modalUsuario").style.display = "flex";
+    }
+
+
+    // Cerrar modal
+    function cerrarModal() {
+
+        document.getElementById("modalUsuario").style.display =
+            "none";
+    }
+
+
+    // Simulación de guardar
+    function guardarUsuario() {
+
+        let nombre =
+            document.getElementById("txtNombre").value;
+
+        if (nombre.trim() === "") {
+
+            alert("Ingrese el nombre del usuario.");
+
+            return;
+        }
+
+        alert("Usuario guardado correctamente.");
+
+        cerrarModal();
+    }
+
+</script>
