@@ -117,5 +117,100 @@ namespace ESFE.GestionProductos.DAL
                 }
             }
         }
+
+        // --- Módulo Categorías (STOCKEO): grid con conteo de productos ---
+
+        // Categorías activas ordenadas por nombre, con conteo de productos activos asociados
+        public List<(short IdCategoriaPK, string Nombre, string Descripcion, int TotalProductos)> ListarConConteo()
+        {
+            var lista = new List<(short, string, string, int)>();
+
+            using (IDbConnection conexion = DBComun.ObtenerConexion())
+            {
+                conexion.Open();
+
+                using (SqlCommand comando = new SqlCommand("SP_ListarCategoriasConConteo", conexion as SqlConnection))
+                {
+                    comando.CommandType = CommandType.StoredProcedure;
+
+                    using (SqlDataReader lector = comando.ExecuteReader())
+                    {
+                        int ordId = lector.GetOrdinal("IdCategoriaPK");
+                        int ordNombre = lector.GetOrdinal("Nombre");
+                        int ordDescripcion = lector.GetOrdinal("Descripcion");
+                        int ordTotal = lector.GetOrdinal("TotalProductos");
+
+                        while (lector.Read())
+                        {
+                            lista.Add((
+                                Convert.ToInt16(lector[ordId]),
+                                lector.IsDBNull(ordNombre) ? string.Empty : lector.GetString(ordNombre),
+                                lector.IsDBNull(ordDescripcion) ? string.Empty : lector.GetString(ordDescripcion),
+                                lector.IsDBNull(ordTotal) ? 0 : Convert.ToInt32(lector[ordTotal])
+                            ));
+                        }
+                    }
+                }
+            }
+
+            return lista;
+        }
+
+        // Crea una categoría y retorna el nuevo Id
+        public short Crear(string nombre, string? descripcion)
+        {
+            using (IDbConnection conexion = DBComun.ObtenerConexion())
+            {
+                conexion.Open();
+
+                using (SqlCommand comando = new SqlCommand("SP_CrearCategoria", conexion as SqlConnection))
+                {
+                    comando.CommandType = CommandType.StoredProcedure;
+                    comando.Parameters.AddWithValue("@Nombre", nombre);
+                    comando.Parameters.AddWithValue("@Descripcion", (object?)descripcion ?? DBNull.Value);
+
+                    object resultado = comando.ExecuteScalar();
+                    return Convert.ToInt16(resultado);
+                }
+            }
+        }
+
+        // Actualiza nombre/descripción de una categoría activa; retorna filas afectadas
+        public int Actualizar(short idCategoriaPK, string nombre, string? descripcion)
+        {
+            using (IDbConnection conexion = DBComun.ObtenerConexion())
+            {
+                conexion.Open();
+
+                using (SqlCommand comando = new SqlCommand("SP_ActualizarCategoria", conexion as SqlConnection))
+                {
+                    comando.CommandType = CommandType.StoredProcedure;
+                    comando.Parameters.AddWithValue("@IdCategoriaPK", idCategoriaPK);
+                    comando.Parameters.AddWithValue("@Nombre", nombre);
+                    comando.Parameters.AddWithValue("@Descripcion", (object?)descripcion ?? DBNull.Value);
+
+                    object resultado = comando.ExecuteScalar();
+                    return Convert.ToInt32(resultado);
+                }
+            }
+        }
+
+        // Elimina (soft-delete) una categoría; retorna -1 (tiene productos activos), 0 (no encontrada) o 1 (eliminada)
+        public int Eliminar(short idCategoriaPK)
+        {
+            using (IDbConnection conexion = DBComun.ObtenerConexion())
+            {
+                conexion.Open();
+
+                using (SqlCommand comando = new SqlCommand("SP_EliminarCategoria", conexion as SqlConnection))
+                {
+                    comando.CommandType = CommandType.StoredProcedure;
+                    comando.Parameters.AddWithValue("@IdCategoriaPK", idCategoriaPK);
+
+                    object resultado = comando.ExecuteScalar();
+                    return Convert.ToInt32(resultado);
+                }
+            }
+        }
     }
 }

@@ -1,0 +1,318 @@
+@model List<ESFE.GestionProductos.LN.DTOs.CategoriaConConteoDTO>
+@{
+    ViewBag.Title = "Categorías";
+}
+
+<link rel="stylesheet" href="~/css/categoria.css" asp-append-version="true" />
+
+<div class="categoria-header mt-4 mb-3">
+    <h1 class="h4 fw-bold mb-0">Categorías</h1>
+    <button type="button" id="btnNuevaCategoria" class="btn btn-primary">+ Nueva categoría</button>
+</div>
+
+<div id="categoriaGrid" class="categoria-grid">
+    @await Html.PartialAsync("_CategoriaGridItems", Model)
+</div>
+
+@Html.AntiForgeryToken()
+
+<!-- Modal crear/editar -->
+<div id="categoriaModalOverlay" class="categoria-modal-overlay" hidden>
+    <div class="categoria-modal" role="dialog" aria-modal="true" aria-labelledby="categoriaModalTitulo">
+        <h5 id="categoriaModalTitulo">Nueva categoría</h5>
+
+        <div id="categoriaModalError" class="categoria-modal-error" hidden></div>
+
+        <form id="categoriaForm" novalidate>
+            <input type="hidden" id="categoriaId" value="" />
+
+            <div class="mb-3">
+                <label for="categoriaNombre" class="form-label">Nombre</label>
+                <input type="text" id="categoriaNombre" class="form-control" maxlength="100" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="categoriaDescripcion" class="form-label">Descripción</label>
+                <textarea id="categoriaDescripcion" class="form-control" rows="3" maxlength="255"></textarea>
+            </div>
+        </form>
+
+        <div class="categoria-modal-footer">
+            <button type="button" id="btnCancelarCategoria" class="btn btn-outline-secondary">Cancelar</button>
+            <button type="button" id="btnGuardarCategoria" class="btn btn-primary">Guardar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal confirmación eliminar -->
+<div id="eliminarModalOverlay" class="categoria-modal-overlay" hidden>
+    <div class="categoria-modal" role="dialog" aria-modal="true" aria-labelledby="eliminarModalTitulo">
+        <h5 id="eliminarModalTitulo">Eliminar categoría</h5>
+
+        <div id="eliminarModalError" class="categoria-modal-error" hidden></div>
+
+        <p id="eliminarModalTexto" class="mb-0"></p>
+
+        <div class="categoria-modal-footer">
+            <button type="button" id="btnCancelarEliminar" class="btn btn-outline-secondary">Cancelar</button>
+            <button type="button" id="btnConfirmarEliminar" class="btn btn-danger">Eliminar</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            var grid = document.getElementById('categoriaGrid');
+            var formOverlay = document.getElementById('categoriaModalOverlay');
+            var formTitulo = document.getElementById('categoriaModalTitulo');
+            var formError = document.getElementById('categoriaModalError');
+            var inputId = document.getElementById('categoriaId');
+            var inputNombre = document.getElementById('categoriaNombre');
+            var inputDescripcion = document.getElementById('categoriaDescripcion');
+
+            var eliminarOverlay = document.getElementById('eliminarModalOverlay');
+            var eliminarError = document.getElementById('eliminarModalError');
+            var eliminarTexto = document.getElementById('eliminarModalTexto');
+            var eliminarIdPendiente = null;
+
+            function token() {
+                var campo = document.querySelector('input[name="__RequestVerificationToken"]');
+                return campo ? campo.value : '';
+            }
+
+            function mostrar(overlay) {
+                overlay.hidden = false;
+            }
+
+            function ocultar(overlay) {
+                overlay.hidden = true;
+            }
+
+            function mostrarError(el, mensaje) {
+                el.textContent = mensaje;
+                el.hidden = false;
+            }
+
+            function ocultarError(el) {
+                el.hidden = true;
+                el.textContent = '';
+            }
+
+            function abrirModalCrear() {
+                formTitulo.textContent = 'Nueva categoría';
+                inputId.value = '';
+                inputNombre.value = '';
+                inputDescripcion.value = '';
+                ocultarError(formError);
+                mostrar(formOverlay);
+                inputNombre.focus();
+            }
+
+            function abrirModalEditar(id, nombre, descripcion) {
+                formTitulo.textContent = 'Editar categoría';
+                inputId.value = id;
+                inputNombre.value = nombre;
+                inputDescripcion.value = descripcion || '';
+                ocultarError(formError);
+                mostrar(formOverlay);
+                inputNombre.focus();
+            }
+
+            function cerrarModalForm() {
+                ocultar(formOverlay);
+            }
+
+            function confirmarEliminar(id, nombre) {
+                eliminarIdPendiente = id;
+                eliminarTexto.textContent = '¿Eliminar la categoría «' + nombre + '»?';
+                ocultarError(eliminarError);
+                mostrar(eliminarOverlay);
+            }
+
+            function cerrarModalEliminar() {
+                ocultar(eliminarOverlay);
+                eliminarIdPendiente = null;
+            }
+
+            function renderCategorias(lista) {
+                if (!lista || lista.length === 0) {
+                    grid.innerHTML = '<div class="categoria-empty">' +
+                        '<p class="mb-3">Aún no hay categorías</p>' +
+                        '<button type="button" class="btn btn-primary" id="btnNuevaCategoriaVacio">+ Nueva categoría</button>' +
+                        '</div>';
+                    return;
+                }
+
+                var html = '';
+                for (var i = 0; i < lista.length; i++) {
+                    var c = lista[i];
+                    html += tarjetaHtml(c.idCategoriaPK, c.nombre, c.descripcion, c.totalProductos);
+                }
+                grid.innerHTML = html;
+            }
+
+            function escapeHtml(texto) {
+                var div = document.createElement('div');
+                div.textContent = texto || '';
+                return div.innerHTML;
+            }
+
+            function tarjetaHtml(id, nombre, descripcion, total) {
+                return '' +
+                    '<div class="categoria-card" data-id="' + id + '" data-nombre="' + escapeHtml(nombre) + '" data-descripcion="' + escapeHtml(descripcion) + '">' +
+                    '  <div class="categoria-card-actions">' +
+                    '    <button type="button" class="categoria-icon-btn categoria-editar" title="Editar" aria-label="Editar">' +
+                    '      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>' +
+                    '    </button>' +
+                    '    <button type="button" class="categoria-icon-btn categoria-icon-btn-danger categoria-eliminar" title="Eliminar" aria-label="Eliminar">' +
+                    '      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path></svg>' +
+                    '    </button>' +
+                    '  </div>' +
+                    '  <div class="categoria-card-nombre">' + escapeHtml(nombre) + '</div>' +
+                    '  <div class="categoria-card-conteo">' +
+                    '    <span class="categoria-card-numero">' + total + '</span>' +
+                    '    <span class="categoria-card-etiqueta">productos</span>' +
+                    '  </div>' +
+                    '</div>';
+            }
+
+            function recargarCategorias() {
+                fetch('@Url.Action("Listar", "Categoria")', { credentials: 'same-origin' })
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) { renderCategorias(data); })
+                    .catch(function () { window.location.reload(); });
+            }
+
+            function guardarCategoria() {
+                ocultarError(formError);
+
+                var nombre = inputNombre.value.trim();
+                if (!nombre) {
+                    mostrarError(formError, 'El nombre es obligatorio');
+                    return;
+                }
+
+                var id = inputId.value;
+                var esEdicion = !!id;
+                var url = esEdicion ? '@Url.Action("Editar", "Categoria")' : '@Url.Action("Crear", "Categoria")';
+
+                var payload = {
+                    nombre: nombre,
+                    descripcion: inputDescripcion.value.trim() || null
+                };
+                if (esEdicion) {
+                    payload.idCategoriaPK = parseInt(id, 10);
+                }
+
+                fetch(url, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token()
+                    },
+                    body: JSON.stringify(payload)
+                })
+                    .then(function (r) {
+                        return r.json().then(function (data) { return { status: r.status, data: data }; });
+                    })
+                    .then(function (res) {
+                        if (res.status >= 200 && res.status < 300 && res.data.ok) {
+                            cerrarModalForm();
+                            recargarCategorias();
+                            return;
+                        }
+
+                        var mensaje = (res.data.errores && res.data.errores.length)
+                            ? res.data.errores.join(' ')
+                            : (res.data.mensaje || 'Ocurrió un error al guardar la categoría.');
+                        mostrarError(formError, mensaje);
+                    })
+                    .catch(function () {
+                        mostrarError(formError, 'No se pudo conectar con el servidor.');
+                    });
+            }
+
+            function eliminarCategoria(id) {
+                fetch('@Url.Action("Eliminar", "Categoria")', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token()
+                    },
+                    body: JSON.stringify({ id: id })
+                })
+                    .then(function (r) {
+                        return r.json().then(function (data) { return { status: r.status, data: data }; });
+                    })
+                    .then(function (res) {
+                        if (res.status >= 200 && res.status < 300 && res.data.ok) {
+                            cerrarModalEliminar();
+                            recargarCategorias();
+                            return;
+                        }
+
+                        mostrarError(eliminarError, res.data.mensaje || 'No se pudo eliminar la categoría.');
+                    })
+                    .catch(function () {
+                        mostrarError(eliminarError, 'No se pudo conectar con el servidor.');
+                    });
+            }
+
+            // Delegación de eventos sobre el grid
+            grid.addEventListener('click', function (ev) {
+                if (ev.target.closest('#btnNuevaCategoriaVacio')) {
+                    abrirModalCrear();
+                    return;
+                }
+
+                var card = ev.target.closest('.categoria-card');
+                if (!card) return;
+
+                var id = parseInt(card.getAttribute('data-id'), 10);
+                var nombre = card.getAttribute('data-nombre');
+                var descripcion = card.getAttribute('data-descripcion');
+
+                if (ev.target.closest('.categoria-eliminar')) {
+                    ev.stopPropagation();
+                    confirmarEliminar(id, nombre);
+                    return;
+                }
+
+                if (ev.target.closest('.categoria-editar')) {
+                    ev.stopPropagation();
+                    abrirModalEditar(id, nombre, descripcion);
+                    return;
+                }
+
+                abrirModalEditar(id, nombre, descripcion);
+            });
+
+            document.getElementById('btnNuevaCategoria').addEventListener('click', abrirModalCrear);
+            document.getElementById('btnCancelarCategoria').addEventListener('click', cerrarModalForm);
+            document.getElementById('btnGuardarCategoria').addEventListener('click', guardarCategoria);
+
+            document.getElementById('btnCancelarEliminar').addEventListener('click', cerrarModalEliminar);
+            document.getElementById('btnConfirmarEliminar').addEventListener('click', function () {
+                if (eliminarIdPendiente !== null) {
+                    eliminarCategoria(eliminarIdPendiente);
+                }
+            });
+
+            formOverlay.addEventListener('click', function (ev) {
+                if (ev.target === formOverlay) cerrarModalForm();
+            });
+            eliminarOverlay.addEventListener('click', function (ev) {
+                if (ev.target === eliminarOverlay) cerrarModalEliminar();
+            });
+
+            document.addEventListener('keydown', function (ev) {
+                if (ev.key !== 'Escape') return;
+                if (!formOverlay.hidden) cerrarModalForm();
+                if (!eliminarOverlay.hidden) cerrarModalEliminar();
+            });
+        })();
+    </script>
+}

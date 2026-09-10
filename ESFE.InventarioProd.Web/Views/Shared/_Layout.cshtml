@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿```
+=======
+﻿@using System.Security.Claims
+>>>>>>> e7c992eb582f9ac893ef46aea059653e0f7a6696
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -28,25 +32,29 @@
                                asp-area="" asp-controller="Home" asp-action="Index">Panel</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark @(ViewContext.RouteData.Values["controller"]?.ToString() == "Productos" ? "fw-semibold" : "")"
-                               asp-area="" asp-controller="Productos" asp-action="Index">Productos</a>
+                            <a class="nav-link text-dark @(ViewContext.RouteData.Values["controller"]?.ToString() == "Producto" ? "fw-semibold" : "")"
+                               asp-area="" asp-controller="Producto" asp-action="Index">Productos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark @(ViewContext.RouteData.Values["controller"]?.ToString() == "Movimientos" ? "fw-semibold" : "")"
-                               asp-area="" asp-controller="Movimientos" asp-action="Index">Movimientos</a>
+                            <a class="nav-link text-dark @(ViewContext.RouteData.Values["controller"]?.ToString() == "Categoria" ? "fw-semibold" : "")"
+                               asp-area="" asp-controller="Categoria" asp-action="Index">Categorías</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark @(ViewContext.RouteData.Values["controller"]?.ToString() == "Movimiento" ? "fw-semibold" : "")"
+                               asp-area="" asp-controller="Movimiento" asp-action="Index">Movimientos</a>
                         </li>
                     </ul>
 
                     <div class="dropdown">
                         <button class="btn btn-outline-secondary rounded-pill dropdown-toggle" type="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
-                            @(User.Identity?.Name ?? "Ana Pérez") - Bodeguero
+                            @(User.Identity?.Name ?? "Ana Pérez") - @(User.FindFirst(ClaimTypes.Role)?.Value ?? "Bodeguero")
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" asp-controller="Cuenta" asp-action="Perfil">Mi perfil</a></li>
+                            <li><a class="dropdown-item" asp-controller="Account" asp-action="Perfil">Mi perfil</a></li>
                             <li><hr class="dropdown-divider" /></li>
                             <li>
-                                <form asp-controller="Cuenta" asp-action="Logout" method="post">
+                                <form asp-controller="Account" asp-action="Logout" method="post">
                                     <button type="submit" class="dropdown-item">Cerrar sesión</button>
                                 </form>
                             </li>
