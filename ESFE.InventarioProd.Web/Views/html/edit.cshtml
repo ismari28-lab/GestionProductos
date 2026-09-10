@@ -1,0 +1,130 @@
+﻿@{
+    ViewData["Title"] = "Editar proveedor";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/proveedores.css" />
+}
+
+<div class="form-page">
+
+    <div class="form-card">
+
+        <div class="form-header">
+
+            <div>
+                <h1>Editar proveedor</h1>
+                <p>Modifica la información del proveedor</p>
+            </div>
+
+            <a href="#" class="btn-close">
+                ×
+            </a>
+
+        </div>
+
+        <div class="form-divider"></div>
+
+
+        <form>
+
+            <div class="section-title">
+                Datos del proveedor
+            </div>
+
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>ID del proveedor</label>
+
+                    <input type="text"
+                           value="P-001"
+                           disabled />
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Nombre</label>
+
+                    <input type="text"
+                           value="Carlos Martínez" />
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Empresa / Compañía</label>
+
+                    <input type="text"
+                           value="Distribuidora Martínez" />
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Teléfono</label>
+
+                    <input type="text"
+                           value="7856-2145" />
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Correo electrónico</label>
+
+                    <input type="email"
+                           value="carlos@distribuidoramartinez.com" />
+
+                </div>
+
+
+                <div class="form-group full-width">
+
+                    <label>Dirección</label>
+
+                    <textarea>San Salvador</textarea>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Estado</label>
+
+                    <select>
+
+                        <option selected>Activo</option>
+                        <option>Inactivo</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <a href="#" class="btn-secondary">
+                    Cancelar
+                </a>
+
+                <button type="button" class="btn-primary">
+                    Guardar cambios
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
