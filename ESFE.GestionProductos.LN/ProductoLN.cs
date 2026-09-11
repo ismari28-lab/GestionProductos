@@ -321,5 +321,34 @@ namespace ESFE.GestionProductos.LN
         {
             return new ResultadoGuardarProductoDTO { Resultado = ResultadoGuardarProducto.DatosInvalidos, Mensaje = mensaje };
         }
+
+        // --- Módulo Productos (STOCKEO): exportar a Excel (Sprint C) ---
+
+        public List<ProductoExportDTO> ListarParaExportar(FiltrosProductoDTO filtros)
+        {
+            string? termino = filtros.Termino?.Trim();
+            if (string.IsNullOrEmpty(termino) || termino.Length < 2)
+                termino = null;
+
+            string ordenarPor = ColumnasValidas.Contains(filtros.OrdenarPor) ? filtros.OrdenarPor.ToLowerInvariant() : "nombre";
+            string direccion = string.Equals(filtros.Direccion, "DESC", StringComparison.OrdinalIgnoreCase) ? "DESC" : "ASC";
+
+            return productoDAL.ListarParaExportar(termino, filtros.IdCategoria, filtros.IncluirInactivos, ordenarPor, direccion)
+                .Select(p => new ProductoExportDTO
+                {
+                    Codigo = p.Codigo,
+                    Nombre = p.Nombre,
+                    CategoriaNombre = p.CategoriaNombre,
+                    ProveedorNombre = p.ProveedorNombre,
+                    Existencias = p.Existencias,
+                    StockMinimo = p.StockMinimo,
+                    PrecioCompra = p.PrecioCompra,
+                    PrecioVenta = p.PrecioVenta,
+                    AplicaIVA = p.AplicaIVA,
+                    PorcentajeIVA = p.PorcentajeIVA,
+                    Estado = p.Estado
+                })
+                .ToList();
+        }
     }
 }

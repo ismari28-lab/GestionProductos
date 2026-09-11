@@ -121,42 +121,8 @@ namespace ESFE.InventarioProd.Web.Controllers
                 return View("Perfil", model);
             }
 
-            return RedirectToAction("Login");
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult TestMinimo(PerfilViewModel model)
-        {
-            model.Nombre = User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty;
-            model.NombreRol = User.FindFirst(ClaimTypes.Role)?.Value ?? string.Empty;
-
-            if (!ModelState.IsValid)
-                return View("Perfil", model);
-
-            var validacion = usuarioLN.ValidarLogin(model.Nombre, model.PasswordActual);
-            if (validacion == null)
-            {
-                ModelState.AddModelError(nameof(model.PasswordActual), "La contraseña actual no es correcta.");
-                return View("Perfil", model);
-            }
-
-            try
-            {
-                bool actualizado = userLN.CambiarPassword(validacion.Usuario.IdUsuarioPK, model.PasswordNueva);
-                if (!actualizado)
-                {
-                    ModelState.AddModelError(string.Empty, "No se pudo actualizar la contraseña.");
-                    return View("Perfil", model);
-                }
-            }
-            catch (ArgumentException ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                return View("Perfil", model);
-            }
-
-            return RedirectToAction("Login");
+            TempData["PerfilMensaje"] = "Contraseña actualizada correctamente.";
+            return RedirectToAction("Perfil");
         }
     }
 }

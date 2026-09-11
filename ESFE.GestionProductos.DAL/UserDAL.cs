@@ -151,6 +151,10 @@ namespace ESFE.GestionProductos.DAL
         }
 
         // 5. Actualizar Usuario
+        // NOTA: usa sp_ActualizarUsuario_v2 (no el sp_ActualizarUsuario original) porque
+        // el original tiene SET NOCOUNT ON sin SELECT @@ROWCOUNT final, lo que hacía que
+        // ExecuteNonQuery() devolviera -1 en vez del conteo real de filas afectadas. El
+        // original se preserva intacto para la app WinForms ESFE.GestionProductos.
         public int Actualizar(Usuario usuario)
         {
             using (IDbConnection conexion = DBComun.ObtenerConexion())
@@ -158,7 +162,7 @@ namespace ESFE.GestionProductos.DAL
                 conexion.Open();
 
                 using (SqlCommand comando = new SqlCommand(
-                    "sp_ActualizarUsuario",
+                    "sp_ActualizarUsuario_v2",
                     conexion as SqlConnection))
                 {
                     comando.CommandType = CommandType.StoredProcedure;
@@ -183,12 +187,16 @@ namespace ESFE.GestionProductos.DAL
                         "@Estado",
                         (object)usuario.Estado ?? DBNull.Value);
 
-                    return comando.ExecuteNonQuery();
+                    object resultado = comando.ExecuteScalar();
+                    return resultado != null && resultado != DBNull.Value
+                        ? Convert.ToInt32(resultado)
+                        : 0;
                 }
             }
         }
 
         // 6. Eliminación lógica
+        // NOTA: usa sp_EliminarLogicoUsuario_v2 por la misma razón que Actualizar() arriba.
         public int EliminarLogico(short idUsuario)
         {
             using (IDbConnection conexion = DBComun.ObtenerConexion())
@@ -196,7 +204,7 @@ namespace ESFE.GestionProductos.DAL
                 conexion.Open();
 
                 using (SqlCommand comando = new SqlCommand(
-                    "sp_EliminarLogicoUsuario",
+                    "sp_EliminarLogicoUsuario_v2",
                     conexion as SqlConnection))
                 {
                     comando.CommandType = CommandType.StoredProcedure;
@@ -205,7 +213,10 @@ namespace ESFE.GestionProductos.DAL
                         "@IdUsuario",
                         idUsuario);
 
-                    return comando.ExecuteNonQuery();
+                    object resultado = comando.ExecuteScalar();
+                    return resultado != null && resultado != DBNull.Value
+                        ? Convert.ToInt32(resultado)
+                        : 0;
                 }
             }
         }

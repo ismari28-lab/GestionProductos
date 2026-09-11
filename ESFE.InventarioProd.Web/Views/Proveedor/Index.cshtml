@@ -1,0 +1,466 @@
+@{
+    ViewBag.Title = "Proveedores";
+}
+
+<link rel="stylesheet" href="~/css/proveedor.css" asp-append-version="true" />
+
+<div class="proveedor-header mt-4 mb-3">
+    <h1 class="h4 fw-bold mb-0">Proveedores</h1>
+    <button type="button" class="btn btn-primary" id="btnNuevoProveedor">+ Nuevo proveedor</button>
+</div>
+
+<div class="pv-tabla-wrap">
+    <table class="pv-tabla" id="pvTabla">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Empresa</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+                <th>Dirección</th>
+                <th>Estado</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="pvTbody">
+            <tr><td colspan="7" class="pv-estado-mensaje">Cargando...</td></tr>
+        </tbody>
+    </table>
+</div>
+
+@Html.AntiForgeryToken()
+
+<!-- Modal crear/editar -->
+<div id="modal-proveedor" class="modal-overlay" style="display:none;">
+    <div class="modal-card modal-pequeno">
+        <div class="modal-header">
+            <h2 id="modal-titulo">Nuevo proveedor</h2>
+        </div>
+
+        <div class="modal-body">
+            <input type="hidden" id="pv-id" />
+
+            <fieldset class="seccion">
+                <legend>DATOS DEL PROVEEDOR</legend>
+
+                <div class="campo">
+                    <label for="pv-nombre">Nombre *</label>
+                    <input type="text" id="pv-nombre" maxlength="100" />
+                    <span class="error-inline" data-campo="nombre"></span>
+                </div>
+
+                <div class="campo" style="margin-top: 0.75rem;">
+                    <label for="pv-empresa">Empresa</label>
+                    <input type="text" id="pv-empresa" maxlength="100" />
+                </div>
+
+                <div class="campo" style="margin-top: 0.75rem;">
+                    <label for="pv-telefono">Teléfono</label>
+                    <input type="text" id="pv-telefono" maxlength="20" />
+                </div>
+
+                <div class="campo" style="margin-top: 0.75rem;">
+                    <label for="pv-correo">Correo</label>
+                    <input type="email" id="pv-correo" maxlength="150" />
+                </div>
+
+                <div class="campo" style="margin-top: 0.75rem;">
+                    <label for="pv-direccion">Dirección</label>
+                    <input type="text" id="pv-direccion" maxlength="255" />
+                </div>
+            </fieldset>
+
+            <fieldset class="seccion" id="seccion-estado" style="display:none;">
+                <legend>ESTADO</legend>
+                <div class="campo">
+                    <label>
+                        <input type="checkbox" id="pv-estado" checked />
+                        Proveedor activo
+                    </label>
+                </div>
+            </fieldset>
+
+            <div class="mensaje-error-general" id="mensaje-error-general"></div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn-eliminar" id="btn-eliminar" style="display:none;">Eliminar</button>
+            <div class="footer-derecha">
+                <button type="button" class="btn-secundario" id="btn-cancelar-proveedor">Cancelar</button>
+                <button type="button" class="btn-primario" id="btn-guardar">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal confirmación eliminar -->
+<div id="modal-confirmar-eliminar" class="modal-overlay" style="display:none;">
+    <div class="modal-card modal-pequeno">
+        <div class="modal-body">
+            <p id="texto-confirmar-eliminar"></p>
+            <div class="mensaje-error-general" id="mensaje-error-eliminar"></div>
+        </div>
+        <div class="modal-footer">
+            <div class="footer-derecha">
+                <button type="button" class="btn-secundario" id="btn-cancelar-eliminar">Cancelar</button>
+                <button type="button" class="btn-primario-rojo" id="btn-confirmar-eliminar-def">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            var tbody = document.getElementById('pvTbody');
+            var btnNuevoProveedor = document.getElementById('btnNuevoProveedor');
+
+            var modalOverlay = document.getElementById('modal-proveedor');
+            var modalTitulo = document.getElementById('modal-titulo');
+            var inputId = document.getElementById('pv-id');
+            var inputNombre = document.getElementById('pv-nombre');
+            var inputEmpresa = document.getElementById('pv-empresa');
+            var inputTelefono = document.getElementById('pv-telefono');
+            var inputCorreo = document.getElementById('pv-correo');
+            var inputDireccion = document.getElementById('pv-direccion');
+            var seccionEstado = document.getElementById('seccion-estado');
+            var checkEstado = document.getElementById('pv-estado');
+            var mensajeErrorGeneral = document.getElementById('mensaje-error-general');
+            var btnEliminar = document.getElementById('btn-eliminar');
+            var btnCancelarProveedor = document.getElementById('btn-cancelar-proveedor');
+            var btnGuardar = document.getElementById('btn-guardar');
+
+            var modalConfirmarEliminar = document.getElementById('modal-confirmar-eliminar');
+            var textoConfirmarEliminar = document.getElementById('texto-confirmar-eliminar');
+            var mensajeErrorEliminar = document.getElementById('mensaje-error-eliminar');
+            var btnCancelarEliminar = document.getElementById('btn-cancelar-eliminar');
+            var btnConfirmarEliminarDef = document.getElementById('btn-confirmar-eliminar-def');
+
+            var modoEdicion = false;
+            var proveedorIdActual = null;
+            var nombreActualParaEliminar = '';
+
+            function escapeHtml(texto) {
+                var div = document.createElement('div');
+                div.textContent = texto || '';
+                return div.innerHTML;
+            }
+
+            function token() {
+                var campo = document.querySelector('input[name="__RequestVerificationToken"]');
+                return campo ? campo.value : '';
+            }
+
+            function mostrarToast(mensaje, tipo) {
+                var toast = document.createElement('div');
+                toast.className = 'app-toast ' + tipo;
+                toast.textContent = mensaje;
+                document.body.appendChild(toast);
+                setTimeout(function () {
+                    toast.remove();
+                }, 3500);
+            }
+
+            function mostrarModal(el) {
+                el.style.display = 'flex';
+            }
+
+            function ocultarModal(el) {
+                el.style.display = 'none';
+            }
+
+            // --- Listado ---
+
+            function cargarProveedores() {
+                tbody.innerHTML = '<tr><td colspan="7" class="pv-estado-mensaje">Cargando...</td></tr>';
+
+                fetch('@Url.Action("Listar", "Proveedor")', { credentials: 'same-origin' })
+                    .then(function (r) { return r.json(); })
+                    .then(renderTabla)
+                    .catch(function () {
+                        tbody.innerHTML = '<tr><td colspan="7" class="pv-estado-mensaje">No se pudo cargar el listado de proveedores.</td></tr>';
+                    });
+            }
+
+            function renderTabla(proveedores) {
+                if (!proveedores || proveedores.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="pv-vacio">Aún no hay proveedores registrados</td></tr>';
+                    return;
+                }
+
+                var html = '';
+                proveedores.forEach(function (p) {
+                    var badgeClase = p.estado ? 'activo' : 'inactivo';
+                    var badgeTexto = p.estado ? 'Activo' : 'Inactivo';
+
+                    html += '<tr>' +
+                        '<td>' + escapeHtml(p.nombre) + '</td>' +
+                        '<td>' + escapeHtml(p.empresa) + '</td>' +
+                        '<td>' + escapeHtml(p.telefono) + '</td>' +
+                        '<td>' + escapeHtml(p.correo) + '</td>' +
+                        '<td>' + escapeHtml(p.direccion) + '</td>' +
+                        '<td><span class="pv-badge ' + badgeClase + '">' + badgeTexto + '</span></td>' +
+                        '<td><button type="button" class="pv-editar-btn" data-id="' + p.idProveedorPK + '" title="Editar" aria-label="Editar">✎</button></td>' +
+                        '</tr>';
+                });
+                tbody.innerHTML = html;
+            }
+
+            tbody.addEventListener('click', function (ev) {
+                var btn = ev.target.closest('.pv-editar-btn');
+                if (!btn) return;
+                abrirModalEditar(parseInt(btn.getAttribute('data-id'), 10));
+            });
+
+            // --- Modal Crear/Editar ---
+
+            function limpiarErroresCampo() {
+                modalOverlay.querySelectorAll('.error-inline').forEach(function (el) {
+                    el.textContent = '';
+                    el.style.display = 'none';
+                });
+                ocultarErrorGeneral();
+            }
+
+            function mostrarErrorCampo(campo, mensaje) {
+                var el = modalOverlay.querySelector('.error-inline[data-campo="' + campo + '"]');
+                if (el) {
+                    el.textContent = mensaje;
+                    el.style.display = 'block';
+                }
+            }
+
+            function mostrarErrorGeneral(mensaje) {
+                mensajeErrorGeneral.textContent = mensaje;
+                mensajeErrorGeneral.style.display = 'block';
+            }
+
+            function ocultarErrorGeneral() {
+                mensajeErrorGeneral.style.display = 'none';
+                mensajeErrorGeneral.textContent = '';
+            }
+
+            function mostrarErrorEliminar(mensaje) {
+                mensajeErrorEliminar.textContent = mensaje;
+                mensajeErrorEliminar.style.display = 'block';
+            }
+
+            function ocultarErrorEliminar() {
+                mensajeErrorEliminar.style.display = 'none';
+                mensajeErrorEliminar.textContent = '';
+            }
+
+            function abrirModalCrear() {
+                modoEdicion = false;
+                proveedorIdActual = null;
+
+                modalTitulo.textContent = 'Nuevo proveedor';
+                inputId.value = '';
+                limpiarErroresCampo();
+
+                inputNombre.value = '';
+                inputEmpresa.value = '';
+                inputTelefono.value = '';
+                inputCorreo.value = '';
+                inputDireccion.value = '';
+                checkEstado.checked = true;
+
+                seccionEstado.style.display = 'none';
+                btnEliminar.style.display = 'none';
+
+                btnGuardar.disabled = false;
+                btnGuardar.textContent = 'Guardar';
+                mostrarModal(modalOverlay);
+                inputNombre.focus();
+            }
+
+            function abrirModalEditar(id) {
+                modoEdicion = true;
+
+                modalTitulo.textContent = 'Editar proveedor';
+                inputId.value = id;
+                limpiarErroresCampo();
+
+                seccionEstado.style.display = '';
+                btnEliminar.style.display = '';
+
+                btnGuardar.disabled = false;
+                btnGuardar.textContent = 'Guardar';
+                mostrarModal(modalOverlay);
+
+                fetch('@Url.Action("ObtenerParaEdicion", "Proveedor")/' + id, { credentials: 'same-origin' })
+                    .then(function (r) {
+                        if (!r.ok) throw new Error('No encontrado');
+                        return r.json();
+                    })
+                    .then(function (p) {
+                        inputNombre.value = p.nombre;
+                        inputEmpresa.value = p.empresa;
+                        inputTelefono.value = p.telefono;
+                        inputCorreo.value = p.correo;
+                        inputDireccion.value = p.direccion;
+                        checkEstado.checked = p.estado;
+
+                        proveedorIdActual = p.idProveedorPK;
+                        nombreActualParaEliminar = p.nombre;
+                    })
+                    .catch(function () {
+                        cerrarModal();
+                        mostrarToast('No se pudo cargar el proveedor para editar.', 'error');
+                    });
+            }
+
+            function validarFormulario() {
+                limpiarErroresCampo();
+                var valido = true;
+
+                if (!inputNombre.value.trim()) {
+                    mostrarErrorCampo('nombre', 'El nombre es obligatorio.');
+                    valido = false;
+                }
+
+                return valido;
+            }
+
+            function guardarProveedor() {
+                if (!validarFormulario()) return;
+
+                var payload = {
+                    idProveedorPK: modoEdicion ? parseInt(inputId.value, 10) : null,
+                    nombre: inputNombre.value.trim(),
+                    empresa: inputEmpresa.value.trim() || null,
+                    telefono: inputTelefono.value.trim() || null,
+                    correo: inputCorreo.value.trim() || null,
+                    direccion: inputDireccion.value.trim() || null,
+                    estado: modoEdicion ? checkEstado.checked : true
+                };
+
+                var url = modoEdicion ? '@Url.Action("Editar", "Proveedor")' : '@Url.Action("Crear", "Proveedor")';
+
+                btnGuardar.disabled = true;
+                btnGuardar.textContent = 'Guardando...';
+
+                fetch(url, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token()
+                    },
+                    body: JSON.stringify(payload)
+                })
+                    .then(function (r) {
+                        return r.json().then(function (data) { return { status: r.status, data: data }; });
+                    })
+                    .then(function (res) {
+                        if (res.status === 200 && res.data.ok) {
+                            cerrarModal();
+                            mostrarToast(res.data.mensaje || 'Proveedor guardado correctamente', 'exito');
+                            cargarProveedores();
+                            return;
+                        }
+
+                        if (res.status === 400 || res.status === 404) {
+                            mostrarErrorGeneral(res.data.mensaje || 'Datos inválidos.');
+                            return;
+                        }
+
+                        mostrarToast(res.data.mensaje || 'No se pudo guardar el proveedor.', 'error');
+                    })
+                    .catch(function () {
+                        mostrarToast('No se pudo conectar con el servidor.', 'error');
+                    })
+                    .finally(function () {
+                        btnGuardar.disabled = false;
+                        btnGuardar.textContent = 'Guardar';
+                    });
+            }
+
+            function confirmarEliminar() {
+                textoConfirmarEliminar.textContent = '¿Eliminar el proveedor «' + nombreActualParaEliminar + '»?';
+                ocultarErrorEliminar();
+                mostrarModal(modalConfirmarEliminar);
+            }
+
+            function eliminarDefinitivo() {
+                btnConfirmarEliminarDef.disabled = true;
+                btnConfirmarEliminarDef.textContent = 'Eliminando...';
+
+                fetch('@Url.Action("Eliminar", "Proveedor")', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token()
+                    },
+                    body: JSON.stringify({ id: proveedorIdActual })
+                })
+                    .then(function (r) {
+                        return r.json().then(function (data) { return { status: r.status, data: data }; });
+                    })
+                    .then(function (res) {
+                        if (res.status === 200 && res.data.ok) {
+                            cerrarConfirmarEliminar();
+                            cerrarModal();
+                            mostrarToast(res.data.mensaje || 'Proveedor eliminado correctamente', 'exito');
+                            cargarProveedores();
+                            return;
+                        }
+
+                        if (res.status === 409) {
+                            mostrarErrorEliminar(res.data.mensaje || 'No se puede eliminar el proveedor.');
+                            return;
+                        }
+
+                        cerrarConfirmarEliminar();
+                        mostrarToast(res.data.mensaje || 'No se pudo eliminar el proveedor.', 'error');
+                    })
+                    .catch(function () {
+                        mostrarToast('No se pudo conectar con el servidor.', 'error');
+                    })
+                    .finally(function () {
+                        btnConfirmarEliminarDef.disabled = false;
+                        btnConfirmarEliminarDef.textContent = 'Eliminar';
+                    });
+            }
+
+            function cerrarModal() {
+                ocultarModal(modalOverlay);
+                limpiarErroresCampo();
+            }
+
+            function cerrarConfirmarEliminar() {
+                ocultarModal(modalConfirmarEliminar);
+                ocultarErrorEliminar();
+            }
+
+            btnNuevoProveedor.addEventListener('click', abrirModalCrear);
+            btnCancelarProveedor.addEventListener('click', cerrarModal);
+            btnGuardar.addEventListener('click', guardarProveedor);
+            btnEliminar.addEventListener('click', confirmarEliminar);
+            btnCancelarEliminar.addEventListener('click', cerrarConfirmarEliminar);
+            btnConfirmarEliminarDef.addEventListener('click', eliminarDefinitivo);
+
+            modalOverlay.addEventListener('click', function (ev) {
+                if (ev.target === modalOverlay) cerrarModal();
+            });
+            modalConfirmarEliminar.addEventListener('click', function (ev) {
+                if (ev.target === modalConfirmarEliminar) cerrarConfirmarEliminar();
+            });
+
+            document.addEventListener('keydown', function (ev) {
+                if (ev.key !== 'Escape') return;
+                if (modalConfirmarEliminar.style.display !== 'none') {
+                    cerrarConfirmarEliminar();
+                    return;
+                }
+                if (modalOverlay.style.display !== 'none') {
+                    cerrarModal();
+                }
+            });
+
+            // --- Carga inicial ---
+            cargarProveedores();
+        })();
+    </script>
+}

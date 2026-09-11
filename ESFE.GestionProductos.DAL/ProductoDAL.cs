@@ -462,5 +462,62 @@ namespace ESFE.GestionProductos.DAL
                 }
             }
         }
+
+        // --- Módulo Productos (STOCKEO): exportar a Excel (Sprint C) ---
+
+        public List<(string Codigo, string Nombre, string CategoriaNombre, string ProveedorNombre, int Existencias, int StockMinimo, decimal PrecioCompra, decimal PrecioVenta, bool AplicaIVA, decimal PorcentajeIVA, bool Estado)> ListarParaExportar(
+            string? termino, short? idCategoria, bool incluirInactivos, string ordenarPor, string direccion)
+        {
+            var items = new List<(string, string, string, string, int, int, decimal, decimal, bool, decimal, bool)>();
+
+            using (IDbConnection conexion = DBComun.ObtenerConexion())
+            {
+                conexion.Open();
+
+                using (SqlCommand comando = new SqlCommand("SP_ListarProductosParaExportar", conexion as SqlConnection))
+                {
+                    comando.CommandType = CommandType.StoredProcedure;
+                    comando.Parameters.AddWithValue("@Termino", (object?)termino ?? DBNull.Value);
+                    comando.Parameters.AddWithValue("@IdCategoria", (object?)idCategoria ?? DBNull.Value);
+                    comando.Parameters.AddWithValue("@IncluirInactivos", incluirInactivos);
+                    comando.Parameters.AddWithValue("@OrdenarPor", ordenarPor);
+                    comando.Parameters.AddWithValue("@Direccion", direccion);
+
+                    using (SqlDataReader lector = comando.ExecuteReader())
+                    {
+                        int ordCodigo = lector.GetOrdinal("Codigo");
+                        int ordNombre = lector.GetOrdinal("Nombre");
+                        int ordCategoria = lector.GetOrdinal("CategoriaNombre");
+                        int ordProveedor = lector.GetOrdinal("ProveedorNombre");
+                        int ordExistencias = lector.GetOrdinal("Existencias");
+                        int ordStockMinimo = lector.GetOrdinal("StockMinimo");
+                        int ordPrecioCompra = lector.GetOrdinal("PrecioCompra");
+                        int ordPrecioVenta = lector.GetOrdinal("PrecioVenta");
+                        int ordAplicaIVA = lector.GetOrdinal("AplicaIVA");
+                        int ordPorcentajeIVA = lector.GetOrdinal("PorcentajeIVA");
+                        int ordEstado = lector.GetOrdinal("Estado");
+
+                        while (lector.Read())
+                        {
+                            items.Add((
+                                lector.IsDBNull(ordCodigo) ? string.Empty : lector.GetString(ordCodigo),
+                                lector.IsDBNull(ordNombre) ? string.Empty : lector.GetString(ordNombre),
+                                lector.IsDBNull(ordCategoria) ? string.Empty : lector.GetString(ordCategoria),
+                                lector.IsDBNull(ordProveedor) ? string.Empty : lector.GetString(ordProveedor),
+                                lector.IsDBNull(ordExistencias) ? 0 : Convert.ToInt32(lector[ordExistencias]),
+                                lector.IsDBNull(ordStockMinimo) ? 0 : Convert.ToInt32(lector[ordStockMinimo]),
+                                lector.IsDBNull(ordPrecioCompra) ? 0m : Convert.ToDecimal(lector[ordPrecioCompra]),
+                                lector.IsDBNull(ordPrecioVenta) ? 0m : Convert.ToDecimal(lector[ordPrecioVenta]),
+                                !lector.IsDBNull(ordAplicaIVA) && Convert.ToBoolean(lector[ordAplicaIVA]),
+                                lector.IsDBNull(ordPorcentajeIVA) ? 0m : Convert.ToDecimal(lector[ordPorcentajeIVA]),
+                                !lector.IsDBNull(ordEstado) && Convert.ToBoolean(lector[ordEstado])
+                            ));
+                        }
+                    }
+                }
+            }
+
+            return items;
+        }
     }
 }

@@ -9,7 +9,7 @@
     <h1 class="h4 fw-bold mb-0">Productos</h1>
 
     <div class="producto-header-acciones">
-        <button type="button" class="pr-btn-icono pr-btn-proximamente" disabled title="Disponible próximamente" aria-label="Escanear">
+        <button type="button" class="pr-btn-icono" id="btnEscaner" title="Preparar para escanear código (limpia el buscador y le da foco)" aria-label="Escanear">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
                 <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
@@ -18,7 +18,10 @@
                 <line x1="3" y1="12" x2="21" y2="12"></line>
             </svg>
         </button>
-        <button type="button" class="btn btn-outline-secondary pr-btn-proximamente" disabled title="Disponible próximamente">Exportar</button>
+        @if (User.IsInRole("Admin") || User.IsInRole("Supervisor") || User.IsInRole("Inventariado"))
+        {
+            <button type="button" class="btn btn-outline-secondary" id="btnExportar">Exportar</button>
+        }
         <button type="button" class="btn btn-primary" id="btnNuevoProducto">+ Nuevo producto</button>
     </div>
 </div>
@@ -213,6 +216,8 @@
             var resumenEl = document.getElementById('prResumen');
 
             var btnNuevoProducto = document.getElementById('btnNuevoProducto');
+            var btnEscaner = document.getElementById('btnEscaner');
+            var btnExportar = document.getElementById('btnExportar');
 
             var modalOverlay = document.getElementById('modal-producto');
             var modalTitulo = document.getElementById('modal-titulo');
@@ -262,6 +267,7 @@
             };
 
             var debounceBuscar = null;
+            var ultimoTerminoSinResultados = null;
 
             function escapeHtml(texto) {
                 var div = document.createElement('div');
@@ -296,6 +302,15 @@
                     .then(function (data) {
                         renderTabla(data);
                         renderPaginacion(data);
+
+                        if (data.totalRegistros === 0 && estadoActual.termino) {
+                            if (ultimoTerminoSinResultados !== estadoActual.termino) {
+                                ultimoTerminoSinResultados = estadoActual.termino;
+                                mostrarToast('No se encontró producto con código «' + estadoActual.termino + '»', 'info');
+                            }
+                        } else {
+                            ultimoTerminoSinResultados = null;
+                        }
                     })
                     .catch(function () {
                         tbody.innerHTML = '<tr><td colspan="' + COLSPAN + '" class="pr-estado-mensaje">No se pudo cargar el listado de productos.</td></tr>';
@@ -453,6 +468,16 @@
                 }, 300);
             });
 
+            // Escáner USB: escribe el código y dispara Enter. Se salta el debounce
+            // para buscar de inmediato en vez de esperar los 300ms.
+            inputBuscar.addEventListener('keydown', function (ev) {
+                if (ev.key !== 'Enter') return;
+                ev.preventDefault();
+                clearTimeout(debounceBuscar);
+                estadoActual.termino = inputBuscar.value.trim();
+                cargarPagina(1);
+            });
+
             selectCategoria.addEventListener('change', function () {
                 estadoActual.idCategoria = selectCategoria.value;
                 cargarPagina(1);
@@ -491,6 +516,76 @@
 
             function ocultarModal(el) {
                 el.style.display = 'none';
+            }
+
+            // --- Escáner USB (Sprint C) ---
+
+            function prepararEscaner() {
+                inputBuscar.value = '';
+                estadoActual.termino = '';
+                inputBuscar.focus();
+                // El escáner USB actúa como teclado: escribe el código y dispara Enter.
+                // El listener de 'input' (debounce) y el de 'keydown' Enter ya manejan la búsqueda.
+            }
+
+            btnEscaner.addEventListener('click', prepararEscaner);
+
+            // --- Exportar a Excel (Sprint C) ---
+
+            function exportarProductos() {
+                if (!btnExportar) return;
+
+                var paramsCount = new URLSearchParams({
+                    termino: estadoActual.termino || '',
+                    idCategoria: estadoActual.idCategoria || '',
+                    incluirInactivos: estadoActual.incluirInactivos
+                });
+
+                fetch('@Url.Action("ContarParaExportar", "Producto")?' + paramsCount.toString(), { credentials: 'same-origin' })
+                    .then(function (r) {
+                        if (!r.ok) throw new Error('Error al consultar cantidad');
+                        return r.json();
+                    })
+                    .then(function (data) {
+                        var total = data.total || 0;
+
+                        if (total === 0) {
+                            mostrarToast('No hay productos que coincidan con los filtros actuales', 'info');
+                            return;
+                        }
+
+                        var confirmado = window.confirm('Se exportarán ' + total + ' producto' + (total === 1 ? '' : 's') + '. ¿Continuar?');
+                        if (!confirmado) return;
+
+                        var params = new URLSearchParams({
+                            termino: estadoActual.termino || '',
+                            idCategoria: estadoActual.idCategoria || '',
+                            incluirInactivos: estadoActual.incluirInactivos,
+                            ordenarPor: estadoActual.ordenarPor,
+                            direccion: estadoActual.direccion
+                        });
+
+                        btnExportar.disabled = true;
+                        var textoOriginal = btnExportar.textContent;
+                        btnExportar.textContent = 'Exportando...';
+
+                        // El resultado es un archivo (File result): el navegador maneja la
+                        // descarga solo al navegar a la URL, no hay respuesta que leer via fetch.
+                        window.location.href = '@Url.Action("Exportar", "Producto")?' + params.toString();
+
+                        setTimeout(function () {
+                            btnExportar.disabled = false;
+                            btnExportar.textContent = textoOriginal;
+                            mostrarToast('Archivo generado correctamente', 'exito');
+                        }, 1500);
+                    })
+                    .catch(function () {
+                        mostrarToast('No se pudo preparar la exportación', 'error');
+                    });
+            }
+
+            if (btnExportar) {
+                btnExportar.addEventListener('click', exportarProductos);
             }
 
             function limpiarErroresCampo() {

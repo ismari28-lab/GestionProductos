@@ -40,6 +40,10 @@
                                asp-area="" asp-controller="Categoria" asp-action="Index">Categorías</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-dark @(ViewContext.RouteData.Values["controller"]?.ToString() == "Proveedor" ? "fw-semibold" : "")"
+                               asp-area="" asp-controller="Proveedor" asp-action="Index">Proveedores</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-dark @(ViewContext.RouteData.Values["controller"]?.ToString() == "Movimiento" ? "fw-semibold" : "")"
                                asp-area="" asp-controller="Movimiento" asp-action="Index">Movimientos</a>
                         </li>

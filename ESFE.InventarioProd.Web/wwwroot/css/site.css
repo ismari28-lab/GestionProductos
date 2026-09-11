@@ -272,3 +272,7 @@ body {
 .app-toast.error {
     background-color: #dc2626;
 }
+
+.app-toast.info {
+    background-color: #2563eb;
+}

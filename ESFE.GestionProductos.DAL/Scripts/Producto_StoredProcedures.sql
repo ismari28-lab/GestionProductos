@@ -277,3 +277,85 @@ BEGIN
     SELECT 1 AS Resultado;
 END
 GO
+
+-- =============================================
+-- Sprint C — Exportar a Excel
+-- =============================================
+
+-- SP_ListarProductosParaExportar
+-- Mismos filtros y mismo whitelist de sort que SP_ListarProductos, pero sin paginar
+-- (sin OFFSET/FETCH) y con las columnas adicionales que necesita el Excel (Proveedor, IVA).
+CREATE OR ALTER PROCEDURE SP_ListarProductosParaExportar
+    @Termino NVARCHAR(100) = NULL,
+    @IdCategoria SMALLINT = NULL,
+    @IncluirInactivos BIT = 0,
+    @OrdenarPor NVARCHAR(20) = 'nombre',
+    @Direccion NVARCHAR(4) = 'ASC'
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @TerminoLike NVARCHAR(102) = '%' + ISNULL(@Termino, '') + '%';
+    DECLARE @TieneTermino BIT = CASE WHEN ISNULL(@Termino, '') = '' THEN 0 ELSE 1 END;
+    DECLARE @Dir NVARCHAR(4) = CASE WHEN UPPER(ISNULL(@Direccion, 'ASC')) = 'DESC' THEN 'DESC' ELSE 'ASC' END;
+
+    -- Whitelist de columnas ordenables (defensa contra sort injection)
+    DECLARE @Col NVARCHAR(20) = LOWER(ISNULL(@OrdenarPor, 'nombre'));
+    IF @Col NOT IN ('codigo','nombre','categoria','existencias','preciocompra','precioventa','estado')
+        SET @Col = 'nombre';
+
+    ;WITH ProductosFiltrados AS (
+        SELECT
+            p.Codigo,
+            p.Nombre,
+            ISNULL(c.Nombre, N'(sin categoría)') AS CategoriaNombre,
+            ISNULL(pr.Nombre, N'(sin proveedor)') AS ProveedorNombre,
+            ISNULL(sp.Stock, 0) AS Existencias,
+            ISNULL(sp.Stock_Minimo, 0) AS StockMinimo,
+            p.PrecioCompra,
+            p.PrecioVenta,
+            p.AplicaIVA,
+            p.PorcentajeIVA,
+            p.Estado
+        FROM Producto p
+        LEFT JOIN Categoria c
+            ON c.IdCategoriaPK = p.IdCategoriaFK
+            AND c.Estado = 1
+        LEFT JOIN Proveedor pr
+            ON pr.IdProveedorPK = p.IdProveedorFK
+            AND pr.Estado = 1
+        LEFT JOIN Stock_Producto sp
+            -- TODO: eliminar cast cuando se resuelva deuda técnica de FK short vs int
+            ON sp.IdProductoFK = CAST(p.IdProductoPK AS SMALLINT)
+            AND sp.Estado = 1
+        WHERE (@IncluirInactivos = 1 OR p.Estado = 1)
+          AND (@IdCategoria IS NULL OR p.IdCategoriaFK = @IdCategoria)
+          AND (
+              @TieneTermino = 0
+              OR p.Codigo LIKE @TerminoLike
+              OR p.Nombre LIKE @TerminoLike
+          )
+    )
+    SELECT
+        Codigo, Nombre, CategoriaNombre, ProveedorNombre,
+        Existencias, StockMinimo, PrecioCompra, PrecioVenta,
+        AplicaIVA, PorcentajeIVA, Estado
+    FROM ProductosFiltrados
+    ORDER BY
+        CASE WHEN @Col = 'codigo'       AND @Dir = 'ASC'  THEN Codigo       END ASC,
+        CASE WHEN @Col = 'codigo'       AND @Dir = 'DESC' THEN Codigo       END DESC,
+        CASE WHEN @Col = 'nombre'       AND @Dir = 'ASC'  THEN Nombre       END ASC,
+        CASE WHEN @Col = 'nombre'       AND @Dir = 'DESC' THEN Nombre       END DESC,
+        CASE WHEN @Col = 'categoria'    AND @Dir = 'ASC'  THEN CategoriaNombre END ASC,
+        CASE WHEN @Col = 'categoria'    AND @Dir = 'DESC' THEN CategoriaNombre END DESC,
+        CASE WHEN @Col = 'existencias'  AND @Dir = 'ASC'  THEN Existencias  END ASC,
+        CASE WHEN @Col = 'existencias'  AND @Dir = 'DESC' THEN Existencias  END DESC,
+        CASE WHEN @Col = 'preciocompra' AND @Dir = 'ASC'  THEN PrecioCompra END ASC,
+        CASE WHEN @Col = 'preciocompra' AND @Dir = 'DESC' THEN PrecioCompra END DESC,
+        CASE WHEN @Col = 'precioventa'  AND @Dir = 'ASC'  THEN PrecioVenta  END ASC,
+        CASE WHEN @Col = 'precioventa'  AND @Dir = 'DESC' THEN PrecioVenta  END DESC,
+        CASE WHEN @Col = 'estado'       AND @Dir = 'ASC'  THEN CAST(Estado AS INT) END ASC,
+        CASE WHEN @Col = 'estado'       AND @Dir = 'DESC' THEN CAST(Estado AS INT) END DESC,
+        Nombre ASC;
+END
+GO
