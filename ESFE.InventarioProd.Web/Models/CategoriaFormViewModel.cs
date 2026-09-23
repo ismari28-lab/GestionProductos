@@ -1,3 +1,4 @@
+// Este ViewModel sirve para recibir y validar los datos del formulario de creación/edición de categorías.
 using System.ComponentModel.DataAnnotations;
 
 namespace ESFE.InventarioProd.Web.Models

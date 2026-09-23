@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Esta entidad representa una línea de detalle de una factura (producto, cantidad y precios).
+using System;
 using System.Collections.Generic;
 using System.Text;
 

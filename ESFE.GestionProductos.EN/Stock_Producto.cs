@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Esta entidad representa el stock de un producto: existencias actuales y stock mínimo.
+using System;
 using System.Collections.Generic;
 using System.Text;
 

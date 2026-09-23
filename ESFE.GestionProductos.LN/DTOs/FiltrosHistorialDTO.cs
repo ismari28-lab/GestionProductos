@@ -1,3 +1,4 @@
+// Este DTO sirve para transportar los filtros y la paginación usados al consultar el historial de movimientos.
 namespace ESFE.GestionProductos.LN.DTOs
 {
     public class FiltrosHistorialDTO

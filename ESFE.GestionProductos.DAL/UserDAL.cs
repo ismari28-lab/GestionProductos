@@ -1,3 +1,4 @@
+// Esta clase de acceso a datos sirve para el CRUD de usuarios: listar, buscar, insertar, actualizar, eliminar (lógicamente) y obtener la contraseña actual.
 using ESFE.GestionProductos.EN;
 using ESFE.SysDesarrollo.DAL;
 using Microsoft.Data.SqlClient;
@@ -10,6 +11,7 @@ namespace ESFE.GestionProductos.DAL
     public class UserDAL
     {
         // 1. Listar Usuarios
+        [Obsolete("Código muerto: invoca SP_ListarUsuarios (plural) que no existe en BD (el SP real es SP_ListarUsuario, singular). Sin llamadores conocidos. Eliminar cuando se confirme no uso externo.", error: false)]
         public DataTable Listar()
         {
             DataTable dt = new DataTable();

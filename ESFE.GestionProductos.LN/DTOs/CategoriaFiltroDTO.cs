@@ -1,3 +1,4 @@
+// Este DTO sirve para transportar el id y nombre de una categoría, usado en listas desplegables y filtros.
 namespace ESFE.GestionProductos.LN.DTOs
 {
     public class CategoriaFiltroDTO

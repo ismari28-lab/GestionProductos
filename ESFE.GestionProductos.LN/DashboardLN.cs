@@ -1,3 +1,4 @@
+// Esta clase de lógica de negocio sirve para obtener los indicadores del dashboard y convertirlos en DTOs listos para mostrar.
 using System;
 using System.Collections.Generic;
 using System.Linq;

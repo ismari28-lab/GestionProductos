@@ -1,3 +1,4 @@
+// Esta clase de acceso a datos sirve para registrar movimientos de inventario (cabecera y detalle), actualizar el stock de los productos y consultar el historial y detalle de movimientos.
 using System;
 using System.Collections.Generic;
 using System.Data;

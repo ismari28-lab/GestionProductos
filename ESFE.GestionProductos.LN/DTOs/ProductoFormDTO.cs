@@ -1,3 +1,4 @@
+// Este DTO sirve para recibir desde la vista los datos del formulario de creación/edición de un producto.
 namespace ESFE.GestionProductos.LN.DTOs
 {
     public class ProductoFormDTO

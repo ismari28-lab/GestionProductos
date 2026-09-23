@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Esta clase de lógica de negocio sirve para gestionar proveedores: valida y normaliza los datos, y coordina con ProveedorDAL el listado, creación, edición y eliminación.
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;

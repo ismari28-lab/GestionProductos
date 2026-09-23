@@ -1,3 +1,4 @@
+// Este DTO sirve para devolver el resultado de guardar un movimiento de inventario junto con un mensaje para el usuario.
 using ESFE.GestionProductos.LN.Enums;
 
 namespace ESFE.GestionProductos.LN.DTOs

@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Esta entidad representa un producto del inventario tal como se almacena en la base de datos.
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;

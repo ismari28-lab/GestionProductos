@@ -1,3 +1,4 @@
+// Este archivo es el punto de entrada de la aplicación de escritorio (WinForms): inicializa la configuración de la aplicación y abre el formulario de login.
 using System;
 using System.Windows.Forms;
 

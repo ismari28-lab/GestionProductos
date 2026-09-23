@@ -1,3 +1,4 @@
+// Este DTO sirve para transportar los datos necesarios para crear un producto: código sugerido, categorías y proveedores.
 namespace ESFE.GestionProductos.LN.DTOs
 {
     public class DatosNuevoProductoDTO

@@ -1,4 +1,5 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+﻿// Este script sirve para validar el formulario de login en el navegador y enviar las credenciales al servidor, mostrando los errores al usuario.
+document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("loginForm");
     const usuarioInput = document.getElementById("usuario");
     const passwordInput = document.getElementById("password");

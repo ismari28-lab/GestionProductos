@@ -1,3 +1,4 @@
+// Este DTO sirve para transportar los datos de un producto que se exportan (por ejemplo, a Excel).
 namespace ESFE.GestionProductos.LN.DTOs
 {
     public class ProductoExportDTO

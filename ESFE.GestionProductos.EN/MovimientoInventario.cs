@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Esta entidad representa la cabecera de un movimiento de inventario (entrada o salida de productos).
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Esta clase de acceso a datos sirve para el CRUD de productos: listado paginado con filtros, creación, edición, eliminación, manejo del stock mínimo y datos para exportar.
+using System;
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
@@ -184,11 +185,11 @@ namespace ESFE.GestionProductos.DAL
             return lista;
         }
 
-        public (int TotalRegistros, List<(int IdProductoPK, string Codigo, string Nombre, string CategoriaNombre, int Existencias, int StockMinimo, decimal PrecioCompra, decimal PrecioVenta, bool Estado)> Items) ListarProductos(
+        public (int TotalRegistros, List<(int IdProductoPK, string Codigo, string Nombre, string CategoriaNombre, int Existencias, int StockMinimo, decimal PrecioCompra, decimal PrecioVenta, bool Estado, string? NombreArchivoPrincipal)> Items) ListarProductos(
             string? termino, short? idCategoria, bool incluirInactivos, string ordenarPor, string direccion, int pagina, int tamanioPagina)
         {
             int total = 0;
-            var items = new List<(int, string, string, string, int, int, decimal, decimal, bool)>();
+            var items = new List<(int, string, string, string, int, int, decimal, decimal, bool, string?)>();
 
             using (IDbConnection conexion = DBComun.ObtenerConexion())
             {
@@ -221,6 +222,7 @@ namespace ESFE.GestionProductos.DAL
                         int ordPrecioCompra = lector.GetOrdinal("PrecioCompra");
                         int ordPrecioVenta = lector.GetOrdinal("PrecioVenta");
                         int ordEstado = lector.GetOrdinal("Estado");
+                        int ordNombreArchivoPrincipal = lector.GetOrdinal("NombreArchivoPrincipal");
 
                         while (lector.Read())
                         {
@@ -233,7 +235,8 @@ namespace ESFE.GestionProductos.DAL
                                 lector.IsDBNull(ordStockMinimo) ? 0 : Convert.ToInt32(lector[ordStockMinimo]),
                                 lector.IsDBNull(ordPrecioCompra) ? 0m : Convert.ToDecimal(lector[ordPrecioCompra]),
                                 lector.IsDBNull(ordPrecioVenta) ? 0m : Convert.ToDecimal(lector[ordPrecioVenta]),
-                                !lector.IsDBNull(ordEstado) && Convert.ToBoolean(lector[ordEstado])
+                                !lector.IsDBNull(ordEstado) && Convert.ToBoolean(lector[ordEstado]),
+                                lector.IsDBNull(ordNombreArchivoPrincipal) ? null : lector.GetString(ordNombreArchivoPrincipal)
                             ));
                         }
                     }

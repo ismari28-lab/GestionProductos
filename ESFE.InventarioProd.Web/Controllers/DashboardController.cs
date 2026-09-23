@@ -1,3 +1,4 @@
+// Este controlador sirve para mostrar el dashboard con los indicadores principales del inventario.
 using ESFE.GestionProductos.LN;
 using ESFE.InventarioProd.Web.Models;
 using Microsoft.AspNetCore.Authorization;

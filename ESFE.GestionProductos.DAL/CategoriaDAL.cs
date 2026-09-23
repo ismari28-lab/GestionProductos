@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Esta clase de acceso a datos sirve para listar, buscar, crear, actualizar y eliminar categorías en la base de datos, incluyendo el conteo de productos por categoría.
+using System;
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;

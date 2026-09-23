@@ -1,3 +1,4 @@
+// Esta clase de acceso a datos sirve para obtener la lista de roles de usuario desde la base de datos.
 using System;
 using System.Collections.Generic;
 using System.Data;

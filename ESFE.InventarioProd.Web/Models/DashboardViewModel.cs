@@ -1,3 +1,4 @@
+// Este ViewModel sirve para enviar a la vista del dashboard los indicadores y alertas del inventario.
 using System.Collections.Generic;
 using ESFE.GestionProductos.LN.DTOs;
 

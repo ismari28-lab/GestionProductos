@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Esta entidad representa un empleado tal como se almacena en la base de datos.
+using System;
 using System.Collections.Generic;
 using System.Text;
 

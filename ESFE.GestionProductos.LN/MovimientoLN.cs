@@ -1,3 +1,4 @@
+// Esta clase de lógica de negocio sirve para registrar movimientos de inventario validando stock y datos de entrada, y para consultar el historial y detalle de movimientos.
 using System;
 using System.Collections.Generic;
 using System.Linq;

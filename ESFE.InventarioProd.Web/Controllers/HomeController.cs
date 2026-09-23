@@ -1,3 +1,4 @@
+// Este controlador sirve para las páginas generales del sitio: inicio, privacidad y página de error.
 using ESFE.InventarioProd.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;

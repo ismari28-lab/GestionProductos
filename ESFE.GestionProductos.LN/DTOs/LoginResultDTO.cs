@@ -1,3 +1,4 @@
+// Este DTO sirve para transportar los datos del usuario autenticado después de un login exitoso.
 using ESFE.GestionProductos.EN;
 
 namespace ESFE.GestionProductos.LN.DTOs

@@ -1,3 +1,4 @@
+// Este controlador sirve para la administración de usuarios: listar, crear, editar y eliminar usuarios y cargar los roles disponibles.
 using System.Security.Claims;
 using ESFE.GestionProductos.LN;
 using ESFE.GestionProductos.LN.DTOs;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ESFE.InventarioProd.Web.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Supervisor")]
     public class UsuariosController : Controller
     {
         private readonly UserLN userLN = new UserLN();

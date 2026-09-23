@@ -1,3 +1,4 @@
+// Este controlador sirve para mostrar la página de proveedores y atender las peticiones AJAX para listar, crear, editar y eliminar proveedores.
 using ESFE.GestionProductos.LN;
 using ESFE.GestionProductos.LN.DTOs;
 using ESFE.GestionProductos.LN.Enums;

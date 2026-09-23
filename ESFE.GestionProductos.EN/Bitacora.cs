@@ -1,4 +1,5 @@
-﻿
+﻿// Esta entidad representa un registro de la bitácora: guarda qué acción realizó un usuario, en qué módulo, sobre qué registro y en qué fecha.
+
 using System;
 using System.Collections.Generic;
 using System.Text;

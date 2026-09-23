@@ -1,3 +1,4 @@
+// Este controlador sirve para registrar movimientos de inventario (entradas/salidas), buscar productos y consultar el historial y detalle de movimientos.
 using System.Security.Claims;
 using ESFE.GestionProductos.LN;
 using ESFE.GestionProductos.LN.DTOs;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Esta clase de lógica de negocio sirve para gestionar las categorías: valida los datos y coordina con CategoriaDAL la creación, edición, listado y eliminación.
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;

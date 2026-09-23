@@ -1,3 +1,4 @@
+// Este DTO sirve para transportar una fila del listado de proveedores que se muestra en la vista.
 namespace ESFE.GestionProductos.LN.DTOs
 {
     public class ProveedorListadoDTO

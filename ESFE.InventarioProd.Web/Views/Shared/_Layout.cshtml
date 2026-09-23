@@ -1,3 +1,4 @@
+@* Esta vista es el layout principal del sitio: define la estructura común (menú lateral, encabezado, estilos y scripts) de todas las páginas. *@
 @using System.Security.Claims
 <!DOCTYPE html>
 <html lang="es">
@@ -47,7 +48,7 @@
                             <a class="nav-link text-dark @(ViewContext.RouteData.Values["controller"]?.ToString() == "Movimiento" ? "fw-semibold" : "")"
                                asp-area="" asp-controller="Movimiento" asp-action="Index">Movimientos</a>
                         </li>
-                        @if (User.IsInRole("Admin"))
+                        @if (User.IsInRole("Admin") || User.IsInRole("Supervisor"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark @(ViewContext.RouteData.Values["controller"]?.ToString() == "Usuarios" ? "fw-semibold" : "")"
@@ -59,7 +60,7 @@
                     <div class="dropdown">
                         <button class="btn btn-outline-secondary rounded-pill dropdown-toggle" type="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
-                            @(User.Identity?.Name ?? "Ana Pérez") - @(User.FindFirst(ClaimTypes.Role)?.Value ?? "Bodeguero")
+                            @(User.Identity?.Name ?? "Usuario") - @(User.FindFirst(ClaimTypes.Role)?.Value ?? "Sin rol")
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" asp-controller="Account" asp-action="Perfil">Mi perfil</a></li>

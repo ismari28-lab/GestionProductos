@@ -1,3 +1,4 @@
+// Este DTO sirve para transportar los datos de un proveedor que se cargan en el formulario de edición.
 namespace ESFE.GestionProductos.LN.DTOs
 {
     public class ProveedorEdicionDTO

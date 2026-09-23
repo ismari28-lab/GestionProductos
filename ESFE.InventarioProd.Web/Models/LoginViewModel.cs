@@ -1,3 +1,4 @@
+// Este ViewModel sirve para recibir y validar el usuario y la contraseña del formulario de login.
 using System.ComponentModel.DataAnnotations;
 
 namespace ESFE.InventarioProd.Web.Models

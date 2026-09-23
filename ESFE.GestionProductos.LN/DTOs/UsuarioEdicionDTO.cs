@@ -1,3 +1,4 @@
+// Este DTO sirve para transportar los datos de un usuario que se cargan en el formulario de edición.
 namespace ESFE.GestionProductos.LN.DTOs
 {
     // No incluye Password: nunca se devuelve la contraseña al cliente.

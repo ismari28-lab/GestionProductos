@@ -52,10 +52,11 @@ BEGIN
         StockMinimo INT NULL,
         PrecioCompra DECIMAL(10,2) NULL,
         PrecioVenta DECIMAL(10,2) NULL,
-        Estado BIT NULL
+        Estado BIT NULL,
+        NombreArchivoPrincipal VARCHAR(50) NULL
     );
 
-    INSERT INTO @ProductosFiltrados (IdProductoPK, Codigo, Nombre, CategoriaNombre, Existencias, StockMinimo, PrecioCompra, PrecioVenta, Estado)
+    INSERT INTO @ProductosFiltrados (IdProductoPK, Codigo, Nombre, CategoriaNombre, Existencias, StockMinimo, PrecioCompra, PrecioVenta, Estado, NombreArchivoPrincipal)
     SELECT
         p.IdProductoPK,
         p.Codigo,
@@ -65,7 +66,8 @@ BEGIN
         ISNULL(sp.Stock_Minimo, 0) AS StockMinimo,
         p.PrecioCompra,
         p.PrecioVenta,
-        p.Estado
+        p.Estado,
+        pi.NombreArchivo AS NombreArchivoPrincipal
     FROM Producto p
     LEFT JOIN Categoria c
         ON c.IdCategoriaPK = p.IdCategoriaFK
@@ -74,6 +76,10 @@ BEGIN
         -- TODO: eliminar cast cuando se resuelva deuda técnica de FK short vs int
         ON sp.IdProductoFK = CAST(p.IdProductoPK AS SMALLINT)
         AND sp.Estado = 1
+    LEFT JOIN ProductoImagen pi
+        ON pi.IdProductoFK = p.IdProductoPK
+        AND pi.EsPrincipal = 1
+        AND pi.Estado = 1
     WHERE (@IncluirInactivos = 1 OR p.Estado = 1)
       AND (@IdCategoria IS NULL OR p.IdCategoriaFK = @IdCategoria)
       AND (
@@ -95,7 +101,8 @@ BEGIN
         StockMinimo,
         PrecioCompra,
         PrecioVenta,
-        Estado
+        Estado,
+        NombreArchivoPrincipal
     FROM @ProductosFiltrados
     ORDER BY
         CASE WHEN @Col = 'codigo'       AND @Dir = 'ASC'  THEN Codigo       END ASC,

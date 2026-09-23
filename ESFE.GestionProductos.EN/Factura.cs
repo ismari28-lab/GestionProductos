@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Esta entidad representa la cabecera de una factura de venta.
+using System;
 using System.Collections.Generic;
 using System.Text;
 

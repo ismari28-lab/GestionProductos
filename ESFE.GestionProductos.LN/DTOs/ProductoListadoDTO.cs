@@ -1,3 +1,4 @@
+// Este DTO sirve para transportar una fila del listado de productos que se muestra en la tabla.
 namespace ESFE.GestionProductos.LN.DTOs
 {
     public class ProductoListadoDTO
@@ -11,5 +12,6 @@ namespace ESFE.GestionProductos.LN.DTOs
         public decimal PrecioCompra { get; set; }
         public decimal PrecioVenta { get; set; }
         public bool Estado { get; set; }
+        public string? NombreArchivoPrincipal { get; set; }
     }
 }

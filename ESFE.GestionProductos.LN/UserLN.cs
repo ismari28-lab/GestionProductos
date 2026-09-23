@@ -1,7 +1,9 @@
-﻿using ESFE.GestionProductos.DAL;
+﻿// Esta clase de lógica de negocio sirve para administrar usuarios: valida formularios, evita nombres duplicados, hashea contraseñas y coordina con UserDAL el CRUD.
+using ESFE.GestionProductos.DAL;
 using ESFE.GestionProductos.EN;
 using ESFE.GestionProductos.LN.DTOs;
 using ESFE.GestionProductos.LN.Enums;
+using ESFE.GestionProductos.LN.Security;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,6 +16,7 @@ namespace ESFE.GestionProductos.LN
         private readonly UserDAL userDAL = new UserDAL();
 
         // 1. Listar Usuarios (todos, para grillas)
+        [Obsolete("Código muerto: invoca SP_ListarUsuarios (plural) que no existe en BD (el SP real es SP_ListarUsuario, singular). Sin llamadores conocidos. Eliminar cuando se confirme no uso externo.", error: false)]
         public DataTable Listar()
         {
             return userDAL.Listar();
@@ -55,6 +58,10 @@ namespace ESFE.GestionProductos.LN
         }
 
         // 6. Insertar Usuario
+        /// <remarks>
+        /// A partir del sprint de hashing: el caller debe pasar <c>usuario.Password</c> ya hasheado.
+        /// Los métodos DTO-based (Crear/Actualizar/CambiarPassword) hashean antes de invocar este método.
+        /// </remarks>
         public int Insertar(Usuario usuario)
         {
             if (usuario == null)
@@ -67,6 +74,11 @@ namespace ESFE.GestionProductos.LN
         }
 
         // 7. Actualizar Usuario
+        /// <remarks>
+        /// A partir del sprint de hashing: el caller debe pasar <c>usuario.Password</c> ya hasheado
+        /// (o null para conservar el actual). Los métodos DTO-based (Crear/Actualizar/CambiarPassword)
+        /// hashean antes de invocar este método.
+        /// </remarks>
         public int Actualizar(Usuario usuario)
         {
             if (usuario == null)
@@ -150,7 +162,7 @@ namespace ESFE.GestionProductos.LN
                 var usuario = new Usuario
                 {
                     Nombre = form.Nombre.Trim(),
-                    Password = form.Password!.Trim(),
+                    Password = PasswordHasherHelper.Hash(form.Password!.Trim()),
                     Id_RolFK = form.IdRolFK,
                     Estado = true
                 };
@@ -191,8 +203,11 @@ namespace ESFE.GestionProductos.LN
                 {
                     IdUsuarioPK = form.IdUsuarioPK.Value,
                     Nombre = form.Nombre.Trim(),
-                    // En blanco = conservar la contraseña actual (lógica ya existente en Actualizar())
-                    Password = string.IsNullOrWhiteSpace(form.Password) ? null : form.Password.Trim(),
+                    // En blanco = conservar la contraseña actual (lógica ya existente en Actualizar()).
+                    // Si vino con valor, se hashea antes de persistir.
+                    Password = string.IsNullOrWhiteSpace(form.Password)
+                        ? null
+                        : PasswordHasherHelper.Hash(form.Password.Trim()),
                     Id_RolFK = form.IdRolFK,
                     Estado = form.Estado
                 };
@@ -291,7 +306,7 @@ namespace ESFE.GestionProductos.LN
             if (usuario == null)
                 return false;
 
-            usuario.Password = nuevaPassword.Trim();
+            usuario.Password = PasswordHasherHelper.Hash(nuevaPassword.Trim());
             return userDAL.Actualizar(usuario) > 0;
         }
     }

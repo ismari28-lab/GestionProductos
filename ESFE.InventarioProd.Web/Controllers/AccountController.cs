@@ -1,3 +1,4 @@
+// Este controlador sirve para manejar la cuenta del usuario: iniciar y cerrar sesión, acceso denegado, ver el perfil y cambiar la contraseña.
 using System.Security.Claims;
 using ESFE.GestionProductos.LN;
 using ESFE.InventarioProd.Web.Models;
@@ -89,6 +90,7 @@ namespace ESFE.InventarioProd.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public IActionResult CambiarPassword(PerfilViewModel model)
         {

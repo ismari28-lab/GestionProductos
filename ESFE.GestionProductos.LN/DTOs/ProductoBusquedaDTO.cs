@@ -1,3 +1,4 @@
+// Este DTO sirve para transportar los resultados de la búsqueda de productos al registrar un movimiento.
 namespace ESFE.GestionProductos.LN.DTOs
 {
     public class ProductoBusquedaDTO

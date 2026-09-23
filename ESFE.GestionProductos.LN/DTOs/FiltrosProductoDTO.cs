@@ -1,3 +1,4 @@
+// Este DTO sirve para transportar los filtros y la paginación usados al listar o exportar productos.
 namespace ESFE.GestionProductos.LN.DTOs
 {
     public class FiltrosProductoDTO

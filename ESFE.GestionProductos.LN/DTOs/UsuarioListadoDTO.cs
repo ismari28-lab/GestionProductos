@@ -1,3 +1,4 @@
+// Este DTO sirve para transportar una fila del listado de usuarios que se muestra en la vista.
 namespace ESFE.GestionProductos.LN.DTOs
 {
     public class UsuarioListadoDTO

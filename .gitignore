@@ -427,3 +427,9 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Uploads runtime (imágenes de productos) — no trackear archivos generados por usuarios
+wwwroot/uploads/**
+!wwwroot/uploads/
+!wwwroot/uploads/**/
+!wwwroot/uploads/**/.gitkeep

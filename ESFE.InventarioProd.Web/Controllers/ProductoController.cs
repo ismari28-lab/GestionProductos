@@ -1,9 +1,14 @@
+// Este controlador sirve para la gestión de productos: listado con filtros, crear, editar, eliminar, exportar y administrar la galería de imágenes de cada producto.
+using System.Threading;
+using System.Threading.Tasks;
 using ClosedXML.Excel;
 using ESFE.GestionProductos.LN;
 using ESFE.GestionProductos.LN.DTOs;
 using ESFE.GestionProductos.LN.Enums;
 using ESFE.InventarioProd.Web.Models;
+using ESFE.InventarioProd.Web.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ESFE.InventarioProd.Web.Controllers
@@ -12,6 +17,14 @@ namespace ESFE.InventarioProd.Web.Controllers
     public class ProductoController : Controller
     {
         private readonly ProductoLN productoLN = new ProductoLN();
+        private readonly ImagenProductoLN imagenProductoLN;
+        private readonly IImagenStorage storage;
+
+        public ProductoController(ImagenProductoLN imagenProductoLN, IImagenStorage storage)
+        {
+            this.imagenProductoLN = imagenProductoLN;
+            this.storage = storage;
+        }
 
         // GET /Producto
         public IActionResult Index()
@@ -119,6 +132,86 @@ namespace ESFE.InventarioProd.Web.Controllers
                 ResultadoEliminarProducto.NoEncontrado => NotFound(new { ok = false, mensaje = r.Mensaje }),
                 _ => StatusCode(500, new { ok = false, mensaje = r.Mensaje ?? "Error interno" })
             };
+        }
+
+        // --- Galería de imágenes de Producto (Sprint A) ---
+
+        // GET /Producto/ListarImagenes?id=X (AJAX) — hidrata la galería del modal
+        [HttpGet]
+        public IActionResult ListarImagenes(int id)
+        {
+            var imagenes = imagenProductoLN.Listar(id);
+            return Ok(new { imagenes });
+        }
+
+        // POST /Producto/Imagenes/{id} (multipart/form-data)
+        [HttpPost]
+        [Route("Producto/Imagenes/{id:int}")]
+        [Authorize(Roles = "Admin,Supervisor,Inventariado")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SubirImagen(int id, IFormFile archivo, [FromForm] bool esPrincipal, CancellationToken ct)
+        {
+            var producto = productoLN.ObtenerParaEdicion(id);
+            if (producto == null)
+                return NotFound(new { ok = false, mensaje = "Producto no encontrado" });
+
+            if (imagenProductoLN.ContarActivas(id) >= ImagenProductoLN.MAXIMO_IMAGENES_POR_PRODUCTO)
+                return Conflict(new { ok = false, mensaje = "Máximo 5 imágenes por producto" });
+
+            var guardado = await storage.GuardarAsync(archivo, ct);
+            if (!guardado.Ok)
+                return BadRequest(new { ok = false, mensaje = guardado.MensajeError });
+
+            try
+            {
+                var r = imagenProductoLN.RegistrarImagen(id, guardado.NombreArchivo!, esPrincipal);
+
+                if (r.Resultado == ResultadoSubirImagen.LimiteAlcanzado)
+                {
+                    // Carrera: el límite se validó arriba, pero otra request lo llenó entretanto.
+                    storage.Eliminar(guardado.NombreArchivo!);
+                    return Conflict(new { ok = false, mensaje = r.Mensaje });
+                }
+
+                return Ok(new { ok = true, imagen = r.Imagen });
+            }
+            catch
+            {
+                // Si algo revienta después de guardar en disco, no dejar el archivo huérfano.
+                storage.Eliminar(guardado.NombreArchivo!);
+                return StatusCode(500, new { ok = false, mensaje = "Error interno al registrar la imagen" });
+            }
+        }
+
+        // DELETE /Producto/Imagenes/{idImagen}
+        [HttpDelete]
+        [Route("Producto/Imagenes/{idImagen:int}")]
+        [Authorize(Roles = "Admin,Supervisor,Inventariado")]
+        [ValidateAntiForgeryToken]
+        public IActionResult EliminarImagen(int idImagen)
+        {
+            var r = imagenProductoLN.Eliminar(idImagen);
+            if (!r.Ok)
+                return NotFound(new { ok = false, mensaje = r.Mensaje ?? "Imagen no encontrada" });
+
+            if (!string.IsNullOrEmpty(r.NombreArchivo))
+                storage.Eliminar(r.NombreArchivo);
+
+            return Ok(new { ok = true, nuevaPrincipal = r.NuevaPrincipal });
+        }
+
+        // POST /Producto/Imagenes/{idImagen}/Principal
+        [HttpPost]
+        [Route("Producto/Imagenes/{idImagen:int}/Principal")]
+        [Authorize(Roles = "Admin,Supervisor,Inventariado")]
+        [ValidateAntiForgeryToken]
+        public IActionResult MarcarPrincipal(int idImagen)
+        {
+            bool ok = imagenProductoLN.MarcarPrincipal(idImagen);
+            if (!ok)
+                return NotFound(new { ok = false, mensaje = "Imagen no encontrada" });
+
+            return Ok(new { ok = true });
         }
 
         // --- Módulo Productos (STOCKEO): exportar a Excel (Sprint C) ---

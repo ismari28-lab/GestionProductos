@@ -1,3 +1,4 @@
+// Este DTO sirve para transportar el detalle completo de un movimiento (cabecera y líneas) que se muestra en el modal del historial.
 namespace ESFE.GestionProductos.LN.DTOs
 {
     public class DetalleMovimientoModalDTO

@@ -1,3 +1,4 @@
+// Este ViewModel sirve para mostrar los datos del perfil y recibir el formulario de cambio de contraseña.
 using System.ComponentModel.DataAnnotations;
 
 namespace ESFE.InventarioProd.Web.Models

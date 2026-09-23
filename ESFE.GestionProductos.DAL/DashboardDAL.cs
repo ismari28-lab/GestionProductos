@@ -1,3 +1,4 @@
+// Esta clase de acceso a datos sirve para consultar los indicadores del dashboard: valor total del inventario, productos bajo stock, producto más vendido del mes y alertas de stock.
 using System;
 using System.Collections.Generic;
 using System.Data;

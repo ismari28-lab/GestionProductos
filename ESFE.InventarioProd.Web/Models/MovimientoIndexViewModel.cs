@@ -1,3 +1,4 @@
+// Este ViewModel sirve para enviar a la vista de registrar movimiento el usuario actual y la fecha de hoy.
 namespace ESFE.InventarioProd.Web.Models
 {
     public class MovimientoIndexViewModel

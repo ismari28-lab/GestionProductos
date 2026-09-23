@@ -1,3 +1,4 @@
+@* Esta vista sirve para mostrar el listado de productos con filtros, paginación, los modales de crear/editar/eliminar, la galería de imágenes y la exportación. *@
 @model ESFE.InventarioProd.Web.Models.ProductoIndexViewModel
 @{
     ViewBag.Title = "Productos";
@@ -51,6 +52,7 @@
     <table class="pr-tabla" id="prTabla">
         <thead>
             <tr>
+                <th class="pr-th-imagen"></th>
                 <th class="pr-th-ordenable" data-columna="codigo">Código <span class="pr-th-icono">⇅</span></th>
                 <th class="pr-th-ordenable" data-columna="nombre">Nombre <span class="pr-th-icono">⇅</span></th>
                 <th class="pr-th-ordenable" data-columna="categoria">Categoría <span class="pr-th-icono">⇅</span></th>
@@ -62,7 +64,7 @@
             </tr>
         </thead>
         <tbody id="prTbody">
-            <tr><td colspan="8" class="pr-estado-mensaje">Cargando...</td></tr>
+            <tr><td colspan="9" class="pr-estado-mensaje">Cargando...</td></tr>
         </tbody>
     </table>
 </div>
@@ -146,6 +148,17 @@
                         <input type="number" id="prod-porcentaje-iva" min="0" max="100" step="0.01" value="13.00" />
                     </div>
                 </div>
+            </fieldset>
+
+            <fieldset class="seccion" id="seccion-galeria">
+                <legend>GALERÍA DE IMÁGENES</legend>
+                <div class="campo">
+                    <input type="file" id="prod-input-imagenes" accept=".jpg,.jpeg,.png,.webp" multiple style="display:none;" />
+                    <button type="button" class="btn-secundario" id="btn-agregar-imagen">+ Agregar imagen</button>
+                    <span class="contador-imagenes" id="contador-imagenes">0 / 5 imágenes</span>
+                </div>
+                <div class="grid-imagenes" id="grid-imagenes"></div>
+                <div class="mensaje-error-galeria" id="mensaje-error-galeria"></div>
             </fieldset>
 
             <fieldset class="seccion">
@@ -235,6 +248,12 @@
             var campoStockActual = document.getElementById('campo-stock-actual');
             var inputStockActual = document.getElementById('prod-stock-actual');
             var inputStockMinimo = document.getElementById('prod-stock-minimo');
+            var seccionGaleria = document.getElementById('seccion-galeria');
+            var inputImagenes = document.getElementById('prod-input-imagenes');
+            var btnAgregarImagen = document.getElementById('btn-agregar-imagen');
+            var contadorImagenes = document.getElementById('contador-imagenes');
+            var gridImagenes = document.getElementById('grid-imagenes');
+            var mensajeErrorGaleria = document.getElementById('mensaje-error-galeria');
             var seccionEstado = document.getElementById('seccion-estado');
             var checkEstado = document.getElementById('prod-estado');
             var mensajeErrorGeneral = document.getElementById('mensaje-error-general');
@@ -254,7 +273,18 @@
             var nombreActualParaEliminar = '';
             var prodIdActual = null;
 
-            var COLSPAN = 8;
+            // --- Galería de imágenes: pool client-side del modo Crear (Sprint A) ---
+            var MAX_IMAGENES_PRODUCTO = 5;
+            var TAMANIO_MAXIMO_IMAGEN_BYTES = 5 * 1024 * 1024;
+            var EXTENSIONES_IMAGEN_PERMITIDAS = ['.jpg', '.jpeg', '.png', '.webp'];
+            var poolImagenesCrear = []; // { archivo: File, urlPreview: string, esPrincipal: boolean }
+
+            // --- Galería de imágenes: modo Editar en tiempo real (Sprint B) ---
+            var modoModal = 'crear'; // 'crear' | 'editar'
+            var imagenesEditarActuales = []; // [{ id, url, urlThumb, esPrincipal, orden }]
+            var galeriaModificada = false;
+
+            var COLSPAN = 9;
 
             var estadoActual = {
                 termino: '',
@@ -342,7 +372,20 @@
                     var badgeTexto = p.estado ? 'Activo' : 'Inactivo';
                     var claseExistencias = existenciasClase(p.existencias, p.stockMinimo);
 
+                    var celdaImagen;
+                    if (p.nombreArchivoPrincipal) {
+                        var urlThumb = '/uploads/productos/thumb/' +
+                            p.nombreArchivoPrincipal.replace(/\.webp$/, '_thumb.webp');
+                        celdaImagen = '<td class="pr-td-imagen">' +
+                            '<img src="' + urlThumb + '" alt="" class="pr-thumb-listado" ' +
+                            'onerror="this.outerHTML=\'<span class=&quot;pr-thumb-placeholder&quot;></span>\'" />' +
+                            '</td>';
+                    } else {
+                        celdaImagen = '<td class="pr-td-imagen"><span class="pr-thumb-placeholder"></span></td>';
+                    }
+
                     html += '<tr>' +
+                        celdaImagen +
                         '<td>' + escapeHtml(p.codigo) + '</td>' +
                         '<td>' + escapeHtml(p.nombre) + '</td>' +
                         '<td>' + escapeHtml(p.categoriaNombre) + '</td>' +
@@ -662,8 +705,328 @@
                 inputPrecioVenta.classList.toggle('borde-ambar', mostrar);
             }
 
+            // --- Galería de imágenes: pool client-side del modo Crear (Sprint A) ---
+
+            function extensionArchivo(nombre) {
+                var idx = nombre.lastIndexOf('.');
+                return idx === -1 ? '' : nombre.substring(idx).toLowerCase();
+            }
+
+            function mostrarErrorGaleria(mensaje) {
+                mensajeErrorGaleria.textContent = mensaje;
+                mensajeErrorGaleria.style.display = 'block';
+            }
+
+            function ocultarErrorGaleria() {
+                mensajeErrorGaleria.style.display = 'none';
+                mensajeErrorGaleria.textContent = '';
+            }
+
+            function renderGaleriaCrear() {
+                contadorImagenes.textContent = poolImagenesCrear.length + ' / ' + MAX_IMAGENES_PRODUCTO + ' imágenes';
+                btnAgregarImagen.disabled = poolImagenesCrear.length >= MAX_IMAGENES_PRODUCTO;
+
+                if (poolImagenesCrear.length === 0) {
+                    gridImagenes.innerHTML = '';
+                    return;
+                }
+
+                var html = '';
+                poolImagenesCrear.forEach(function (item, index) {
+                    html += '<div class="slot-imagen' + (item.esPrincipal ? ' slot-principal' : '') + '">' +
+                        '<button type="button" class="slot-imagen-quitar" data-index="' + index + '" title="Quitar" aria-label="Quitar">&times;</button>' +
+                        (item.esPrincipal ? '<span class="slot-imagen-badge">Principal</span>' : '') +
+                        '<img src="' + item.urlPreview + '" alt="" />' +
+                        '<label class="slot-imagen-radio">' +
+                        '<input type="radio" name="prod-imagen-principal" data-index="' + index + '" ' + (item.esPrincipal ? 'checked' : '') + ' /> Principal' +
+                        '</label>' +
+                        '</div>';
+                });
+                gridImagenes.innerHTML = html;
+            }
+
+            function agregarAlPool(archivos) {
+                ocultarErrorGaleria();
+
+                var espacioDisponible = MAX_IMAGENES_PRODUCTO - poolImagenesCrear.length;
+                var agregados = 0;
+                var rechazados = [];
+
+                for (var i = 0; i < archivos.length; i++) {
+                    var archivo = archivos[i];
+
+                    if (agregados >= espacioDisponible) {
+                        rechazados.push(archivo.name + ' (límite de ' + MAX_IMAGENES_PRODUCTO + ' alcanzado)');
+                        continue;
+                    }
+
+                    var ext = extensionArchivo(archivo.name);
+                    if (EXTENSIONES_IMAGEN_PERMITIDAS.indexOf(ext) === -1) {
+                        rechazados.push(archivo.name + ' (extensión no permitida)');
+                        continue;
+                    }
+
+                    if (archivo.size > TAMANIO_MAXIMO_IMAGEN_BYTES) {
+                        rechazados.push(archivo.name + ' (supera 5 MB)');
+                        continue;
+                    }
+
+                    poolImagenesCrear.push({
+                        archivo: archivo,
+                        urlPreview: URL.createObjectURL(archivo),
+                        esPrincipal: poolImagenesCrear.length === 0
+                    });
+                    agregados++;
+                }
+
+                if (rechazados.length > 0) {
+                    mostrarErrorGaleria('No se agregaron ' + rechazados.length + ' archivo(s): ' + rechazados.join(', '));
+                }
+
+                renderGaleriaCrear();
+            }
+
+            function removerDelPool(index) {
+                var item = poolImagenesCrear[index];
+                if (!item) return;
+
+                URL.revokeObjectURL(item.urlPreview);
+                var eraPrincipal = item.esPrincipal;
+                poolImagenesCrear.splice(index, 1);
+
+                if (eraPrincipal && poolImagenesCrear.length > 0) {
+                    poolImagenesCrear[0].esPrincipal = true;
+                }
+
+                renderGaleriaCrear();
+            }
+
+            function marcarPrincipalEnPool(index) {
+                poolImagenesCrear.forEach(function (item, i) {
+                    item.esPrincipal = (i === index);
+                });
+                renderGaleriaCrear();
+            }
+
+            function limpiarPoolImagenesCrear() {
+                poolImagenesCrear.forEach(function (item) {
+                    URL.revokeObjectURL(item.urlPreview);
+                });
+                poolImagenesCrear = [];
+                ocultarErrorGaleria();
+                renderGaleriaCrear();
+            }
+
+            function subirImagenesDelPool(nuevoId) {
+                var exitos = 0;
+                var errores = [];
+                var total = poolImagenesCrear.length;
+
+                function subirUna(index) {
+                    if (index >= total) {
+                        return Promise.resolve({ exitos: exitos, total: total, errores: errores });
+                    }
+
+                    var item = poolImagenesCrear[index];
+                    var fd = new FormData();
+                    fd.append('archivo', item.archivo);
+                    fd.append('esPrincipal', item.esPrincipal ? 'true' : 'false');
+
+                    return fetch('/Producto/Imagenes/' + nuevoId, {
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        headers: { 'RequestVerificationToken': token() },
+                        body: fd
+                    })
+                        .then(function (r) {
+                            return r.json().then(function (data) { return { status: r.status, data: data }; });
+                        })
+                        .then(function (res) {
+                            if (res.status === 200 && res.data.ok) {
+                                exitos++;
+                            } else {
+                                errores.push(item.archivo.name + ': ' + (res.data.mensaje || 'error desconocido'));
+                            }
+                        })
+                        .catch(function () {
+                            errores.push(item.archivo.name + ': no se pudo conectar con el servidor');
+                        })
+                        .then(function () {
+                            return subirUna(index + 1); // secuencial: una a la vez, no en paralelo
+                        });
+                }
+
+                return subirUna(0);
+            }
+
+            // --- Galería de imágenes: modo Editar en tiempo real (Sprint B) ---
+
+            function renderGaleriaEditar() {
+                contadorImagenes.textContent = imagenesEditarActuales.length + ' / ' + MAX_IMAGENES_PRODUCTO + ' imágenes';
+                btnAgregarImagen.disabled = imagenesEditarActuales.length >= MAX_IMAGENES_PRODUCTO;
+
+                if (imagenesEditarActuales.length === 0) {
+                    gridImagenes.innerHTML = '';
+                    return;
+                }
+
+                var html = '';
+                imagenesEditarActuales.forEach(function (img) {
+                    html += '<div class="slot-imagen' + (img.esPrincipal ? ' slot-principal' : '') + '">' +
+                        '<button type="button" class="slot-imagen-quitar" data-id="' + img.id + '" title="Quitar" aria-label="Quitar">&times;</button>' +
+                        (img.esPrincipal ? '<span class="slot-imagen-badge">Principal</span>' : '') +
+                        '<img src="' + img.urlThumb + '" alt="" ' +
+                        'onerror="this.outerHTML=\'<span class=&quot;slot-imagen-placeholder&quot;></span>\'" />' +
+                        '<label class="slot-imagen-radio">' +
+                        '<input type="radio" name="prod-imagen-principal" data-id="' + img.id + '" ' +
+                        (img.esPrincipal ? 'checked disabled' : '') + ' /> Principal' +
+                        '</label>' +
+                        '</div>';
+                });
+                gridImagenes.innerHTML = html;
+            }
+
+            function subirImagenesEditar(archivos) {
+                ocultarErrorGaleria();
+
+                var errores = [];
+                var subidas = 0;
+                var limiteAlcanzado = false;
+
+                function subirUna(index) {
+                    if (index >= archivos.length) {
+                        return Promise.resolve();
+                    }
+
+                    var archivo = archivos[index];
+
+                    if (limiteAlcanzado) {
+                        return subirUna(index + 1);
+                    }
+
+                    var ext = extensionArchivo(archivo.name);
+                    if (EXTENSIONES_IMAGEN_PERMITIDAS.indexOf(ext) === -1) {
+                        errores.push(archivo.name + ': extensión no permitida');
+                        return subirUna(index + 1);
+                    }
+
+                    if (archivo.size > TAMANIO_MAXIMO_IMAGEN_BYTES) {
+                        errores.push(archivo.name + ': supera 5 MB');
+                        return subirUna(index + 1);
+                    }
+
+                    if (imagenesEditarActuales.length >= MAX_IMAGENES_PRODUCTO) {
+                        errores.push('Se alcanzó el límite de ' + MAX_IMAGENES_PRODUCTO + ' imágenes');
+                        limiteAlcanzado = true;
+                        return subirUna(index + 1);
+                    }
+
+                    var fd = new FormData();
+                    fd.append('archivo', archivo);
+                    fd.append('esPrincipal', 'false');
+
+                    return fetch('/Producto/Imagenes/' + prodIdActual, {
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        headers: { 'RequestVerificationToken': token() },
+                        body: fd
+                    })
+                        .then(function (r) {
+                            return r.json().then(function (data) { return { status: r.status, data: data }; });
+                        })
+                        .then(function (res) {
+                            if (res.status === 200 && res.data.ok) {
+                                imagenesEditarActuales.push(res.data.imagen);
+                                subidas++;
+                                galeriaModificada = true;
+                                renderGaleriaEditar();
+                            } else if (res.status === 409) {
+                                errores.push(res.data.mensaje || 'Límite de imágenes alcanzado');
+                                limiteAlcanzado = true;
+                            } else {
+                                errores.push(archivo.name + ': ' + (res.data.mensaje || 'error desconocido'));
+                            }
+                        })
+                        .catch(function () {
+                            errores.push(archivo.name + ': no se pudo conectar con el servidor');
+                        })
+                        .then(function () {
+                            return subirUna(index + 1);
+                        });
+                }
+
+                return subirUna(0).then(function () {
+                    if (errores.length > 0) {
+                        mostrarErrorGaleria(errores.join(' · '));
+                    }
+                    if (subidas > 0 && errores.length > 0) {
+                        mostrarToast(subidas + ' imagen(es) subida(s), ' + errores.length + ' error(es)', 'info');
+                    }
+                });
+            }
+
+            function eliminarImagenEditar(idImagen) {
+                if (!confirm('¿Eliminar esta imagen? Esta acción no se puede deshacer.')) return;
+
+                fetch('/Producto/Imagenes/' + idImagen, {
+                    method: 'DELETE',
+                    credentials: 'same-origin',
+                    headers: { 'RequestVerificationToken': token() }
+                })
+                    .then(function (r) {
+                        return r.json().then(function (d) { return { status: r.status, data: d }; });
+                    })
+                    .then(function (res) {
+                        if (res.status === 200 && res.data.ok) {
+                            imagenesEditarActuales = imagenesEditarActuales.filter(function (img) { return img.id !== idImagen; });
+
+                            if (res.data.nuevaPrincipal) {
+                                var promovida = imagenesEditarActuales.find(function (img) { return img.id === res.data.nuevaPrincipal.id; });
+                                if (promovida) {
+                                    imagenesEditarActuales.forEach(function (img) { img.esPrincipal = false; });
+                                    promovida.esPrincipal = true;
+                                }
+                            }
+
+                            galeriaModificada = true;
+                            renderGaleriaEditar();
+                        } else {
+                            mostrarErrorGaleria(res.data.mensaje || 'No se pudo eliminar la imagen');
+                        }
+                    })
+                    .catch(function () {
+                        mostrarErrorGaleria('No se pudo conectar con el servidor');
+                    });
+            }
+
+            function marcarPrincipalEditar(idImagen) {
+                fetch('/Producto/Imagenes/' + idImagen + '/Principal', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: { 'RequestVerificationToken': token() }
+                })
+                    .then(function (r) {
+                        return r.json().then(function (d) { return { status: r.status, data: d }; });
+                    })
+                    .then(function (res) {
+                        if (res.status === 200 && res.data.ok) {
+                            imagenesEditarActuales.forEach(function (img) { img.esPrincipal = false; });
+                            var target = imagenesEditarActuales.find(function (img) { return img.id === idImagen; });
+                            if (target) target.esPrincipal = true;
+                            galeriaModificada = true;
+                            renderGaleriaEditar();
+                        } else {
+                            mostrarErrorGaleria(res.data.mensaje || 'No se pudo marcar como principal');
+                        }
+                    })
+                    .catch(function () {
+                        mostrarErrorGaleria('No se pudo conectar con el servidor');
+                    });
+            }
+
             function abrirModalCrear() {
                 modoEdicion = false;
+                modoModal = 'crear';
                 stockActualCargado = 0;
                 estadoOriginalCargado = true;
                 prodIdActual = null;
@@ -671,6 +1034,10 @@
                 modalTitulo.textContent = 'Nuevo producto';
                 inputId.value = '';
                 limpiarErroresCampo();
+
+                limpiarPoolImagenesCrear();
+                imagenesEditarActuales = [];
+                seccionGaleria.style.display = '';
 
                 inputCodigo.value = 'Cargando...';
                 inputNombre.value = '';
@@ -710,10 +1077,17 @@
 
             function abrirModalEditar(id) {
                 modoEdicion = true;
+                modoModal = 'editar';
+                galeriaModificada = false;
+                prodIdActual = id;
 
                 modalTitulo.textContent = 'Editar producto';
                 inputId.value = id;
                 limpiarErroresCampo();
+
+                limpiarPoolImagenesCrear();
+                imagenesEditarActuales = [];
+                seccionGaleria.style.display = '';
 
                 seccionEstado.style.display = '';
                 campoStockActual.style.display = '';
@@ -725,6 +1099,16 @@
                 btnGuardar.disabled = false;
                 btnGuardar.textContent = 'Guardar';
                 mostrarModal(modalOverlay);
+
+                fetch('/Producto/ListarImagenes?id=' + id, { credentials: 'same-origin' })
+                    .then(function (r) { return r.json(); })
+                    .then(function (data) {
+                        imagenesEditarActuales = data.imagenes || [];
+                        renderGaleriaEditar();
+                    })
+                    .catch(function () {
+                        mostrarErrorGaleria('No se pudieron cargar las imágenes');
+                    });
 
                 fetch('@Url.Action("ObtenerParaEdicion", "Producto")/' + id, { credentials: 'same-origin' })
                     .then(function (r) {
@@ -845,6 +1229,22 @@
                     })
                     .then(function (res) {
                         if (res.status === 200 && res.data.ok) {
+                            if (!modoEdicion && poolImagenesCrear.length > 0) {
+                                var nuevoId = res.data.id;
+                                return subirImagenesDelPool(nuevoId).then(function (resultado) {
+                                    limpiarPoolImagenesCrear();
+                                    cerrarModal();
+
+                                    var mensaje = 'Producto creado. ' + resultado.exitos + '/' + resultado.total + ' imágenes subidas';
+                                    mostrarToast(mensaje, resultado.errores.length > 0 ? 'info' : 'exito');
+                                    if (resultado.errores.length > 0) {
+                                        mostrarToast('Errores al subir imágenes: ' + resultado.errores.join(' · '), 'error');
+                                    }
+
+                                    cargarPagina(estadoActual.pagina);
+                                });
+                            }
+
                             cerrarModal();
                             mostrarToast(res.data.mensaje || 'Producto guardado correctamente', 'exito');
                             cargarPagina(estadoActual.pagina);
@@ -928,6 +1328,18 @@
             function cerrarModal() {
                 ocultarModal(modalOverlay);
                 limpiarErroresCampo();
+                limpiarPoolImagenesCrear();
+                imagenesEditarActuales = [];
+                modoModal = 'crear';
+                galeriaModificada = false;
+            }
+
+            function cancelarModal() {
+                var refrescarListado = modoModal === 'editar' && galeriaModificada;
+                cerrarModal();
+                if (refrescarListado) {
+                    cargarPagina(estadoActual.pagina);
+                }
             }
 
             function cerrarConfirmarEliminar() {
@@ -936,8 +1348,44 @@
             }
 
             btnNuevoProducto.addEventListener('click', abrirModalCrear);
-            btnCancelarProducto.addEventListener('click', cerrarModal);
+            btnCancelarProducto.addEventListener('click', cancelarModal);
             btnGuardar.addEventListener('click', guardarProducto);
+
+            btnAgregarImagen.addEventListener('click', function () {
+                inputImagenes.click();
+            });
+
+            inputImagenes.addEventListener('change', function () {
+                var archivos = Array.from(inputImagenes.files || []);
+                if (archivos.length > 0) {
+                    if (modoModal === 'crear') {
+                        agregarAlPool(archivos);
+                    } else {
+                        subirImagenesEditar(archivos);
+                    }
+                }
+                inputImagenes.value = ''; // permite volver a seleccionar el mismo archivo
+            });
+
+            gridImagenes.addEventListener('click', function (ev) {
+                var btnQuitar = ev.target.closest('.slot-imagen-quitar');
+                if (!btnQuitar) return;
+                if (modoModal === 'crear') {
+                    removerDelPool(parseInt(btnQuitar.getAttribute('data-index'), 10));
+                } else {
+                    eliminarImagenEditar(parseInt(btnQuitar.getAttribute('data-id'), 10));
+                }
+            });
+
+            gridImagenes.addEventListener('change', function (ev) {
+                var radio = ev.target.closest('input[type="radio"][name="prod-imagen-principal"]');
+                if (!radio) return;
+                if (modoModal === 'crear') {
+                    marcarPrincipalEnPool(parseInt(radio.getAttribute('data-index'), 10));
+                } else {
+                    marcarPrincipalEditar(parseInt(radio.getAttribute('data-id'), 10));
+                }
+            });
             btnEliminar.addEventListener('click', confirmarEliminar);
             btnCancelarEliminar.addEventListener('click', cerrarConfirmarEliminar);
             btnConfirmarEliminarDef.addEventListener('click', eliminarDefinitivo);
@@ -953,7 +1401,7 @@
             inputPrecioVenta.addEventListener('input', actualizarAdvertenciaPrecio);
 
             modalOverlay.addEventListener('click', function (ev) {
-                if (ev.target === modalOverlay) cerrarModal();
+                if (ev.target === modalOverlay) cancelarModal();
             });
             modalConfirmarEliminar.addEventListener('click', function (ev) {
                 if (ev.target === modalConfirmarEliminar) cerrarConfirmarEliminar();
@@ -966,7 +1414,7 @@
                     return;
                 }
                 if (modalOverlay.style.display !== 'none') {
-                    cerrarModal();
+                    cancelarModal();
                 }
             });
 

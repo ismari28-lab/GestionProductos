@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Esta clase de lógica de negocio sirve para gestionar productos: valida formularios, controla códigos únicos, y coordina con ProductoDAL el listado, creación, edición, eliminación y exportación.
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -110,7 +111,8 @@ namespace ESFE.GestionProductos.LN
                         StockMinimo = p.StockMinimo,
                         PrecioCompra = p.PrecioCompra,
                         PrecioVenta = p.PrecioVenta,
-                        Estado = p.Estado
+                        Estado = p.Estado,
+                        NombreArchivoPrincipal = p.NombreArchivoPrincipal
                     })
                     .ToList(),
                 TotalRegistros = total,

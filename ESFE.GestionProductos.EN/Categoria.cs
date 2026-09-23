@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Esta entidad representa una categoría de productos tal como se almacena en la base de datos.
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;

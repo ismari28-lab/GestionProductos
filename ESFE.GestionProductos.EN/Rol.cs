@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Esta entidad representa un rol de usuario (por ejemplo, administrador) que define sus permisos en el sistema.
+using System;
 using System.Collections.Generic;
 using System.Text;
 

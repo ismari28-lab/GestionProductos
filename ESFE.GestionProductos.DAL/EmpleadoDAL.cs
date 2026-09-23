@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Esta clase de acceso a datos sirve para listar, buscar, insertar, actualizar y eliminar (lógicamente) empleados en la base de datos.
+using System;
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;

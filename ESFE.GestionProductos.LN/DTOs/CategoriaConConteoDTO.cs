@@ -1,3 +1,4 @@
+// Este DTO sirve para transportar una categoría junto con el total de productos que tiene asociados.
 namespace ESFE.GestionProductos.LN.DTOs
 {
     public class CategoriaConConteoDTO

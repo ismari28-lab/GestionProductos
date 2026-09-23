@@ -1,3 +1,4 @@
+// Este DTO sirve para transportar una fila del historial de movimientos de inventario.
 namespace ESFE.GestionProductos.LN.DTOs
 {
     public class HistorialMovimientoDTO

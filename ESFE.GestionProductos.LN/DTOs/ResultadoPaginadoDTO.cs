@@ -1,3 +1,4 @@
+// Este DTO genérico sirve para devolver una página de resultados junto con el total de registros y datos de paginación.
 namespace ESFE.GestionProductos.LN.DTOs
 {
     public class ResultadoPaginadoDTO<T>

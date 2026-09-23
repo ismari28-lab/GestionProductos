@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Esta entidad representa un método de pago disponible (efectivo, tarjeta, etc.).
+using System;
 using System.Collections.Generic;
 using System.Text;
 

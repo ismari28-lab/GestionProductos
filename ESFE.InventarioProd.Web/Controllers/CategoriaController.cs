@@ -1,3 +1,4 @@
+// Este controlador sirve para mostrar la página de categorías y atender las peticiones AJAX para listar, crear, editar y eliminar categorías.
 using ESFE.GestionProductos.LN;
 using ESFE.GestionProductos.LN.Enums;
 using ESFE.InventarioProd.Web.Models;

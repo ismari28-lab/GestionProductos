@@ -1,3 +1,4 @@
+// Este archivo es el punto de entrada de la aplicación de escritorio: inicializa la configuración de Windows Forms y abre el formulario de login.
 namespace ESFE.GestionProductos.UI
 {
     internal static class Program

@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Esta entidad representa un usuario del sistema con sus credenciales, rol y estado.
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Esta entidad representa una línea de detalle de un movimiento de inventario (producto y cantidad).
+using System;
 using System.Collections.Generic;
 using System.Text;
 

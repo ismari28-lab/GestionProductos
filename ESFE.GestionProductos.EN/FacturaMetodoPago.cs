@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Esta entidad representa la relación entre una factura y los métodos de pago utilizados para pagarla.
+using System;
 using System.Collections.Generic;
 using System.Text;
 

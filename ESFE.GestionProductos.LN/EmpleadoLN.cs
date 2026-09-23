@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Esta clase de lógica de negocio sirve para gestionar empleados: listar, buscar, guardar (insertar o actualizar) y eliminar.
+using System;
 using System.Collections.Generic;
 using System.Data;
 using ESFE.GestionProductos.DAL;

@@ -136,6 +136,32 @@
     white-space: nowrap;
 }
 
+.pr-th-imagen {
+    width: 56px;
+    padding: 0;
+}
+
+.pr-td-imagen {
+    width: 56px;
+    padding: 8px;
+}
+
+.pr-thumb-listado {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+    display: block;
+}
+
+.pr-thumb-placeholder {
+    width: 40px;
+    height: 40px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    display: block;
+}
+
 .pr-tabla.pr-cargando {
     opacity: 0.5;
 }
@@ -268,4 +294,119 @@
 
 .pr-tamanio select {
     width: auto;
+}
+
+/* Galería de imágenes (modal Crear/Editar) */
+.contador-imagenes {
+    display: inline-block;
+    margin-left: 0.75rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background-color: #f3f4f6;
+    color: #6b7280;
+    font-size: 0.78rem;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+.grid-imagenes {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+@media (max-width: 560px) {
+    .grid-imagenes {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.slot-imagen {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background-color: #f9fafb;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.slot-imagen img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.slot-imagen.slot-principal {
+    border-color: #d97706;
+    border-width: 2px;
+}
+
+.slot-imagen-placeholder {
+    position: absolute;
+    inset: 0;
+    background-color: #e5e7eb;
+}
+
+.slot-imagen-quitar {
+    position: absolute;
+    top: 0.25rem;
+    right: 0.25rem;
+    z-index: 2;
+    width: 1.35rem;
+    height: 1.35rem;
+    border: none;
+    border-radius: 999px;
+    background-color: rgba(17, 24, 39, 0.65);
+    color: #fff;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slot-imagen-quitar:hover {
+    background-color: rgba(220, 38, 38, 0.85);
+}
+
+.slot-imagen-badge {
+    position: absolute;
+    top: 0.25rem;
+    left: 0.25rem;
+    z-index: 2;
+    padding: 0.1rem 0.45rem;
+    border-radius: 999px;
+    background-color: #d97706;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.slot-imagen-radio {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: 0.25rem 0.4rem;
+    background: rgba(255, 255, 255, 0.9);
+    font-size: 0.72rem;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.mensaje-error-galeria {
+    display: none;
+    margin-top: 0.5rem;
+    color: #dc2626;
+    font-size: 0.78rem;
 }
