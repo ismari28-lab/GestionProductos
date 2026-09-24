@@ -1,0 +1,97 @@
+@{
+    Layout = "_CatalogoLayout";
+    ViewBag.Title = "Catálogo";
+}
+
+<section class="hero">
+    <div class="container">
+        <div class="hero-copy">
+            <p class="hero-eyebrow">hasta</p>
+            <h1 class="hero-title">50%</h1>
+            <p class="hero-subtitle">de descuento</p>
+            <p class="hero-tag">Promoción de temporada</p>
+        </div>
+        <div class="hero-media">
+            <img src="~/img/hero-shoe.png" alt="Zapatilla Adidas en promoción" />
+        </div>
+    </div>
+</section>
+
+<section class="filters">
+    <div class="container">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search Products" />
+            <button type="button" id="searchButton" aria-label="Buscar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="M21 21l-4.3-4.3" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="category-list">
+            <button type="button" class="category-pill is-active" data-category="all">All</button>
+            <button type="button" class="category-pill" data-category="nike">Nike</button>
+            <button type="button" class="category-pill" data-category="adidas">Adidas</button>
+            <button type="button" class="category-pill" data-category="new-balance">New Balance</button>
+        </div>
+    </div>
+</section>
+
+<section class="catalog">
+    <div class="container product-grid">
+
+        <article class="product-card" data-category="adidas" data-name="Adidas Superstar ADV 89" data-price="90" data-whatsapp="https://wa.me/34626651892?text=Me%20interesa%20Adidas%20Superstar%20ADV%2089">
+            <div class="product-media">
+                <img src="~/img/adidas-superstar.png" alt="Adidas Superstar ADV 89" />
+            </div>
+            <p class="product-name">ADIDAS SUPERSTAR ADV 89</p>
+            <p class="product-price">$ 90,00</p>
+            <button type="button" class="btn-buy">
+                <svg viewBox="0 0 32 32" fill="currentColor"><path d="M16.001 3C9.373 3 4 8.373 4 15c0 2.386.69 4.61 1.885 6.49L4 29l7.71-1.85A11.93 11.93 0 0 0 16 27c6.627 0 12-5.373 12-12S22.628 3 16.001 3Z" /></svg>
+                Comprar ahora
+            </button>
+            <a href="/Home/Details/1" class="product-more">Más información</a>
+        </article>
+
+        <article class="product-card" data-category="adidas" data-name="Yeezy Boost 350 V2 Steel Grey" data-price="180" data-whatsapp="https://wa.me/34626651892?text=Me%20interesa%20Yeezy%20Boost%20350%20V2%20Steel%20Grey">
+            <div class="product-media">
+                <img src="~/img/yeezy-350.png" alt="Yeezy Boost 350 V2 Steel Grey" />
+            </div>
+            <p class="product-name">YEEZY BOOST 350 V2 STEEL GREY</p>
+            <p class="product-price">$ 180,00</p>
+            <button type="button" class="btn-buy">
+                <svg viewBox="0 0 32 32" fill="currentColor"><path d="M16.001 3C9.373 3 4 8.373 4 15c0 2.386.69 4.61 1.885 6.49L4 29l7.71-1.85A11.93 11.93 0 0 0 16 27c6.627 0 12-5.373 12-12S22.628 3 16.001 3Z" /></svg>
+                Comprar ahora
+            </button>
+            <a href="/Home/Details/2" class="product-more">Más información</a>
+        </article>
+
+        <article class="product-card" data-category="nike" data-name="Dunk Low GS Light Carbon" data-price="99" data-whatsapp="https://wa.me/34626651892?text=Me%20interesa%20Dunk%20Low%20GS%20Light%20Carbon">
+            <div class="product-media">
+                <img src="~/img/dunk-low.png" alt="Dunk Low GS Light Carbon" />
+            </div>
+            <p class="product-name">DUNK LOW GS LIGHT CARBON</p>
+            <p class="product-price">$ 99,00</p>
+            <button type="button" class="btn-buy">
+                <svg viewBox="0 0 32 32" fill="currentColor"><path d="M16.001 3C9.373 3 4 8.373 4 15c0 2.386.69 4.61 1.885 6.49L4 29l7.71-1.85A11.93 11.93 0 0 0 16 27c6.627 0 12-5.373 12-12S22.628 3 16.001 3Z" /></svg>
+                Comprar ahora
+            </button>
+            <a href="/Home/Details/3" class="product-more">Más información</a>
+        </article>
+
+        <article class="product-card" data-category="new-balance" data-name="New Balance 580" data-price="70" data-whatsapp="https://wa.me/34626651892?text=Me%20interesa%20New%20Balance%20580">
+            <div class="product-media">
+                <img src="~/img/new-balance-580.png" alt="New Balance 580" />
+            </div>
+            <p class="product-name">NEW BALANCE 580</p>
+            <p class="product-price">$ 70,00</p>
+            <button type="button" class="btn-buy">
+                <svg viewBox="0 0 32 32" fill="currentColor"><path d="M16.001 3C9.373 3 4 8.373 4 15c0 2.386.69 4.61 1.885 6.49L4 29l7.71-1.85A11.93 11.93 0 0 0 16 27c6.627 0 12-5.373 12-12S22.628 3 16.001 3Z" /></svg>
+                Comprar ahora
+            </button>
+            <a href="/Home/Details/4" class="product-more">Más información</a>
+        </article>
+
+    </div>
+</section>
